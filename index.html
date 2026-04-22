@@ -615,9 +615,9 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
   <div class="scroll">
     <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
-      <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name"/></div>
+      <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name" onfocus="autoFillTestData();ob1KeyboardShow()" onblur="ob1KeyboardHide()"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="70"/></div>
+        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="70" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/></div>
         <div class="ig">
           <label class="ilbl">Data de nascimento</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('ob1-dob',this)">
@@ -641,7 +641,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig">
         <label class="ilbl">Condições de saúde</label>
         <div style="position:relative;">
-          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:44px;"/>
+          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:44px;" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/>
           <button type="button" onclick="addHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--pink);color:white;border:none;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
         </div>
         <div id="ob1-chips-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
@@ -649,7 +649,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       </div>
     </div>
   </div>
-  <div style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:10px;">
+  <div id="ob1-footer" style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:10px;">
     <button class="btn btn-primary" onclick="saveUserName();go('ob2','r')">Continuar</button>
     <button class="btn btn-ghost" onclick="go('ob2','r')">Saltar por agora</button>
   </div>
@@ -1350,19 +1350,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <!-- Hoje -->
       <div style="background:var(--pink-light);border-radius:16px;padding:6px 14px 2px;">
         <div style="font-size:12px;font-weight:700;color:var(--pink);padding:10px 0 6px;letter-spacing:.5px;">HOJE</div>
-        <div style="display:flex;flex-direction:column;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(233,30,140,.15);">
-            <span style="font-size:16px;font-weight:600;color:var(--text);">08:00</span>
-            <button data-taken="1" onclick="toggleDoseTaken(this)" style="background:white;border:1.5px solid var(--gray-border);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--success);cursor:pointer;">Tomado</button>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(233,30,140,.15);">
-            <span style="font-size:16px;font-weight:600;color:var(--text);">13:00</span>
-            <button data-taken="0" onclick="toggleDoseTaken(this)" style="background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;">Tomar ✓</button>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;">
-            <span style="font-size:16px;font-weight:600;color:var(--text);">20:00</span>
-            <button data-taken="0" onclick="toggleDoseTaken(this)" style="background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;opacity:.5;">Tomar ✓</button>
-          </div>
+        <div id="detail-today-rows" style="display:flex;flex-direction:column;">
+          <!-- populated by openMedDetail() -->
         </div>
       </div>
       <!-- Semana -->
@@ -2361,6 +2350,31 @@ function setNav(el) {
 }
 
 /* ===== Save user name ===== */
+/* ob1 keyboard helpers */
+function autoFillTestData() {
+  const peso = document.getElementById('ob1-peso');
+  if (peso && !peso.value) peso.value = '60';
+  const dobInput   = document.getElementById('ob1-dob');
+  const dobDisplay = document.getElementById('ob1-dob-display');
+  if (dobInput && !dobInput.value) {
+    dobInput.value = '1990-01-01';
+    if (dobDisplay) { dobDisplay.textContent = '01/01/1990'; dobDisplay.style.color = 'var(--text)'; }
+  }
+}
+function ob1KeyboardShow() {
+  const f = document.getElementById('ob1-footer');
+  if (f) f.style.display = 'none';
+}
+function ob1KeyboardHide() {
+  setTimeout(() => {
+    const active = document.activeElement;
+    if (!active || !active.closest('#ob1')) {
+      const f = document.getElementById('ob1-footer');
+      if (f) f.style.display = '';
+    }
+  }, 150);
+}
+
 function saveUserName() {
   const name = document.getElementById('ob1-name').value.trim() || 'Utilizador';
   const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -2759,13 +2773,13 @@ function collectTimes(listId) {
 function addTimeTo(listId) {
   const list = document.getElementById(listId);
   if (!list) return;
-  const row = document.createElement('div');
-  row.className = 'ifield';
-  row.style.cssText = 'cursor:pointer;';
-  row.setAttribute('onclick', 'openTimePicker(this)');
   const next = computeNextTime(collectTimes(listId));
-  row.innerHTML = '<span>' + next + '</span>';
-  list.appendChild(row);
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  wrap.innerHTML =
+    '<div class="ifield" style="flex:1;cursor:pointer;" onclick="openTimePicker(this)"><span>' + next + '</span></div>' +
+    '<button type="button" onclick="this.parentElement.remove();renderObSummary();" aria-label="Remover hora" style="background:var(--danger-light);border:none;border-radius:10px;width:44px;height:44px;cursor:pointer;color:var(--danger);font-size:18px;font-weight:700;flex-shrink:0;">&#10005;</button>';
+  list.appendChild(wrap);
   renderObSummary();
 }
 function computeNextTime(times) {
@@ -2939,7 +2953,9 @@ function saveObInsert() {
   if (!document.querySelector('#ob-step2 .freq-option.active')) return;
   const freqLabel = obFreqLabels[obSelectedFreq] || 'Conforme necessário';
   const medType = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
-  const newMed = { name, dosage, form, frequency: freqLabel, source: obInsertSource === 'detected' ? 'scan' : 'manual', type: medType };
+  const cfg = (typeof collectObConfig === 'function') ? collectObConfig() : null;
+  const times = (cfg && cfg.times && cfg.times.length) ? cfg.times : (medType !== 'occasional' ? ['08:00'] : []);
+  const newMed = { name, dosage, form, frequency: freqLabel, source: obInsertSource === 'detected' ? 'scan' : 'manual', type: medType, times, takenSlots: {} };
   if (obEditIndex >= 0) {
     activeMeds()[obEditIndex] = newMed;
     obEditIndex = -1;
@@ -3382,6 +3398,79 @@ function showToast(msg, duration) {
   setTimeout(() => toast.classList.remove('show'), duration || 2500);
 }
 
+/* ===== Med-detail: open with real data ===== */
+let currentMedDetailIdx = -1;
+
+function openMedDetail(profileId, idx) {
+  currentMedDetailIdx = idx;
+  const m = (PROFILES[profileId] && PROFILES[profileId].meds) ? PROFILES[profileId].meds[idx] : null;
+  if (!m) { go('med-detail', 'r'); return; }
+
+  // Header
+  const nameEl = document.getElementById('detail-name');
+  const subEl  = document.getElementById('detail-sub');
+  if (nameEl) nameEl.textContent = m.name;
+  if (subEl)  subEl.textContent  = m.dosage + (m.form ? ' · ' + formLabel(m.form) : '');
+
+  // Today's dose rows
+  const todayKey = new Date().toDateString();
+  const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
+  const times = (m.times && m.times.length) ? m.times : ['08:00'];
+  const container = document.getElementById('detail-today-rows');
+  if (container) {
+    container.innerHTML = times.map((t, i) => {
+      const isTaken = takenSet.has(t);
+      const isLast = i === times.length - 1;
+      const border = isLast ? '' : 'border-bottom:1px solid rgba(233,30,140,.15);';
+      const btn = isTaken
+        ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:white;border:1.5px solid var(--gray-border);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--success);cursor:pointer;">Tomado</button>'
+        : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;">Tomar ✓</button>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
+        '<span style="font-size:16px;font-weight:600;color:var(--text);">' + t + '</span>' + btn + '</div>';
+    }).join('');
+  }
+  go('med-detail', 'r');
+}
+
+function toggleMedDose(btn, profileId, idx) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
+  if (!m) return;
+  const todayKey = new Date().toDateString();
+  if (!m.takenSlots) m.takenSlots = {};
+  if (!m.takenSlots[todayKey]) m.takenSlots[todayKey] = [];
+  const time = btn.dataset.time;
+  const wasTaken = btn.dataset.taken === '1';
+  if (wasTaken) {
+    m.takenSlots[todayKey] = m.takenSlots[todayKey].filter(t => t !== time);
+    btn.dataset.taken = '0';
+    btn.textContent = 'Tomar ✓';
+    btn.style.cssText = 'background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;';
+  } else {
+    if (!m.takenSlots[todayKey].includes(time)) m.takenSlots[todayKey].push(time);
+    btn.dataset.taken = '1';
+    btn.textContent = 'Tomado';
+    btn.style.cssText = 'background:white;border:1.5px solid var(--gray-border);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--success);cursor:pointer;';
+  }
+  renderDashboardMeds();
+}
+
+/* ===== Circular dose-progress SVG ===== */
+function doseProgressSVG(taken, total) {
+  if (!total) total = 1;
+  const R = 14, C = 2 * Math.PI * R;
+  const pct = Math.min(taken / total, 1);
+  const isComplete = taken >= total && total > 0;
+  const color = isComplete ? 'var(--teal)' : '#F79009';
+  const dash = (pct * C).toFixed(1);
+  return '<svg width="36" height="36" viewBox="0 0 36 36" style="flex-shrink:0;">' +
+    '<circle cx="18" cy="18" r="' + R + '" fill="none" stroke="var(--gray-border)" stroke-width="3"/>' +
+    (pct > 0 ? '<circle cx="18" cy="18" r="' + R + '" fill="none" stroke="' + color + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + C.toFixed(1) + '" transform="rotate(-90 18 18)"/>' : '') +
+    (isComplete
+      ? '<text x="18" y="23" text-anchor="middle" font-size="13" fill="' + color + '">✓</text>'
+      : (pct > 0 ? '<text x="18" y="22" text-anchor="middle" font-size="10" font-weight="700" fill="' + color + '">' + taken + '/' + total + '</text>' : '')) +
+    '</svg>';
+}
+
 function hasTakenToday(med) {
   if (!med.logs || !med.logs.length) return false;
   const today = new Date().toDateString();
@@ -3397,7 +3486,7 @@ function lastTakenTime(med) {
 }
 
 /* ===== Render dashboard meds ===== */
-function renderMedList(meds, container) {
+function renderMedList(meds, container, profileId) {
   const visibleMeds = meds.map((m, idx) => ({ m, idx })).filter(({ m }) =>
     m.type !== 'occasional' || hasTakenToday(m)
   );
@@ -3406,6 +3495,7 @@ function renderMedList(meds, container) {
       '<div style="text-align:center;padding:24px 0;color:var(--gray);font-size:14px;">Sem medicação para hoje.</div>';
     return;
   }
+  const pid = profileId || activeProfile;
   let html = '<div style="display:flex;flex-direction:column;gap:8px;">';
   visibleMeds.forEach(({ m, idx }) => {
     const isOccasional = m.type === 'occasional';
@@ -3419,13 +3509,15 @@ function renderMedList(meds, container) {
         '<span class="med-badge-occasional">Ocasional</span>' +
       '</div>';
     } else {
-      html += '<div class="mcard" onclick="go(\'med-detail\',\'r\')">' +
+      const todayKey = new Date().toDateString();
+      const times = (m.times && m.times.length) ? m.times : ['08:00'];
+      const taken = ((m.takenSlots && m.takenSlots[todayKey]) || []).length;
+      const total = times.length;
+      html += '<div class="mcard" style="cursor:pointer;" onclick="openMedDetail(\'' + pid + '\',' + idx + ')">' +
         '<div class="micon">' + formIcon(mForm) + '</div>' +
         '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
         '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
-        '<div style="display:flex;align-items:center;gap:6px;">' +
-          '<span style="font-size:11px;padding:4px 8px;border-radius:8px;background:#FFF4E5;color:#F79009;font-weight:600;">Pendente</span>' +
-        '</div>' +
+        doseProgressSVG(taken, total) +
       '</div>';
     }
   });
@@ -3440,7 +3532,7 @@ function renderDashboardMeds() {
   ].forEach(({ elId, profileId }) => {
     const container = document.getElementById(elId);
     if (!container) return;
-    renderMedList((PROFILES[profileId] && PROFILES[profileId].meds) || [], container);
+    renderMedList((PROFILES[profileId] && PROFILES[profileId].meds) || [], container, profileId);
   });
 }
 
