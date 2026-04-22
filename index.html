@@ -698,7 +698,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1;pointer-events:none;"></div>
     <!-- Back button overlay -->
     <div style="position:absolute;top:54px;left:16px;z-index:10;">
-      <button class="back" aria-label="Voltar" onclick="go(backTarget,'l')" style="background:rgba(0,0,0,.4);backdrop-filter:blur(4px);"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="back" aria-label="Voltar" onclick="goBack()" style="background:rgba(0,0,0,.4);backdrop-filter:blur(4px);"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <!-- Camera area -->
     <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
@@ -736,7 +736,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
   <!-- Back -->
   <div style="position:absolute;top:54px;left:16px;z-index:10;">
-    <button class="back" aria-label="Voltar" onclick="go('ob-scan','l')" style="background:rgba(255,255,255,.2);">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="background:rgba(255,255,255,.2);">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
@@ -775,7 +775,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <div id="scan-results" class="screen">
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="padding:8px 24px 0;display:flex;align-items:center;gap:12px;flex-shrink:0;">
-    <button class="back" aria-label="Voltar" onclick="go('ob-scan','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <h2 style="font-size:18px;font-weight:700;flex:1;">Resultado da foto</h2>
   </div>
   <div class="scroll">
@@ -1255,11 +1255,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       </div>
     </div>
   </div>
-  <!-- Bottom nav: Início · Medicamentos · Pesquisa · Chat -->
+  <!-- Bottom nav: Calendário · Medicamentos · Pesquisa · Chat -->
   <nav class="bnav" aria-label="Navegação principal">
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Início
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Calendário
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -1294,11 +1294,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <!-- rendered dynamically -->
     </div>
   </div>
-  <!-- Bottom nav: Início · Medicamentos · Pesquisa · Chat -->
+  <!-- Bottom nav: Calendário · Medicamentos · Pesquisa · Chat -->
   <nav class="bnav" aria-label="Navegação principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Início
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Calendário
     </div>
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -1320,7 +1320,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <!-- Header -->
   <div style="padding:8px 24px 14px;display:flex;align-items:center;gap:12px;">
-    <button class="back" aria-label="Voltar" onclick="go('dashboard','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <h2 style="font-size:24px;font-weight:700;flex:1;">Alertas</h2>
     <button id="alerts-mark-all" onclick="markAllRead()" style="display:none;background:none;border:none;font-size:13px;font-weight:600;color:var(--pink);cursor:pointer;">Marcar lidos</button>
   </div>
@@ -1397,7 +1397,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <div id="med-info" class="screen">
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="background:linear-gradient(135deg,var(--pink-light),#E8F4FD);padding:16px 24px 24px;">
-    <button class="back" aria-label="Voltar" onclick="goBackFromMedInfo()" style="margin-bottom:14px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-bottom:14px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div style="display:flex;gap:14px;align-items:center;">
       <div style="width:64px;height:64px;background:white;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 4px 12px rgba(0,0,0,.1);">💊</div>
       <div>
@@ -1469,7 +1469,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <div id="bula-screen" class="screen">
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="padding:8px 24px 0;display:flex;align-items:center;gap:14px;">
-    <button class="back" aria-label="Voltar" onclick="go('med-info','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div style="flex:1;">
       <h2 style="font-size:18px;font-weight:700;">Bula completa</h2>
       <p style="font-size:12px;color:var(--text-sub);">Fonte: Infarmed</p>
@@ -1562,7 +1562,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </aside>
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="padding:10px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--gray-border);">
-    <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="go('dashboard','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
@@ -1598,8 +1598,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <!-- Bottom nav -->
   <nav id="chat-bnav" class="bnav" aria-label="Navegacao principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Início
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Calendário
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1673,8 +1673,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <!-- Bottom nav -->
   <nav class="bnav" aria-label="Navegacao principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      Início
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Calendário
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1769,7 +1769,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <div id="settings" class="screen">
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="padding:8px 24px 16px;display:flex;align-items:center;gap:12px;">
-    <button class="back" aria-label="Voltar" onclick="go('dashboard','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <h2 style="font-size:24px;font-weight:700;">Definições</h2>
   </div>
   <div class="scroll" style="padding:0 24px 40px;display:flex;flex-direction:column;gap:24px;">
@@ -1982,6 +1982,29 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 
 <!-- Quick-log toast -->
 <div id="quicklog-toast"></div>
+
+<!-- == EDIT MED SHEET == -->
+<div id="edit-med-sheet" class="sheet-overlay" onclick="closeEditMedSheet()">
+  <div class="picker-sheet" onclick="event.stopPropagation()" style="border-radius:24px 24px 0 0;padding:0 0 40px;display:flex;flex-direction:column;gap:0;">
+    <div style="width:40px;height:4px;background:var(--gray-border);border-radius:2px;margin:14px auto 0;flex-shrink:0;"></div>
+    <div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:18px;">
+      <h2 style="font-size:18px;font-weight:700;color:var(--text);">Editar medicamento</h2>
+      <div class="ig">
+        <label class="ilbl">Nome</label>
+        <input id="edit-sheet-name" class="ifield" type="text" placeholder="Nome do medicamento" oninput="editSheetValidate()"/>
+      </div>
+      <div class="ig" style="position:relative;">
+        <label class="ilbl">Dosagem</label>
+        <div id="edit-sheet-dosage-dd" class="ifield" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleEditDosageList(event)">
+          <span id="edit-sheet-dosage-lbl">500 mg</span>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M5 8l5 5 5-5" stroke="var(--text-sub)" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div id="edit-sheet-dosage-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;overflow:hidden;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.12);"></div>
+      </div>
+      <button id="edit-sheet-next-btn" class="btn btn-primary" onclick="editSheetNext()" disabled style="opacity:0.5;margin-top:4px;">Continuar</button>
+    </div>
+  </div>
+</div>
 
 <!-- == DATE PICKER OVERLAY == -->
 <div id="date-picker" class="picker-overlay" onclick="closeDatePicker()">
@@ -2498,6 +2521,96 @@ document.addEventListener('click', function(e) {
 
 function openSrcDrawer() { document.getElementById('src-drawer').classList.add('open'); }
 function closeSrcDrawer() { document.getElementById('src-drawer').classList.remove('open'); }
+
+/* ===== Edit-med sheet ===== */
+const EDIT_DOSAGE_OPTS = ['10mg','20mg','50mg','75mg','100mg','200mg','500mg','1000mg'];
+let editSheetMedIdx = -1;
+let editSheetDosageVal = '500mg';
+
+function openEditMedSheet(idx) {
+  const m = activeMeds()[idx];
+  if (!m) return;
+  editSheetMedIdx = idx;
+  editSheetDosageVal = m.dosage || '500mg';
+  const nameEl = document.getElementById('edit-sheet-name');
+  if (nameEl) nameEl.value = m.name;
+  const lbl = document.getElementById('edit-sheet-dosage-lbl');
+  if (lbl) lbl.textContent = editSheetDosageVal.replace('mg', ' mg');
+  const list = document.getElementById('edit-sheet-dosage-list');
+  if (list) {
+    list.innerHTML = EDIT_DOSAGE_OPTS.map(d =>
+      '<div onclick="selectEditDosage(\'' + d + '\')" style="padding:13px 16px;font-size:15px;cursor:pointer;border-bottom:1px solid var(--gray-border);">' + d.replace('mg', ' mg') + '</div>'
+    ).join('');
+    list.style.display = 'none';
+  }
+  editSheetValidate();
+  document.getElementById('edit-med-sheet').classList.add('open');
+}
+
+function closeEditMedSheet() {
+  const list = document.getElementById('edit-sheet-dosage-list');
+  if (list) list.style.display = 'none';
+  document.getElementById('edit-med-sheet').classList.remove('open');
+}
+
+function toggleEditDosageList(e) {
+  if (e) e.stopPropagation();
+  const list = document.getElementById('edit-sheet-dosage-list');
+  if (list) list.style.display = list.style.display === 'none' ? 'block' : 'none';
+}
+
+function selectEditDosage(val) {
+  editSheetDosageVal = val;
+  const lbl = document.getElementById('edit-sheet-dosage-lbl');
+  if (lbl) lbl.textContent = val.replace('mg', ' mg');
+  const list = document.getElementById('edit-sheet-dosage-list');
+  if (list) list.style.display = 'none';
+}
+
+function editSheetValidate() {
+  const name = (document.getElementById('edit-sheet-name') || {}).value || '';
+  const btn = document.getElementById('edit-sheet-next-btn');
+  if (!btn) return;
+  const ok = !!name.trim();
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? '' : '0.5';
+}
+
+function editSheetNext() {
+  const name = (document.getElementById('edit-sheet-name') || {}).value.trim();
+  if (!name) return;
+  // Transfer values to ob-insert wizard
+  const nameEl = document.getElementById('manual-med-name');
+  if (nameEl) nameEl.value = name;
+  const dosageDd = document.getElementById('manual-dosage-dd');
+  if (dosageDd) {
+    dosageDd.dataset.value = editSheetDosageVal;
+    const span = dosageDd.querySelector('span');
+    if (span) span.textContent = editSheetDosageVal.replace('mg', ' mg');
+  }
+  // Set up wizard context
+  obEditIndex = editSheetMedIdx;
+  obInsertSource = 'manual';
+  obInsertDetIdx = -1;
+  // Pre-fill frequency from existing med
+  const m = activeMeds()[editSheetMedIdx];
+  if (m) {
+    const freqKey = m.type === 'occasional' ? 'asneeded' :
+      (Object.entries(obFreqLabels).find(([k, v]) => v === m.frequency) || ['daily'])[0];
+    resetFreqRadios();
+    if (freqKey === 'asneeded') {
+      const fr = document.querySelector('#freq-radio-list > .freq-radio');
+      if (fr) selectFreqRadio(fr, 'asneeded');
+    } else {
+      selectScheduledSubtype(freqKey);
+      const sr = document.getElementById('freq-scheduled-radio');
+      if (sr) selectFreqRadio(sr, 'scheduled');
+    }
+  }
+  closeEditMedSheet();
+  go('ob-insert', 'r');
+  showObStep(2);
+}
 function openBula() { go('bula-screen','r'); }
 
 const INFARMED_RESPONSE = 'O INFARMED (Instituto Nacional da Farmácia e do Medicamento) é a autoridade reguladora nacional que supervisiona todos os medicamentos em Portugal.\n\n📋 O que faz o INFARMED:\n• Avalia e autoriza medicamentos para uso humano e veterinário antes de chegarem às farmácias\n• Garante a qualidade, segurança e eficácia de todos os medicamentos no mercado português\n• Gere as Autorizações de Introdução no Mercado (AIM) — sem ela, um medicamento não pode ser vendido em Portugal\n• Fiscaliza farmácias, laboratórios farmacêuticos e distribuidores\n• Monitoriza reações adversas após a comercialização (farmacovigilância)\n• Regula a publicidade de medicamentos\n\n📄 Bulas e informação ao doente:\nTodas as bulas dos medicamentos autorizados em Portugal estão publicadas no portal do INFARMED (infarmed.pt). São documentos técnicos que detalham composição, indicações, posologia, contraindicações, interações e efeitos indesejáveis.\n\n🔍 Como o MedaBot usa o INFARMED:\nQuando o MedaBot indica "Fonte: Infarmed", significa que a informação foi retirada ou validada com base na base de dados oficial de medicamentos do INFARMED, garantindo que as respostas são precisas e adequadas ao contexto português.\n\n⚕️ Contactos úteis:\n• Portal: infarmed.pt\n• SNS24 (dúvidas de saúde): 808 24 24 24\n\nFonte: Infarmed';
@@ -3458,7 +3571,7 @@ function renderConfirmList() {
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
       '<div class="msub">' + m.frequency + '</div></div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;">' +
-        '<button onclick="editMedByIndex(' + i + ')" style="background:var(--pink-light);border:none;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--pink);font-weight:600;cursor:pointer;">&#9998; Editar</button>' +
+        '<button onclick="openEditMedSheet(' + i + ')" style="background:var(--pink-light);border:none;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--pink);font-weight:600;cursor:pointer;">&#9998; Editar</button>' +
         '<button onclick="deleteMedByIndex(' + i + ')" style="background:var(--danger-light);border:none;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--danger);font-weight:600;cursor:pointer;">&#128465; Eliminar</button>' +
       '</div>' +
     '</div>'
@@ -3595,7 +3708,7 @@ function renderMedList(meds, container, profileId) {
         '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
         '<div style="display:flex;gap:6px;align-items:center;">' +
           doseProgressSVG(taken, total) +
-          '<button onclick="editMedByIndex(' + idx + ');event.stopPropagation()" title="Editar horários" style="background:var(--gray-light);border:none;border-radius:10px;width:32px;height:32px;cursor:pointer;color:var(--text-sub);font-size:14px;flex-shrink:0;">✎</button>' +
+          '<button onclick="openEditMedSheet(' + idx + ');event.stopPropagation()" title="Editar horários" style="background:var(--gray-light);border:none;border-radius:10px;width:32px;height:32px;cursor:pointer;color:var(--text-sub);font-size:14px;flex-shrink:0;">✎</button>' +
         '</div>' +
       '</div>';
     }
