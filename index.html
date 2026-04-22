@@ -615,9 +615,9 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
   <div class="scroll">
     <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
-      <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name" onfocus="autoFillTestData();ob1KeyboardShow()" onblur="ob1KeyboardHide()"/></div>
+      <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name" onfocus="autoFillTestData();ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="70" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/></div>
+        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="70" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
         <div class="ig">
           <label class="ilbl">Data de nascimento</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('ob1-dob',this)">
@@ -1934,10 +1934,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       O <strong style="color:var(--text);">INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I.P.</strong> e um instituto publico português, tutelado pelo Ministério da Saúde, responsavel pela regulação e supervisão de medicamentos de uso humano e produtos de saúde.<br/><br/>
       A sua missao e garantir que estes produtos são <strong style="color:var(--text);">seguros, eficazes e de qualidade</strong>.
     </p>
-    <button onclick="closeSrcDrawer();openBula()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--blue);color:white;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
-      &#128196; Ver bula completa
-    </button>
-    <button onclick="closeSrcDrawer();go('chat','r')" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--pink);color:white;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
+    <button onclick="openInfarmedChat()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--pink);color:white;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
       💊 Perguntar ao MedaBot
     </button>
     <button onclick="closeSrcDrawer()" style="width:100%;background:var(--gray-light);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">Fechar</button>
@@ -2503,6 +2500,19 @@ function openSrcDrawer() { document.getElementById('src-drawer').classList.add('
 function closeSrcDrawer() { document.getElementById('src-drawer').classList.remove('open'); }
 function openBula() { go('bula-screen','r'); }
 
+const INFARMED_RESPONSE = 'O INFARMED (Instituto Nacional da Farmácia e do Medicamento) é a autoridade reguladora nacional que supervisiona todos os medicamentos em Portugal.\n\n📋 O que faz o INFARMED:\n• Avalia e autoriza medicamentos para uso humano e veterinário antes de chegarem às farmácias\n• Garante a qualidade, segurança e eficácia de todos os medicamentos no mercado português\n• Gere as Autorizações de Introdução no Mercado (AIM) — sem ela, um medicamento não pode ser vendido em Portugal\n• Fiscaliza farmácias, laboratórios farmacêuticos e distribuidores\n• Monitoriza reações adversas após a comercialização (farmacovigilância)\n• Regula a publicidade de medicamentos\n\n📄 Bulas e informação ao doente:\nTodas as bulas dos medicamentos autorizados em Portugal estão publicadas no portal do INFARMED (infarmed.pt). São documentos técnicos que detalham composição, indicações, posologia, contraindicações, interações e efeitos indesejáveis.\n\n🔍 Como o MedaBot usa o INFARMED:\nQuando o MedaBot indica "Fonte: Infarmed", significa que a informação foi retirada ou validada com base na base de dados oficial de medicamentos do INFARMED, garantindo que as respostas são precisas e adequadas ao contexto português.\n\n⚕️ Contactos úteis:\n• Portal: infarmed.pt\n• SNS24 (dúvidas de saúde): 808 24 24 24\n\nFonte: Infarmed';
+
+function openInfarmedChat() {
+  closeSrcDrawer();
+  setTimeout(() => {
+    go('chat', 'r');
+    setTimeout(() => {
+      appendMsg('Fala-me sobre o Infarmed', 'user');
+      setTimeout(() => appendMsg(INFARMED_RESPONSE, 'bot'), 900);
+    }, 300);
+  }, 200);
+}
+
 /* ===== Health condition chips ===== */
 function handleChipKey(e, input) {
   if (e.key === 'Enter') {
@@ -2929,6 +2939,38 @@ function saveObInsert() {
 
   // Log-dose flow: record a dose of today, optionally save to catalog
   if (logDoseMode) {
+    // Sub-case: user chose an existing med from the list — update it and log dose
+    if (obEditIndex >= 0) {
+      const med = activeMeds()[obEditIndex];
+      if (med) {
+        const freqLabel = obFreqLabels[obSelectedFreq] || 'Conforme necessário';
+        const medType = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
+        const cfg2 = (typeof collectObConfig === 'function') ? collectObConfig() : null;
+        const newTimes = (cfg2 && cfg2.times && cfg2.times.length) ? cfg2.times : (medType !== 'occasional' ? ['08:00'] : []);
+        med.frequency = freqLabel;
+        med.type = medType;
+        med.times = newTimes;
+        if (!med.logs) med.logs = [];
+        const ts2 = new Date().toISOString();
+        const timeStr2 = new Date(ts2).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+        med.logs.push(ts2);
+        if (medType === 'regular' && newTimes.length) {
+          const todayKey2 = new Date().toDateString();
+          if (!med.takenSlots) med.takenSlots = {};
+          if (!med.takenSlots[todayKey2]) med.takenSlots[todayKey2] = [];
+          if (!med.takenSlots[todayKey2].includes(newTimes[0])) med.takenSlots[todayKey2].push(newTimes[0]);
+        }
+        obEditIndex = -1;
+        logDoseMode = false;
+        renderDashboardMeds();
+        renderArquivoMeds();
+        if (typeof buildCal === 'function') buildCal();
+        showToast('✓ ' + med.name + ' registado às ' + timeStr2);
+        go('dashboard', 'l');
+        return;
+      }
+    }
+    // Default: new one-off or catalog entry
     const saveToCatalog = document.getElementById('ob-save-catalog-switch').classList.contains('on');
     const ts = new Date().toISOString();
     const timeStr = new Date(ts).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
@@ -3034,6 +3076,40 @@ function editMedByIndex(i) {
   } else {
     selectScheduledSubtype(freqKey);
     selectFreqRadio(document.getElementById('freq-scheduled-radio'), 'scheduled');
+  }
+  go('ob-insert', 'r');
+  showObStep(1);
+}
+
+/* Open wizard from existing med in log-dose list — pre-fill, then on save log the dose */
+function openWizardForExistingMed(idx) {
+  const m = activeMeds()[idx];
+  if (!m) return;
+  obEditIndex = idx;
+  obInsertSource = 'manual';
+  obInsertDetIdx = -1;
+  backTarget = 'log-dose';
+  // Pre-fill name
+  const nameEl = document.getElementById('manual-med-name');
+  if (nameEl) nameEl.value = m.name;
+  // Pre-fill dosage
+  const dosageDd = document.getElementById('manual-dosage-dd');
+  if (dosageDd) {
+    dosageDd.dataset.value = m.dosage;
+    const span = dosageDd.querySelector('span');
+    if (span) span.textContent = m.dosage.replace('mg', ' mg');
+  }
+  // Pre-fill frequency
+  const freqKey = m.type === 'occasional' ? 'asneeded' :
+    (Object.entries(obFreqLabels).find(([k, v]) => v === m.frequency) || ['daily'])[0];
+  resetFreqRadios();
+  if (freqKey === 'asneeded') {
+    const firstRadio = document.querySelector('#freq-radio-list > .freq-radio');
+    if (firstRadio) selectFreqRadio(firstRadio, 'asneeded');
+  } else {
+    selectScheduledSubtype(freqKey);
+    const schedRadio = document.getElementById('freq-scheduled-radio');
+    if (schedRadio) selectFreqRadio(schedRadio, 'scheduled');
   }
   go('ob-insert', 'r');
   showObStep(1);
@@ -3380,7 +3456,7 @@ function renderConfirmList() {
     '<div class="mcard sel">' +
       '<div class="micon">💊</div>' +
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
-      '<div class="msub">' + m.frequency + ' - ' + m.source + '</div></div>' +
+      '<div class="msub">' + m.frequency + '</div></div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;">' +
         '<button onclick="editMedByIndex(' + i + ')" style="background:var(--pink-light);border:none;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--pink);font-weight:600;cursor:pointer;">&#9998; Editar</button>' +
         '<button onclick="deleteMedByIndex(' + i + ')" style="background:var(--danger-light);border:none;border-radius:8px;padding:6px 10px;font-size:12px;color:var(--danger);font-weight:600;cursor:pointer;">&#128465; Eliminar</button>' +
@@ -3517,7 +3593,10 @@ function renderMedList(meds, container, profileId) {
         '<div class="micon">' + formIcon(mForm) + '</div>' +
         '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
         '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
-        doseProgressSVG(taken, total) +
+        '<div style="display:flex;gap:6px;align-items:center;">' +
+          doseProgressSVG(taken, total) +
+          '<button onclick="editMedByIndex(' + idx + ');event.stopPropagation()" title="Editar horários" style="background:var(--gray-light);border:none;border-radius:10px;width:32px;height:32px;cursor:pointer;color:var(--text-sub);font-size:14px;flex-shrink:0;">✎</button>' +
+        '</div>' +
       '</div>';
     }
   });
@@ -3583,7 +3662,7 @@ function renderLogDoseList() {
         '<div class="msub">' + formLabel(mForm) + (lastLbl ? ' · última toma ' + lastLbl : ' · sem toma registada hoje') + '</div>' +
       '</div>' +
       countBadge +
-      '<button onclick="logDoseNow(' + i + ')" style="padding:8px 14px;background:var(--pink);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">Registar</button>' +
+      '<button onclick="openWizardForExistingMed(' + i + ')" style="padding:8px 14px;background:var(--pink);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">Configurar</button>' +
     '</div>';
   }).join('');
 }
@@ -3634,11 +3713,11 @@ function renderArquivoMeds() {
 
   function regularCard(m, i) {
     const mForm = m.form || lookupMedForm(m.name);
-    return '<div class="mcard" onclick="openMedInfoByName(\'' + (m.name || '').replace(/'/g, "\\'") + '\')" style="cursor:pointer;">' +
+    return '<div class="mcard" style="cursor:pointer;" onclick="openMedInfoByName(\'' + (m.name || '').replace(/'/g, "\\'") + '\')">' +
       '<div class="micon">' + formIcon(mForm) + '</div>' +
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
       '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
-      '<span style="font-size:11px;padding:4px 8px;border-radius:8px;background:#FFF4E5;color:#F79009;font-weight:600;">Pendente</span>' +
+      '<button onclick="deleteMedByIndex(' + i + ');event.stopPropagation()" aria-label="Apagar" style="background:var(--danger-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--danger);font-size:16px;flex-shrink:0;">&#128465;</button>' +
     '</div>';
   }
 
@@ -3646,11 +3725,14 @@ function renderArquivoMeds() {
     const logCount = m.logs ? m.logs.length : 0;
     const lastLog = logCount > 0 ? new Date(m.logs[logCount - 1]).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : null;
     const mForm = m.form || lookupMedForm(m.name);
-    return '<div class="mcard" onclick="openMedInfoByName(\'' + (m.name || '').replace(/'/g, "\\'") + '\')" style="cursor:pointer;">' +
+    return '<div class="mcard" style="cursor:pointer;" onclick="openMedInfoByName(\'' + (m.name || '').replace(/'/g, "\\'") + '\')">' +
       '<div class="micon">' + formIcon(mForm) + '</div>' +
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
       '<div class="msub">' + formLabel(mForm) + ' · ' + (lastLog ? 'Última toma: ' + lastLog : 'Sem tomas registadas') + '</div></div>' +
-      '<button class="btn-quick-log" onclick="quickLog(' + i + ');event.stopPropagation()">＋ Registar toma</button>' +
+      '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
+        '<button class="btn-quick-log" onclick="quickLog(' + i + ');event.stopPropagation()">＋ Registar toma</button>' +
+        '<button onclick="deleteMedByIndex(' + i + ');event.stopPropagation()" aria-label="Apagar" style="background:var(--danger-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--danger);font-size:16px;flex-shrink:0;">&#128465;</button>' +
+      '</div>' +
     '</div>';
   }
 
@@ -4310,6 +4392,11 @@ function getBotReply(text) {
       type: 'normal',
       text: 'A Amoxicilina é um antibiótico de largo espectro da família das penicilinas. Mata bactérias impedindo-as de construir a sua parede celular.\n\nTomas 3 vezes por dia (de 8 em 8 horas), com ou sem alimentos. Duração habitual: 7 dias.\n\n⚠️ Completa sempre o ciclo completo — parar cedo cria bactérias resistentes.\n\nFonte: Infarmed'
     };
+  }
+
+  // ── INFARMED ──────────────────────────────────────────────────────────────
+  if (t.includes('infarmed') || (t.includes('fala') && t.includes('sobre'))) {
+    return { type: 'normal', text: INFARMED_RESPONSE };
   }
 
   // ── Fallback ──────────────────────────────────────────────────────────────
