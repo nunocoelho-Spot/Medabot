@@ -2661,7 +2661,7 @@ function showObStep(step) {
       const dur = document.getElementById('dur-section');
       if (dur) dur.style.display = 'none';
     }
-    // Log-dose mode: no frequency/method decision needed — just confirm + register.
+    // Log-dose mode: show full freq UI (same as onboarding) + catalog toggle.
     const catalogRow = document.getElementById('ob-save-catalog-row');
     const sw = document.getElementById('ob-save-catalog-switch');
     const saveBtn = document.getElementById('ob-save-btn');
@@ -2669,19 +2669,7 @@ function showObStep(step) {
     if (catalogRow) catalogRow.style.display = logDoseMode ? 'flex' : 'none';
     if (sw) sw.classList.remove('on');
     if (saveBtn) saveBtn.textContent = logDoseMode ? 'Registar toma' : 'Guardar medicamento';
-    if (intro) intro.textContent = logDoseMode
-      ? 'Confirma e regista a toma de agora.'
-      : 'Escolhe como vais tomar este medicamento.';
-    // Show/hide the full scheduling UI based on mode
-    document.querySelectorAll('#ob-step2 .freq-option').forEach(opt => {
-      opt.style.display = logDoseMode ? 'none' : '';
-    });
-    const durSection = document.getElementById('dur-section');
-    if (durSection && logDoseMode) durSection.style.display = 'none';
-    const addNoteBtn = document.getElementById('add-note-btn');
-    const noteRow = document.getElementById('note-row');
-    if (addNoteBtn) addNoteBtn.style.display = logDoseMode ? 'none' : '';
-    if (noteRow && logDoseMode) noteRow.style.display = 'none';
+    if (intro) intro.textContent = 'Escolhe como vais tomar este medicamento.';
     renderObSummary();
   }
 }
@@ -2970,18 +2958,30 @@ function saveObInsert() {
         return;
       }
     }
-    // Default: new one-off or catalog entry
+    // Default: new one-off or catalog entry — use the actual freq selection
+    if (!document.querySelector('#ob-step2 .freq-option.active')) return;
     const saveToCatalog = document.getElementById('ob-save-catalog-switch').classList.contains('on');
+    const freqLabelLog = obFreqLabels[obSelectedFreq] || 'Conforme necessário';
+    const medTypeLog = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
+    const cfgLog = (typeof collectObConfig === 'function') ? collectObConfig() : null;
+    const timesLog = (cfgLog && cfgLog.times && cfgLog.times.length) ? cfgLog.times : (medTypeLog !== 'occasional' ? ['08:00'] : []);
     const ts = new Date().toISOString();
     const timeStr = new Date(ts).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
     const entry = {
       name, dosage, form,
-      frequency: 'Conforme necessário',
+      frequency: freqLabelLog,
       source: 'manual',
-      type: 'occasional',
+      type: medTypeLog,
+      times: timesLog,
+      takenSlots: {},
       oneOff: !saveToCatalog,
       logs: [ts],
     };
+    // For regular meds, also mark the first dose as taken today
+    if (medTypeLog === 'regular' && timesLog.length) {
+      const todayKeyLog = new Date().toDateString();
+      entry.takenSlots[todayKeyLog] = [timesLog[0]];
+    }
     activeMeds().push(entry);
     logDoseMode = false;
     renderDashboardMeds();
