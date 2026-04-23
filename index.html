@@ -1570,14 +1570,14 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="padding:10px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--gray-border);">
     <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()">
-      <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </button>
     <div class="robot-sm">💊</div>
     <div style="flex:1;min-width:0;">
       <div style="font-size:15px;font-weight:700;">MedaBot AI</div>
       <div style="font-size:12px;color:var(--green);">&#9679; Online</div>
     </div>
+    <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
   </div>
   <div class="scroll" id="chat-msgs" aria-live="polite" aria-label="Mensagens do chat" style="padding:16px 20px;display:flex;flex-direction:column;gap:2px;">
     <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px;">
@@ -1756,11 +1756,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;gap:24px;text-align:center;">
     <!-- Familiar avatar preview -->
-    <div style="display:flex;align-items:center;gap:14px;background:var(--purple-light);border-radius:20px;padding:14px 20px;">
+    <div onclick="switchProfile('maria')" style="display:flex;align-items:center;gap:14px;background:var(--purple-light);border-radius:20px;padding:14px 20px;cursor:pointer;">
       <div id="fam-success-initials" style="width:48px;height:48px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;">?</div>
       <div style="text-align:left;">
         <div id="fam-success-name" style="font-size:16px;font-weight:700;color:var(--text);">Familiar</div>
-        <div style="font-size:13px;color:var(--purple);font-weight:600;margin-top:2px;">Perfil adicionado ✓</div>
+        <div style="font-size:13px;color:var(--purple);font-weight:600;margin-top:2px;">Ver calendário →</div>
       </div>
     </div>
     <h2 style="font-size:22px;font-weight:700;">Familiar adicionado<br/>com sucesso!</h2>
@@ -2494,6 +2494,8 @@ function switchProfile(id) {
   const greetEl = document.getElementById('chat-greeting');
   if (greetEl) greetEl.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
   renderDashboardMeds();
+  closeProfileDropdown();
+  if (cur !== 'dashboard') go('dashboard', 'r');
 }
 
 /* ===== Remove familiar ===== */
