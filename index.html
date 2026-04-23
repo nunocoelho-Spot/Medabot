@@ -3001,9 +3001,7 @@ function renderObSummary() {
     const dosage = dosageDd ? (dosageDd.dataset.value || '').replace(/mg$/, ' mg') : '';
     const formDd = document.getElementById('manual-formato');
     const form = formDd ? (formDd.dataset.value || 'Comprimido') : 'Comprimido';
-    const now = new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
-    out.innerHTML = '<strong>' + name + (dosage ? ' ' + dosage : '') + '</strong> · ' + form + '<br/>' +
-      '<span style="color:var(--text-sub);">Toma registada às <strong>' + now + '</strong> de hoje.</span>';
+    out.innerHTML = '<strong>' + name + (dosage ? ' ' + dosage : '') + '</strong> · ' + form;
     return;
   }
   const hasSelection = !!document.querySelector('#ob-step2 .freq-option.active');
