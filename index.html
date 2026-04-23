@@ -4770,10 +4770,12 @@ function setReminderTime(btn, val) {
 renderDashboardMeds();
 renderAlerts();
 
-/* Rebind every back button to the shared history stack (exclude the chat hamburger). */
-document.querySelectorAll('.back:not(#chat-hist-btn)').forEach(btn => {
+/* Rebind every back button to the shared history stack.
+   Exclude: chat-hist-btn (hamburger → sidebar) and chat-back-btn (always → dashboard). */
+document.querySelectorAll('.back:not(#chat-hist-btn):not(#chat-back-btn)').forEach(btn => {
   btn.setAttribute('onclick', 'goBack()');
 });
+document.getElementById('chat-back-btn')?.setAttribute('onclick', "go('dashboard','l')");
 
 /* Clone the scan-result photo into the scan camera background. */
 (function() {
