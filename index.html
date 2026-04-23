@@ -4770,8 +4770,8 @@ function setReminderTime(btn, val) {
 renderDashboardMeds();
 renderAlerts();
 
-/* Rebind every back button to the shared history stack. */
-document.querySelectorAll('.back').forEach(btn => {
+/* Rebind every back button to the shared history stack (exclude the chat hamburger). */
+document.querySelectorAll('.back:not(#chat-hist-btn)').forEach(btn => {
   btn.setAttribute('onclick', 'goBack()');
 });
 
