@@ -1283,6 +1283,13 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <h2 style="font-size:24px;font-weight:700;">Medicamentos</h2>
     <button onclick="openAddSheet()" style="display:flex;align-items:center;gap:6px;background:var(--pink);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;">+ Novo</button>
   </div>
+  <!-- Profile tabs (shown when a familiar is added) -->
+  <div id="arq-profile-tabs" style="display:none;margin:0 24px 12px;background:var(--gray-light);border-radius:12px;padding:4px;flex-shrink:0;">
+    <div style="display:flex;gap:4px;">
+      <button id="arq-tab-nuno" onclick="switchArqProfile('nuno')" style="flex:1;background:white;color:var(--text);border:none;border-radius:9px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.1);transition:all .18s;">Eu</button>
+      <button id="arq-tab-maria" onclick="switchArqProfile('maria')" style="flex:1;background:transparent;color:var(--text-sub);border:none;border-radius:9px;padding:9px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;">Familiar</button>
+    </div>
+  </div>
   <!-- Filter chips -->
   <div style="padding:0 24px 14px;display:flex;gap:8px;overflow-x:auto;flex-shrink:0;">
     <button id="arq-filter-all" class="chip" style="cursor:pointer;white-space:nowrap;" onclick="setArqFilter('all',this)">Todos</button>
@@ -1480,8 +1487,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="background:var(--blue-light);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;">
       <span style="font-size:24px;">💊</span>
       <div>
-        <div style="font-size:16px;font-weight:700;">Ben-U-Ron 1000mg</div>
-        <div style="font-size:13px;color:var(--text-sub);">Paracetamol - Comprimidos</div>
+        <div id="bula-med-name" style="font-size:16px;font-weight:700;">Ben-U-Ron 1000mg</div>
+        <div id="bula-med-sub" style="font-size:13px;color:var(--text-sub);">Paracetamol - Comprimidos</div>
       </div>
     </div>
     <div>
@@ -2414,6 +2421,38 @@ function saveUserName() {
   if (famName) famName.textContent = name;
 }
 
+/* ===== Arquivo profile tabs ===== */
+let familiarAdded = false;
+
+function refreshArqProfileTabs() {
+  const tabsEl = document.getElementById('arq-profile-tabs');
+  if (!tabsEl) return;
+  tabsEl.style.display = familiarAdded ? 'block' : 'none';
+  if (!familiarAdded) return;
+  const nunoBtn  = document.getElementById('arq-tab-nuno');
+  const mariaBtn = document.getElementById('arq-tab-maria');
+  const isNuno   = activeProfile === 'nuno';
+  if (nunoBtn) {
+    nunoBtn.textContent   = PROFILES.nuno.name || 'Eu';
+    nunoBtn.style.background  = isNuno ? 'white' : 'transparent';
+    nunoBtn.style.color       = isNuno ? 'var(--text)' : 'var(--text-sub)';
+    nunoBtn.style.boxShadow   = isNuno ? '0 1px 3px rgba(0,0,0,.1)' : 'none';
+  }
+  if (mariaBtn) {
+    mariaBtn.textContent  = PROFILES.maria.name || 'Familiar';
+    mariaBtn.style.background = isNuno ? 'transparent' : 'white';
+    mariaBtn.style.color      = isNuno ? 'var(--text-sub)' : 'var(--text)';
+    mariaBtn.style.boxShadow  = isNuno ? 'none' : '0 1px 3px rgba(0,0,0,.1)';
+  }
+}
+
+function switchArqProfile(id) {
+  if (id === activeProfile) return;
+  activeProfile = id;
+  refreshArqProfileTabs();
+  renderArquivoMeds();
+}
+
 /* ===== Add familiar ===== */
 function addFamiliar() {
   const name = document.getElementById('familiar-name').value.trim();
@@ -2425,6 +2464,8 @@ function addFamiliar() {
   document.getElementById('dd-maria-name').textContent = name;
   document.getElementById('dd-maria').style.display = 'flex';
   document.getElementById('dd-maria').querySelector('div:nth-child(2) div:last-child').textContent = 'Familiar';
+  familiarAdded = true;
+  refreshArqProfileTabs();
   // Update success screen
   document.getElementById('fam-success-initials').textContent = initials.charAt(0);
   document.getElementById('fam-success-name').textContent = name;
@@ -2485,6 +2526,8 @@ function removeFamiliar() {
     if (greetEl) greetEl.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
     renderDashboardMeds();
   }
+  familiarAdded = false;
+  refreshArqProfileTabs();
 }
 
 /* ===== Add/close sheets ===== */
@@ -2611,7 +2654,15 @@ function editSheetNext() {
   go('ob-insert', 'r');
   showObStep(2);
 }
-function openBula() { go('bula-screen','r'); }
+function openBula() {
+  const nameEl = document.getElementById('med-info-name');
+  const subEl  = document.getElementById('med-info-sub');
+  const bulaMedName = document.getElementById('bula-med-name');
+  const bulaMedSub  = document.getElementById('bula-med-sub');
+  if (bulaMedName && nameEl) bulaMedName.textContent = nameEl.textContent || 'Medicamento';
+  if (bulaMedSub  && subEl)  bulaMedSub.textContent  = subEl.textContent  || 'Fonte: Infarmed';
+  go('bula-screen','r');
+}
 
 const INFARMED_RESPONSE = 'O INFARMED (Instituto Nacional da Farmácia e do Medicamento) é a autoridade reguladora nacional que supervisiona todos os medicamentos em Portugal.\n\n📋 O que faz o INFARMED:\n• Avalia e autoriza medicamentos para uso humano e veterinário antes de chegarem às farmácias\n• Garante a qualidade, segurança e eficácia de todos os medicamentos no mercado português\n• Gere as Autorizações de Introdução no Mercado (AIM) — sem ela, um medicamento não pode ser vendido em Portugal\n• Fiscaliza farmácias, laboratórios farmacêuticos e distribuidores\n• Monitoriza reações adversas após a comercialização (farmacovigilância)\n• Regula a publicidade de medicamentos\n\n📄 Bulas e informação ao doente:\nTodas as bulas dos medicamentos autorizados em Portugal estão publicadas no portal do INFARMED (infarmed.pt). São documentos técnicos que detalham composição, indicações, posologia, contraindicações, interações e efeitos indesejáveis.\n\n🔍 Como o MedaBot usa o INFARMED:\nQuando o MedaBot indica "Fonte: Infarmed", significa que a informação foi retirada ou validada com base na base de dados oficial de medicamentos do INFARMED, garantindo que as respostas são precisas e adequadas ao contexto português.\n\n⚕️ Contactos úteis:\n• Portal: infarmed.pt\n• SNS24 (dúvidas de saúde): 808 24 24 24\n\nFonte: Infarmed';
 
@@ -3809,6 +3860,7 @@ function quickLog(idx) {
 
 /* ===== Render arquivo meds ===== */
 function renderArquivoMeds() {
+  refreshArqProfileTabs();
   const list = document.getElementById('arquivo-list');
   if (!activeMeds().length) {
     list.innerHTML =
