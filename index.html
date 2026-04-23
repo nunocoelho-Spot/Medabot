@@ -2013,6 +2013,40 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
 </div>
 
+<!-- == MED ACTIONS SHEET == -->
+<div id="med-actions-sheet" class="sheet-overlay" onclick="closeMedActionsSheet()">
+  <div class="picker-sheet" onclick="event.stopPropagation()" style="border-radius:24px 24px 0 0;padding:0 0 32px;display:flex;flex-direction:column;gap:0;">
+    <div style="width:40px;height:4px;background:var(--gray-border);border-radius:2px;margin:14px auto 0;flex-shrink:0;"></div>
+    <div style="padding:18px 24px 0;display:flex;flex-direction:column;gap:4px;">
+      <h2 id="med-actions-title" style="font-size:18px;font-weight:700;color:var(--text);">Medicamento</h2>
+      <div id="med-actions-sub" style="font-size:13px;color:var(--text-sub);"></div>
+    </div>
+    <div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:10px;">
+      <button onclick="medActionConfigure()" style="display:flex;align-items:center;gap:14px;background:var(--gray-light);border:none;border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Configurar toma</div>
+          <div style="font-size:12px;color:var(--text-sub);">Alterar horário e frequência</div>
+        </div>
+      </button>
+      <button onclick="medActionRegister()" style="display:flex;align-items:center;gap:14px;background:var(--gray-light);border:none;border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Registar toma</div>
+          <div style="font-size:12px;color:var(--text-sub);">Adicionar ao calendário de hoje</div>
+        </div>
+      </button>
+      <button onclick="medActionDetails()" style="display:flex;align-items:center;gap:14px;background:var(--gray-light);border:none;border-radius:14px;padding:14px 16px;cursor:pointer;text-align:left;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:600;color:var(--text);">Detalhes</div>
+          <div style="font-size:12px;color:var(--text-sub);">Ver informações do medicamento</div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- == DATE PICKER OVERLAY == -->
 <div id="date-picker" class="picker-overlay" onclick="closeDatePicker()">
   <div class="picker-sheet" onclick="event.stopPropagation()">
@@ -3845,6 +3879,41 @@ function logDoseNow(idx) {
   go('dashboard', 'l');
 }
 
+/* ===== Med actions sheet (Medicamentos page) ===== */
+let medActionsIdx = -1;
+function openMedActionsSheet(idx) {
+  const m = activeMeds()[idx];
+  if (!m) return;
+  medActionsIdx = idx;
+  const titleEl = document.getElementById('med-actions-title');
+  const subEl = document.getElementById('med-actions-sub');
+  if (titleEl) titleEl.textContent = m.name + (m.dosage ? ' ' + m.dosage : '');
+  if (subEl) subEl.textContent = m.frequency || '';
+  document.getElementById('med-actions-sheet').classList.add('open');
+}
+function closeMedActionsSheet() {
+  document.getElementById('med-actions-sheet').classList.remove('open');
+}
+function medActionConfigure() {
+  const idx = medActionsIdx;
+  closeMedActionsSheet();
+  if (idx < 0) return;
+  setTimeout(() => openEditMedSheet(idx), 180);
+}
+function medActionRegister() {
+  const idx = medActionsIdx;
+  closeMedActionsSheet();
+  if (idx < 0) return;
+  quickLog(idx);
+}
+function medActionDetails() {
+  const idx = medActionsIdx;
+  const m = activeMeds()[idx];
+  closeMedActionsSheet();
+  if (!m) return;
+  setTimeout(() => openMedInfoByName(m.name), 180);
+}
+
 function quickLog(idx) {
   const med = activeMeds()[idx];
   if (!med) return;
@@ -3876,13 +3945,21 @@ function renderArquivoMeds() {
   const regularMeds = activeMeds().map((m, i) => ({ m, i })).filter(({ m }) => m.type !== 'occasional' && !m.oneOff);
   const occasionalMeds = activeMeds().map((m, i) => ({ m, i })).filter(({ m }) => m.type === 'occasional' && !m.oneOff);
 
+  const interactBtn = (i) =>
+    '<button onclick="openMedActionsSheet(' + i + ');event.stopPropagation()" aria-label="Interagir" style="background:var(--gray-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--text);flex-shrink:0;display:flex;align-items:center;justify-content:center;">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>' +
+    '</button>';
+
   function regularCard(m, i) {
     const mForm = m.form || lookupMedForm(m.name);
     return '<div class="mcard" style="cursor:pointer;" onclick="openMedInfoByName(\'' + (m.name || '').replace(/'/g, "\\'") + '\')">' +
       '<div class="micon">' + formIcon(mForm) + '</div>' +
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
       '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
-      '<button onclick="deleteMedByIndex(' + i + ');event.stopPropagation()" aria-label="Apagar" style="background:var(--danger-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--danger);font-size:16px;flex-shrink:0;">&#128465;</button>' +
+      '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
+        interactBtn(i) +
+        '<button onclick="deleteMedByIndex(' + i + ');event.stopPropagation()" aria-label="Apagar" style="background:var(--danger-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--danger);font-size:16px;flex-shrink:0;">&#128465;</button>' +
+      '</div>' +
     '</div>';
   }
 
@@ -3895,7 +3972,7 @@ function renderArquivoMeds() {
       '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
       '<div class="msub">' + formLabel(mForm) + ' · ' + (lastLog ? 'Última toma: ' + lastLog : 'Sem tomas registadas') + '</div></div>' +
       '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">' +
-        '<button class="btn-quick-log" onclick="quickLog(' + i + ');event.stopPropagation()">＋ Registar toma</button>' +
+        interactBtn(i) +
         '<button onclick="deleteMedByIndex(' + i + ');event.stopPropagation()" aria-label="Apagar" style="background:var(--danger-light);border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:var(--danger);font-size:16px;flex-shrink:0;">&#128465;</button>' +
       '</div>' +
     '</div>';
