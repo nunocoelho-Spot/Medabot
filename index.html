@@ -504,28 +504,32 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == SPLASH 2 == -->
-<div id="s2" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;gap:24px;">
-    <div style="width:180px;height:180px;background:var(--pink-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:80px;">💊</div>
-    <h2 style="font-size:24px;font-weight:700;text-align:center;">Tu aqui podes:</h2>
-    <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
-      <div style="display:flex;gap:12px;align-items:flex-start;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--pink-light);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">&#10003;</div>
-        <span style="font-size:15px;line-height:1.4;">Fazer o log da tua medicação;</span>
+<div id="s2" class="screen" style="background:linear-gradient(180deg,#A6D4D9 0%,#C2E0E3 26%,var(--bg) 58%);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div style="flex:1;display:flex;flex-direction:column;padding:78px 16px 0;">
+    <!-- Example images (layout matches Figma Onboarding-2/3) -->
+    <div style="position:relative;width:361px;height:293px;flex-shrink:0;">
+      <img src="assets/Add%20Medicine%20Example.png" alt="" style="position:absolute;left:104px;top:0;width:257px;height:127px;object-fit:contain;filter:drop-shadow(0 12px 28px rgba(28,43,48,.16));"/>
+      <img src="assets/Medabot%20Chat%20Example.png" alt="" style="position:absolute;left:0;top:143px;width:188px;height:150px;object-fit:contain;filter:drop-shadow(0 12px 28px rgba(28,43,48,.16));"/>
+    </div>
+    <h1 style="font-size:32px;font-weight:900;text-align:center;color:var(--text);margin-top:46px;line-height:1.1;">Tu aqui podes:</h1>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0;margin-top:7px;"></div>
+        <span style="font-size:16px;font-weight:500;line-height:1.4;color:var(--text);">Fazer o log da tua medicação;</span>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--pink-light);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">&#10003;</div>
-        <span style="font-size:15px;line-height:1.4;">Esclarecer duvidas acerca de qualquer medicamento;</span>
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0;margin-top:7px;"></div>
+        <span style="font-size:16px;font-weight:500;line-height:1.4;color:var(--text);">Esclarecer dúvidas acerca de qualquer medicamento;</span>
       </div>
-      <div style="display:flex;gap:12px;align-items:flex-start;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--pink-light);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">&#10003;</div>
-        <span style="font-size:15px;line-height:1.4;">Conversar com o MedaBot sobre qualquer duvida de saúde.</span>
+      <div style="display:flex;gap:8px;align-items:flex-start;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--pink);flex-shrink:0;margin-top:7px;"></div>
+        <span style="font-size:16px;font-weight:500;line-height:1.4;color:var(--text);">Conversar com o MedaBot sobre qualquer dúvida de saúde.</span>
       </div>
     </div>
-    <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+    <img src="assets/Status-Onboarding-2.svg" alt="" style="width:48px;height:8px;margin:24px auto 0;"/>
   </div>
-  <div style="padding:0 32px 48px;"><button class="btn btn-primary" onclick="go('s3','r')">Continuar</button></div>
+  <div style="padding:0 16px 40px;"><button class="btn btn-primary" onclick="go('s3','r')">Continuar</button></div>
 </div>
 
 <!-- == SPLASH 3 == -->
