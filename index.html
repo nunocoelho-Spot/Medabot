@@ -295,7 +295,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   border-radius:16px;padding:4px 8px 4px 10px;font-size:13px;font-weight:600;white-space:nowrap;}
 /* standalone health chips (ob1) */
 .health-chip{display:inline-flex;align-items:center;gap:6px;border-radius:16px;padding:8px 8px 8px 20px;
-  font-size:16px;font-weight:700;white-space:nowrap;color:#FDFEFF;background:#118596;}
+  height:56px;font-size:16px;font-weight:700;white-space:nowrap;color:#FDFEFF;background:#118596;}
 .health-chip .cx{cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .health-chip .cx img{width:24px;height:24px;display:block;}
 .chip-input-wrap .cchip .cx{cursor:pointer;font-size:16px;line-height:1;opacity:.7;margin-left:2px;}
@@ -654,7 +654,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="75" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
         <div class="ig">
-          <label class="ilbl">Data de nascimento</label>
+          <label class="ilbl">Data nasc.</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('ob1-dob',this)">
             <span id="ob1-dob-display" style="color:var(--text-sub);">Selecionar</span>
             <img src="assets/icons/calendar-icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>
