@@ -2391,9 +2391,11 @@ function go(id, dir, isBack) {
       : 'Olá ' + (PROFILES[activeProfile] ? PROFILES[activeProfile].greeting : 'Utilizador') + ', em que posso ajudar?';
   }
   if (id !== 'chat') guestMode = false; // leaving chat resets guest mode
-  // Keep the URL hash in sync so refresh lands on the same screen
-  if (location.hash.slice(1) !== id) {
-    history.replaceState(null, '', '#' + id);
+  // Keep the URL hash in sync so refresh lands on the same screen.
+  // Guest chat gets its own hash (#chat-guest) so a reload restores no-account mode.
+  const hashId = (id === 'chat' && guestMode) ? 'chat-guest' : id;
+  if (location.hash.slice(1) !== hashId) {
+    history.replaceState(null, '', '#' + hashId);
   }
   // Sync bottom-nav active state on destination screen
   const destBnav = to.querySelector('.bnav');
@@ -4914,11 +4916,19 @@ document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
 /* Restore the current screen from the URL hash on load, and follow browser back/forward. */
 (function() {
   const initial = location.hash.slice(1);
-  if (initial && document.getElementById(initial) && initial !== cur) {
+  if (initial === 'chat-guest') {
+    guestMode = true;
+    go('chat', 'r');
+  } else if (initial && document.getElementById(initial) && initial !== cur) {
     go(initial, 'r');
   }
   window.addEventListener('hashchange', () => {
     const id = location.hash.slice(1);
+    if (id === 'chat-guest') {
+      guestMode = true;
+      if (cur !== 'chat') go('chat', 'l', true);
+      return;
+    }
     if (id && id !== cur && document.getElementById(id)) {
       go(id, 'l', true);
     }
