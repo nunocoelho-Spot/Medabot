@@ -71,10 +71,11 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 
 /* -- Input -- */
 .ig{display:flex;flex-direction:column;gap:6px;}
-.ilbl{font-size:14px;font-weight:700;color:var(--text);}
+.ilbl{font-size:20px;font-weight:700;color:var(--text);}
 .ifield{background:var(--white);border:1.5px solid transparent;border-radius:var(--r-lg);
   font-size:16px;padding:15px 16px;outline:none;width:100%;color:var(--text);transition:border-color .2s;
-  box-shadow:var(--shadow-sm);font-family:inherit;}
+  box-shadow:var(--shadow-sm);font-family:inherit;font-weight:500;}
+.ifield::placeholder{color:var(--text-sub);font-weight:500;}
 .ifield:focus{border-color:var(--pink);}
 .ifield option{background:white;}
 .app-dropdown{position:relative;}
@@ -145,7 +146,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .sheet-opt-sub{font-size:12px;color:var(--text-sub);margin-top:2px;}
 
 /* -- Progress bar -- */
-.pbar{height:4px;background:var(--gray-border);border-radius:2px;}
+.pbar{height:4px;background:var(--pink-light);border-radius:2px;}
 .pfill{height:100%;background:var(--pink);border-radius:2px;transition:width .4s;}
 
 /* -- Med card -- */
@@ -293,9 +294,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .chip-input-wrap .cchip{display:inline-flex;align-items:center;gap:4px;background:var(--pink-light);color:var(--pink);
   border-radius:16px;padding:4px 8px 4px 10px;font-size:13px;font-weight:600;white-space:nowrap;}
 /* standalone health chips (ob1) */
-.health-chip{display:inline-flex;align-items:center;gap:3px;border-radius:16px;padding:2px 8px 2px 10px;font-size:13px;font-weight:600;white-space:nowrap;color:white;}
-.health-chip .cx{cursor:pointer;font-size:15px;line-height:1;opacity:.8;margin-left:2px;}
-.health-chip .cx:hover{opacity:1;}
+.health-chip{display:inline-flex;align-items:center;gap:6px;border-radius:16px;padding:8px 8px 8px 20px;
+  font-size:16px;font-weight:700;white-space:nowrap;color:#FDFEFF;background:#118596;}
+.health-chip .cx{cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.health-chip .cx img{width:24px;height:24px;display:block;}
 .chip-input-wrap .cchip .cx{cursor:pointer;font-size:16px;line-height:1;opacity:.7;margin-left:2px;}
 .chip-input-wrap .cchip .cx:hover{opacity:1;}
 .chip-input-wrap input{border:none;background:none;outline:none;font-size:14px;flex:1;min-width:80px;color:var(--text);padding:4px 0;}
@@ -645,7 +647,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:20px;">
       <img src="assets/icons/user-icon-round.svg" alt="" style="width:64px;height:64px;"/>
       <h2 style="font-size:24px;font-weight:700;color:var(--text);margin-top:8px;">Fala-nos sobre ti!</h2>
-      <p style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Ajuda-nos a personalizar a tua experiência.</p>
+      <p style="font-size:16px;font-weight:500;color:var(--text);margin-top:4px;">Ajuda-nos a personalizar a tua experiência.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
       <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name" onfocus="autoFillTestData();ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
@@ -654,7 +656,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <div class="ig">
           <label class="ilbl">Data de nascimento</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('ob1-dob',this)">
-            <span id="ob1-dob-display" style="color:var(--gray);">Selecionar</span>
+            <span id="ob1-dob-display" style="color:var(--text-sub);">Selecionar</span>
             <img src="assets/icons/calendar-icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>
           </div>
           <input type="hidden" id="ob1-dob" value=""/>
@@ -663,7 +665,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig">
         <label class="ilbl">Género</label>
         <div id="ob1-genero" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleAppDropdown(this)">
-          <span style="color:var(--gray);">Selecionar</span>
+          <span style="color:var(--text-sub);">Selecionar</span>
           <img src="assets/icons/Push-down_up-menu-Icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
           <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
             <div class="app-dd-item" onclick="pickGender(event,this,'m','Masculino')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Masculino</div>
@@ -2770,13 +2772,10 @@ function addHealthChip(input) {
   if (!val) return;
   const display = document.getElementById('ob1-chips-display');
   if (display && input.id === 'ob1-health-input') {
-    // Colorful standalone chip
-    const color = CHIP_COLORS[chipColorIdx % CHIP_COLORS.length];
-    chipColorIdx++;
+    // Primary-colour chip with close-icon
     const chip = document.createElement('span');
     chip.className = 'health-chip';
-    chip.style.background = color;
-    chip.innerHTML = val + '<span class="cx" onclick="this.parentElement.remove()">&times;</span>';
+    chip.innerHTML = val + '<span class="cx" onclick="this.parentElement.remove()"><img src="assets/icons/close-icon.svg" alt="Remover"/></span>';
     display.appendChild(chip);
   } else {
     const chip = document.createElement('span');
