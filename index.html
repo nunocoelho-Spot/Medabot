@@ -298,7 +298,9 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   height:56px;font-size:16px;font-weight:700;white-space:nowrap;color:#FDFEFF;background:#118596;}
 .health-chip .cx{cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
   width:40px;height:40px;overflow:hidden;}
-.health-chip .cx img{width:40px;height:40px;display:block;transform:scale(2.7);}
+/* close-icon.svg has a 96px viewBox with a centred 16px X — show img at 96px,
+   crop to the 40px clickable area so the X renders at its true 16px, centred. */
+.health-chip .cx img{width:96px;height:96px;display:block;flex-shrink:0;}
 .chip-input-wrap .cchip .cx{cursor:pointer;font-size:16px;line-height:1;opacity:.7;margin-left:2px;}
 .chip-input-wrap .cchip .cx:hover{opacity:1;}
 .chip-input-wrap input{border:none;background:none;outline:none;font-size:14px;flex:1;min-width:80px;color:var(--text);padding:4px 0;}
