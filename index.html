@@ -176,8 +176,8 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 /* -- Notif card -- */
 .ncard{background:var(--pink-light);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
 
-/* -- Back btn -- */
-.back{width:44px;height:44px;border-radius:13px;background:var(--white);border:none;cursor:pointer;
+/* -- Back btn (matches Go_Back-Icon asset) -- */
+.back{width:40px;height:40px;border-radius:8px;background:var(--white);border:0.6px solid #EDEDED;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;
   box-shadow:var(--shadow-sm);}
 .back:active{background:var(--gray-light);}
@@ -636,39 +636,35 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
 </div>
 
-<!-- == ONBOARDING 1/3 == -->
-<div id="ob1" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <button class="back" aria-label="Voltar" onclick="go('auth-register','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <span class="chip">1/3</span>
+<!-- == ONBOARDING 1/3 -- Sign-Up Personal Details == -->
+<div id="ob1" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div class="scroll" style="padding:78px 16px 0;">
+    <button class="back" aria-label="Voltar" onclick="go('auth-register','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="pbar" style="margin-top:16px;"><div class="pfill" style="width:35%"></div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:20px;">
+      <img src="assets/icons/user-icon-round.svg" alt="" style="width:64px;height:64px;"/>
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin-top:8px;">Fala-nos sobre ti!</h2>
+      <p style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Ajuda-nos a personalizar a tua experiência.</p>
     </div>
-    <div class="pbar"><div class="pfill" style="width:33%"></div></div>
-  </div>
-  <div style="display:flex;flex-direction:column;align-items:center;padding:20px 24px 12px;gap:8px;text-align:center;">
-    <div class="robot">💊</div>
-    <h2 style="font-size:22px;font-weight:700;">Fala-nos sobre ti!</h2>
-    <p style="font-size:14px;color:var(--text-sub);">Ajuda-nos a personalizar a tua experiencia</p>
-  </div>
-  <div class="scroll">
-    <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
+    <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
       <div class="ig"><label class="ilbl" for="ob1-name">Nome</label><input id="ob1-name" class="ifield" type="text" placeholder="O teu nome" autocomplete="name" onfocus="autoFillTestData();ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="70" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
+        <div class="ig"><label class="ilbl" for="ob1-peso">Peso (kg)</label><input id="ob1-peso" class="ifield" type="number" placeholder="75" min="0" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()" onkeydown="if(event.key==='Enter')this.blur()"/></div>
         <div class="ig">
           <label class="ilbl">Data de nascimento</label>
-          <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('ob1-dob',this)">
+          <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('ob1-dob',this)">
             <span id="ob1-dob-display" style="color:var(--gray);">Selecionar</span>
-            <span style="font-size:14px;">&#128197;</span>
+            <img src="assets/icons/calendar-icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>
           </div>
           <input type="hidden" id="ob1-dob" value=""/>
         </div>
       </div>
       <div class="ig">
-        <label class="ilbl">Genero</label>
-        <div id="ob1-genero" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleAppDropdown(this)">
-          <span style="color:var(--gray);">Selecionar</span><span style="font-size:10px;color:var(--gray);">&#9662;</span>
+        <label class="ilbl">Género</label>
+        <div id="ob1-genero" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleAppDropdown(this)">
+          <span style="color:var(--gray);">Selecionar</span>
+          <img src="assets/icons/Push-down_up-menu-Icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
           <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
             <div class="app-dd-item" onclick="pickGender(event,this,'m','Masculino')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Masculino</div>
             <div class="app-dd-item" onclick="pickGender(event,this,'f','Feminino')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Feminino</div>
@@ -679,17 +675,18 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig">
         <label class="ilbl">Condições de saúde</label>
         <div style="position:relative;">
-          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:44px;" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/>
-          <button type="button" onclick="addHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--pink);color:white;border:none;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:52px;" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/>
+          <button type="button" aria-label="Adicionar condição" onclick="addHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>
+          </button>
         </div>
         <div id="ob1-chips-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
         <input type="hidden" id="ob1-health-data" value=""/>
       </div>
     </div>
   </div>
-  <div id="ob1-footer" style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:10px;">
+  <div id="ob1-footer" style="padding:16px 16px 32px;">
     <button class="btn btn-primary" onclick="saveUserName();go('ob2','r')">Continuar</button>
-    <button class="btn btn-ghost" onclick="go('ob2','r')">Saltar por agora</button>
   </div>
 </div>
 
