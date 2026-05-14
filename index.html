@@ -91,7 +91,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 
 /* -- Robot -- */
 .robot{width:64px;height:64px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;}
-.robot-sm{width:36px;height:36px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.robot-sm{width:36px;height:36px;border-radius:11px;object-fit:contain;}
 
 /* -- Chip -- */
 .chip{display:inline-flex;align-items:center;gap:4px;background:var(--pink-light);color:var(--pink);
@@ -1606,31 +1606,32 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
   </aside>
   <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
-  <div style="padding:78px 16px 10px;display:flex;align-items:center;gap:14px;">
+  <div style="padding:78px 16px 10px;display:flex;align-items:center;gap:14px;position:relative;">
     <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="flex:1;min-width:0;font-size:22px;font-weight:700;color:var(--text);">MedaBot Chat</div>
+    <div style="position:absolute;left:0;right:0;text-align:center;font-size:32px;font-weight:900;color:var(--text);pointer-events:none;">MedaBot Chat</div>
+    <div style="flex:1;"></div>
     <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
   </div>
-  <div id="chat-guest-banner" style="display:none;padding:0 16px 6px;">
-    <div style="font-size:13px;color:var(--text-sub);font-weight:500;">Obtém uma experiência personalizada ao <span style="color:var(--pink);font-weight:700;text-decoration:underline;cursor:pointer;" onclick="go('auth-register','r')">criar uma conta</span>.</div>
+  <div id="chat-guest-banner" style="display:none;padding:0 16px 8px;">
+    <div style="padding:8px;background:#F7F8F9;border:0.6px solid #EDEDED;border-radius:8px;font-size:14px;font-weight:500;color:var(--text-sub);">Obtém uma experiência personalizada ao <span style="color:var(--pink);font-weight:700;text-decoration:underline;cursor:pointer;" onclick="go('auth-register','r')">criar conta</span>.</div>
   </div>
   <div class="scroll" id="chat-msgs" aria-live="polite" aria-label="Mensagens do chat" style="padding:16px 20px;display:flex;flex-direction:column;gap:2px;">
     <div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px;">
-      <div class="robot-sm" style="flex-shrink:0;">💊</div>
+      <img class="robot-sm" src="assets/icons/Robot-icon-chat.svg" alt="" style="flex-shrink:0;"/>
       <div class="bubble bot" id="chat-greeting">Olá, em que posso ajudar.</div>
     </div>
   </div>
   <div style="padding:8px 16px 28px;position:relative;">
     <div style="background:var(--white);border-radius:18px;box-shadow:var(--shadow-sm);padding:14px 14px 10px;">
-      <input id="chat-in" type="text" aria-label="Mensagem" placeholder="Conversa com o MedaBot" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;font-family:inherit;color:var(--text);" onkeydown="if(event.key==='Enter')sendMsg()"/>
+      <textarea id="chat-in" rows="1" aria-label="Mensagem" placeholder="Conversa com o MedaBot" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;font-family:inherit;font-weight:500;color:var(--text);resize:none;line-height:1.45;max-height:61px;overflow-y:auto;scrollbar-width:none;display:block;" oninput="autoGrowChat(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-        <button id="chat-attach-btn" aria-label="Anexar" onclick="toggleChatAttach(event)" style="width:40px;height:40px;background:var(--pink-light);border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <button id="chat-attach-btn" aria-label="Anexar" onclick="toggleChatAttach(event)" style="width:40px;height:40px;background:var(--pink-light);border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
+          <img src="assets/icons/Camera-icon-chat.svg" alt="" style="width:40px;height:40px;display:block;"/>
         </button>
-        <button onclick="sendMsg()" aria-label="Enviar" style="width:40px;height:40px;background:var(--pink);border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="white"><path d="M2 10L18 2L10 18L9 11L2 10Z"/></svg>
+        <button onclick="sendMsg()" aria-label="Enviar" style="width:40px;height:40px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;">
+          <img src="assets/icons/send-icon.svg" alt="" style="width:40px;height:40px;display:block;"/>
         </button>
       </div>
     </div>
@@ -4600,7 +4601,7 @@ function selectChat(el, id) {
 function newChat() {
   const c = document.getElementById('chat-msgs');
   c.innerHTML = '<div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px;">' +
-    '<div class="robot-sm" style="flex-shrink:0;">💊</div>' +
+    '<img class="robot-sm" src="assets/icons/Robot-icon-chat.svg" alt="" style="flex-shrink:0;"/>' +
     '<div class="bubble bot" id="chat-greeting">' + (guestMode ? 'Olá, em que posso ajudar.' : 'Olá ' + (PROFILES[activeProfile] ? PROFILES[activeProfile].greeting : 'Utilizador') + ', em que posso ajudar?') + '</div>' +
     '</div>';
   toggleChatSidebar();
@@ -4697,10 +4698,15 @@ function sendQuick(btn, text) {
   const reply = BOT_QUICK[text];
   setTimeout(() => appendMsg(reply || getBotReply(text).text, 'bot'), 700);
 }
+function autoGrowChat(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 61) + 'px';
+}
 function sendMsg() {
   const inp = document.getElementById('chat-in');
   const txt = inp.value.trim(); if (!txt) return;
   inp.value = '';
+  inp.style.height = 'auto';
   appendMsg(txt, 'user');
   const reply = getBotReply(txt);
   setTimeout(() => appendMsg(reply.text, reply.type === 'critical' ? 'critical' : 'bot'), 900);
@@ -4718,14 +4724,14 @@ function appendMsg(text, type) {
     w.style.cssText += 'flex-direction:column;';
     w.innerHTML =
       '<div style="display:flex;gap:8px;align-items:flex-end;">' +
-        '<div class="robot-sm" style="flex-shrink:0;">💊</div>' +
+        '<img class="robot-sm" src="assets/icons/Robot-icon-chat.svg" alt="" style="flex-shrink:0;"/>' +
         '<div style="background:#FFF3CD;border:1.5px solid #F0A500;border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:85%;font-size:14px;line-height:1.55;">' +
           '<div style="display:flex;align-items:center;gap:6px;font-weight:700;color:#92600A;margin-bottom:8px;font-size:13px;">⚠️ Atenção — informação crítica</div>' +
           safe +
         '</div>' +
       '</div>';
   } else {
-    w.innerHTML = '<div class="robot-sm" style="flex-shrink:0;">💊</div><div class="bubble bot">' + safe + '</div>';
+    w.innerHTML = '<img class="robot-sm" src="assets/icons/Robot-icon-chat.svg" alt="" style="flex-shrink:0;"/><div class="bubble bot">' + safe + '</div>';
   }
   c.appendChild(w);
   c.scrollTop = c.scrollHeight;
