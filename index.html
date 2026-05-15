@@ -83,8 +83,6 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 /* Inline-expand variant for gender dropdown (ob1) */
 #ob1-genero{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
 #ob1-genero.open{border:1.5px solid var(--pink);}
-#ob1-genero > img{transition:transform .2s;}
-#ob1-genero.open > img{transform:rotate(180deg);}
 #ob1-genero .app-dd-list{position:static !important;top:auto !important;left:auto !important;right:auto !important;
   background:transparent !important;border:none !important;border-radius:0 !important;box-shadow:none !important;
   flex-basis:100%;margin-top:12px;padding:0;overflow:visible;z-index:auto;}
@@ -391,9 +389,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .freq-option-check{width:24px;height:24px;border-radius:8px;border:1.5px solid var(--gray-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:white;}
 .freq-option.active .freq-option-check{background:var(--pink);border-color:var(--pink);}
 .freq-option.active .freq-option-check::after{content:'';width:6px;height:10px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px, -1px);}
-/* Other indicator: chevron */
-.freq-option-chevron{width:24px;height:24px;flex-shrink:0;transition:transform .2s;}
+/* Other indicator: chevron (Arrow-icon, native size cropped) */
+.freq-option-chevron{display:inline-block;width:24px;height:24px;background:url('assets/icons/Arrow-icon.svg') center/40px 40px no-repeat;flex-shrink:0;transition:transform .2s;}
 .freq-option.active .freq-option-chevron{transform:rotate(180deg);}
+/* Dropdown chevron — same crop technique */
+.dd-chevron{display:inline-block;width:24px;height:24px;background:url('assets/icons/Arrow-icon.svg') center/40px 40px no-repeat;flex-shrink:0;transition:transform .2s;}
+.app-dropdown.open .dd-chevron{transform:rotate(180deg);}
 /* Expanded body */
 .freq-option-body{display:none;padding:0 16px 18px;flex-direction:column;gap:22px;}
 .freq-option.active .freq-option-body{display:flex;}
@@ -709,7 +710,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <label class="ilbl">Género</label>
         <div id="ob1-genero" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleAppDropdown(this)">
           <span style="color:var(--text-sub);">Selecionar</span>
-          <img src="assets/icons/Arrow-icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
+          <span class="dd-chevron" aria-hidden="true"></span>
           <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
             <div class="app-dd-item" onclick="pickGender(event,this,'m','Masculino')" style="cursor:pointer;">Masculino</div>
             <div class="app-dd-item" onclick="pickGender(event,this,'f','Feminino')" style="cursor:pointer;">Feminino</div>
@@ -892,7 +893,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           <div class="ig">
             <label class="ilbl">Dosagem</label>
             <div id="manual-dosage-dd" class="ifield app-dropdown" data-value="500mg" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;position:relative;" onclick="toggleAppDropdown(this)">
-              <span>500 mg</span><img src="assets/icons/Arrow-icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
+              <span>500 mg</span><span class="dd-chevron" aria-hidden="true"></span>
               <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
                 <div class="app-dd-item" onclick="pickSimpleDD(event,this,'10mg')" style="padding:12px 14px;font-size:14px;cursor:pointer;">10 mg</div>
                 <div class="app-dd-item" onclick="pickSimpleDD(event,this,'20mg')" style="padding:12px 14px;font-size:14px;cursor:pointer;">20 mg</div>
@@ -912,7 +913,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           </div>
           <div class="ig"><label class="ilbl">Formato</label>
             <div id="manual-formato" class="ifield app-dropdown" data-value="Comprimido" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleAppDropdown(this)">
-              <span>Comprimido</span><img src="assets/icons/Arrow-icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
+              <span>Comprimido</span><span class="dd-chevron" aria-hidden="true"></span>
               <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
                 <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Comprimido')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Comprimido</div>
                 <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Cápsula')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Cápsula</div>
@@ -953,8 +954,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Todos os dias</div>
               <div class="freq-option-sub">Exemplo: de manhã e antes de deitar.</div>
-            </div>
-            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -1002,8 +1002,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">A cada X dias</div>
               <div class="freq-option-sub">Exemplo: de dois em dois dias.</div>
-            </div>
-            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -1059,8 +1058,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Em ciclo</div>
               <div class="freq-option-sub">Exemplo: 21 dias e 7 de pausa.</div>
-            </div>
-            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -1730,7 +1728,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <div class="ig">
           <label class="ilbl">Relação</label>
           <div id="fam-relação" class="ifield app-dropdown" data-value="Pai / Mae" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleAppDropdown(this)">
-            <span>Pai / Mae</span><img src="assets/icons/Arrow-icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
+            <span>Pai / Mae</span><span class="dd-chevron" aria-hidden="true"></span>
             <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
               <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Pai / Mãe')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Pai / Mãe</div>
               <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Filho/a')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Filho/a</div>
