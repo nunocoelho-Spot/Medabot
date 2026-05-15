@@ -37,7 +37,7 @@
   /* Spacing */
   --sp-xs:4px;--sp-sm:8px;--sp-md:14px;--sp-lg:24px;--sp-xl:32px;
   /* Radius */
-  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:22px;--r-pill:40px;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:22px;--r-pill:40px;--r-card:28px;
 }
 html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:center;align-items:center;
   font-family:'Satoshi',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
@@ -160,7 +160,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .pfill{height:100%;background:var(--pink);border-radius:2px;transition:width .4s;}
 
 /* -- Med card -- */
-.mcard{background:var(--white);border:none;border-radius:var(--r-xl);padding:16px;
+.mcard{background:var(--white);border:none;border-radius:var(--r-card);padding:16px;
   display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:box-shadow .2s,transform .1s;
   box-shadow:var(--shadow-sm);}
 .mcard.sel{box-shadow:0 0 0 2px var(--pink),var(--shadow-sm);}
@@ -171,7 +171,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .msub{font-size:13px;color:var(--text-sub);margin-top:2px;font-weight:500;}
 
 /* -- Option card -- */
-.ocard{display:flex;align-items:center;gap:14px;padding:16px;background:var(--white);border-radius:var(--r-lg);
+.ocard{display:flex;align-items:center;gap:14px;padding:16px;background:var(--white);border-radius:var(--r-card);
   cursor:pointer;border:1.5px solid transparent;transition:border-color .2s,background .2s;box-shadow:var(--shadow-sm);}
 .ocard:active{border-color:var(--pink);}
 
@@ -323,7 +323,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .det-cards{display:flex;align-items:stretch;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 16px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;}
 .det-cards::-webkit-scrollbar{display:none;}
 .det-card{flex:0 0 267px;scroll-snap-align:center;background:var(--white);border:none;
-  border-radius:16px;padding:16px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);}
+  border-radius:var(--r-card);padding:16px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);}
 
 /* -- Autocomplete dropdown -- */
 .ac-dropdown{position:absolute;left:0;right:0;top:100%;background:white;border:1.5px solid var(--gray-border);
@@ -380,7 +380,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   letter-spacing:0.5px;padding:12px 12px 6px;}
 
 /* -- Frequency options (unified Step 2) -- */
-.freq-option{border:1.5px solid transparent;border-radius:16px;background:var(--white);transition:border-color .2s;overflow:hidden;box-shadow:var(--shadow-sm);}
+.freq-option{border:1.5px solid transparent;border-radius:var(--r-card);background:var(--white);transition:border-color .2s;overflow:hidden;box-shadow:var(--shadow-sm);}
 .freq-option.active{border-color:var(--pink);}
 .freq-option-header{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;}
 .freq-option-header:active{opacity:.85;}
@@ -719,7 +719,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <p style="font-size:16px;font-weight:500;color:var(--text);margin-top:4px;">Regista os medicamentos que tomas.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px;">
-      <div role="button" tabindex="0" onclick="go('ob-scan','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
+      <div role="button" tabindex="0" onclick="go('ob-scan','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);cursor:pointer;box-shadow:var(--shadow-sm);">
         <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Fotografar embalagens</div>
@@ -727,7 +727,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         </div>
         <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
       </div>
-      <div role="button" tabindex="0" onclick="openManualInsert()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
+      <div role="button" tabindex="0" onclick="openManualInsert()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);cursor:pointer;box-shadow:var(--shadow-sm);">
         <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/manual_input-icon.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Inserir manualmente</div>
