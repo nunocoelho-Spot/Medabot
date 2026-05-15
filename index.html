@@ -745,41 +745,20 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 
 <!-- == SCAN -- Fotografar Embalagem == -->
 <div id="ob-scan" class="screen">
-  <div class="sbar" style="background:transparent;position:absolute;top:0;left:0;right:0;z-index:10;"><span class="time" style="color:white;">9:41</span><div class="icons" style="filter:brightness(10);">📶🔋</div></div>
-  <!-- Full screen camera view -->
-  <div style="flex:1;background:#111;position:relative;display:flex;flex-direction:column;">
-    <!-- Illustration background (same as ob-detected scan result) -->
-    <div id="ob-scan-illus" style="position:absolute;inset:0;overflow:hidden;z-index:0;"></div>
-    <!-- Dim overlay so pink scan UI still reads well -->
-    <div style="position:absolute;inset:0;background:rgba(0,0,0,.25);z-index:1;pointer-events:none;"></div>
-    <!-- Back button overlay -->
-    <div style="position:absolute;top:54px;left:16px;z-index:10;">
-      <button class="back" aria-label="Voltar" onclick="goBack()" style="background:rgba(0,0,0,.4);backdrop-filter:blur(4px);"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    </div>
-    <!-- Camera area -->
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;">
-      <!-- Scan corners -->
-      <div style="width:260px;height:260px;position:relative;">
-        <div style="position:absolute;top:0;left:0;width:40px;height:40px;border-top:3px solid var(--pink);border-left:3px solid var(--pink);border-radius:6px 0 0 0;"></div>
-        <div style="position:absolute;top:0;right:0;width:40px;height:40px;border-top:3px solid var(--pink);border-right:3px solid var(--pink);border-radius:0 6px 0 0;"></div>
-        <div style="position:absolute;bottom:0;left:0;width:40px;height:40px;border-bottom:3px solid var(--pink);border-left:3px solid var(--pink);border-radius:0 0 0 6px;"></div>
-        <div style="position:absolute;bottom:0;right:0;width:40px;height:40px;border-bottom:3px solid var(--pink);border-right:3px solid var(--pink);border-radius:0 0 6px 0;"></div>
-        <div style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pink),transparent);animation:scanAnim 1.8s ease-in-out infinite;"></div>
-      </div>
-    </div>
-    <!-- Hint text -->
-    <p style="color:rgba(255,255,255,.95);font-size:14px;text-align:center;padding:0 32px 16px;text-shadow:0 1px 4px rgba(0,0,0,.6);position:relative;z-index:2;">Aponta a camara para a embalagem do medicamento</p>
-    <!-- Bottom controls -->
-    <div style="display:flex;align-items:center;justify-content:center;padding-bottom:40px;gap:32px;position:relative;z-index:2;">
-      <button onclick="openManualInsert()" style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-        <span style="font-size:20px;color:white;">&#9000;</span>
-      </button>
-      <!-- Shutter button -->
-      <button onclick="simulateScan()" style="width:72px;height:72px;border-radius:50%;background:white;border:4px solid rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .1s;" id="shutter-btn">
-        <div style="width:58px;height:58px;border-radius:50%;background:white;border:2px solid var(--gray-border);"></div>
-      </button>
-      <div style="width:44px;height:44px;"></div>
-    </div>
+  <!-- Camera preview image fills the screen -->
+  <img src="meds.jpg" alt="Embalagens" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"/>
+  <!-- Status bar -->
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <!-- Back button -->
+  <div style="position:absolute;top:62px;left:16px;z-index:10;">
+    <button class="back" aria-label="Voltar" onclick="goBack()"></button>
+  </div>
+  <!-- Bottom controls -->
+  <div style="position:absolute;bottom:0;left:0;right:0;padding:0 16px 40px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:24px;">
+    <p style="color:rgba(255,255,255,.95);font-size:14px;font-weight:500;text-align:center;text-shadow:0 1px 4px rgba(0,0,0,.6);margin:0;">Aponta a câmara para a embalagem do medicamento</p>
+    <button id="shutter-btn" onclick="simulateScan()" aria-label="Capturar" style="width:72px;height:72px;border-radius:50%;background:white;border:4px solid rgba(255,255,255,.6);cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:transform .1s;padding:0;">
+      <div style="width:58px;height:58px;border-radius:50%;background:white;border:2px solid var(--gray-border);margin:0 auto;"></div>
+    </button>
   </div>
 </div>
 
@@ -4938,13 +4917,6 @@ function chatBack() {
   go(guestMode ? 's3' : 'dashboard', 'l');
 }
 document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
-
-/* Clone the scan-result photo into the scan camera background. */
-(function() {
-  const src = document.getElementById('ob-detected-illus');
-  const dst = document.getElementById('ob-scan-illus');
-  if (src && dst) dst.innerHTML = src.innerHTML;
-})();
 
 /* Restore the current screen from the URL hash on load, and follow browser back/forward. */
 (function() {
