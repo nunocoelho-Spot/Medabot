@@ -3354,8 +3354,9 @@ function snapDosage(numStr) {
 function openDetCardWizard(idx) {
   const card = document.querySelectorAll('.det-card')[idx];
   if (!card) return;
-  const name = card.querySelector('.det-med-name')?.textContent.trim() || card.dataset.name || '';
-  const dosageRaw = card.querySelector('.det-med-dosage')?.textContent.trim() || card.dataset.dosage || '500';
+  // Use the data attributes (clean values) — not the textContent, which now combines name + dosage.
+  const name = (card.dataset.name || '').trim();
+  const dosageRaw = (card.dataset.dosage || '500').trim();
   const nameEl = document.getElementById('manual-med-name');
   if (nameEl) nameEl.value = name;
   const snapped = snapDosage(dosageRaw);
@@ -3657,16 +3658,20 @@ function addDetectedMed(idx) {
 function addAllDetectedMeds() {
   // Save any cards not yet individually configured via wizard
   document.querySelectorAll('.det-card').forEach((card) => {
-    const btn = card.querySelector('.det-add-btn');
-    if (btn && btn.disabled) return; // already added via wizard
     if (card.dataset.savedIdx) return; // already saved via wizard
     const name = (card.dataset.name || '').trim();
     const dosage = (card.dataset.dosage || '').trim();
     const unit = card.dataset.unit || 'mg';
     if (!name) return;
     const fullDosage = dosage ? (dosage + unit) : '';
-    const exists = activeMeds().some(m => m.name === name);
-    if (!exists) activeMeds().push({ name, dosage: fullDosage, form: lookupMedForm(name), frequency: 'Conforme necessário', source: 'scan', type: 'occasional' });
+    const existingIdx = activeMeds().findIndex(m => m.name === name);
+    if (existingIdx >= 0) {
+      // Link the card to the existing med so subsequent edits update in place.
+      card.dataset.savedIdx = existingIdx;
+      return;
+    }
+    activeMeds().push({ name, dosage: fullDosage, form: lookupMedForm(name), frequency: 'Conforme necessário', source: 'scan', type: 'occasional' });
+    card.dataset.savedIdx = activeMeds().length - 1;
   });
   renderDashboardMeds();
 }
