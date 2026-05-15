@@ -3230,24 +3230,28 @@ function saveObInsert() {
     const summary = document.getElementById('det-summary-' + obInsertDetIdx);
     if (summary) {
       const cfg = collectObConfig();
-      let txt;
+      let when = '';
+      let detail = '';
       if (cfg.freqKey === 'asneeded') {
-        txt = '<strong style="color:var(--text);">Só quando preciso</strong> · máx. ' + cfg.maxUnits + '/dia';
+        when = 'Conforme necessário';
+        detail = 'Máx. ' + (cfg.maxUnits || 1) + '/dia';
       } else {
-        const timesStr = (cfg.times && cfg.times.length) ? cfg.times.join(' · ') : '—';
-        let when = '';
         if (cfg.freqKey === 'daily')    when = 'Todos os dias';
-        if (cfg.freqKey === 'interval') when = 'A cada ' + cfg.everyN + ' dias';
-        if (cfg.freqKey === 'periodic') when = cfg.cycleOn + 'd toma / ' + cfg.cycleOff + 'd pausa';
-        if (cfg.freqKey === 'specific') when = (cfg.days || []).join(', ') || 'Dias selecionados';
-        txt = '<strong style="color:var(--text);">' + when + '</strong> às ' + timesStr;
+        else if (cfg.freqKey === 'interval') when = 'A cada ' + (cfg.everyN || 2) + ' dias';
+        else if (cfg.freqKey === 'periodic') when = cfg.cycleOn + 'd toma · ' + cfg.cycleOff + 'd pausa';
+        else if (cfg.freqKey === 'specific') when = (cfg.days || []).join(', ') || 'Dias selecionados';
+        else when = 'Todos os dias';
+        detail = (cfg.times && cfg.times.length) ? cfg.times.join('  |  ') : '08:00';
       }
       summary.style.display = 'block';
-      summary.innerHTML = txt;
+      const content = summary.querySelector('.det-summary-content');
+      if (content) content.innerHTML = '<div>' + when + '</div><div>' + detail + '</div>';
+      else summary.innerHTML = '<div style="height:1px;background:var(--gray-border);margin:12px 0;"></div><div>' + when + '</div><div>' + detail + '</div>';
     }
     if (btn) {
-      btn.innerHTML = '✎ Editar toma';
-      btn.style.background = 'var(--teal)';
+      btn.innerHTML =
+        '<span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url(\'assets/icons/Edit-Icon.svg\') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>' +
+        '<span>Editar Toma</span>';
       btn.disabled = false;
     }
     // Reset state and return to detected screen
@@ -3520,14 +3524,13 @@ function buildDetectedCards(meds) {
         '<div class="det-med-name" style="flex:1;min-width:0;font-size:18px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + m.name + ' ' + m.dosage + (m.unit || 'mg') + '</div>' +
         '<div id="det-badge-' + idx + '" style="display:none;background:#E8F9F5;color:var(--success);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap;">✓</div>' +
       '</div>' +
-      '<div style="height:1px;background:var(--gray-border);margin:12px 0;"></div>' +
-      '<div class="det-summary" id="det-summary-' + idx + '" style="font-size:14px;font-weight:500;color:var(--text);line-height:1.4;">' +
-        '<div>Todos os dias</div>' +
-        '<div>08:00&nbsp;&nbsp;|&nbsp;&nbsp;16:00</div>' +
+      '<div class="det-summary" id="det-summary-' + idx + '" style="display:none;font-size:14px;font-weight:500;color:var(--text);line-height:1.4;">' +
+        '<div style="height:1px;background:var(--gray-border);margin:12px 0;"></div>' +
+        '<div class="det-summary-content"></div>' +
       '</div>' +
       '<button class="det-add-btn btn btn-primary" style="margin-top:14px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="openDetCardWizard(' + idx + ')">' +
-        '<span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url(\'assets/icons/Edit-Icon.svg\') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>' +
-        'Editar Toma' +
+        '<span class="det-add-btn-icon" aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url(\'assets/icons/Set-Up-Icon.svg\') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>' +
+        '<span class="det-add-btn-label">Configurar</span>' +
       '</button>';
     container.appendChild(card);
   });
