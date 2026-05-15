@@ -1143,7 +1143,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div id="confirm-list" style="display:flex;flex-direction:column;gap:14px;margin-top:24px;"></div>
     <div style="margin-top:14px;">
       <button class="btn btn-outline" onclick="go('ob2','r')" style="display:flex;align-items:center;justify-content:center;gap:8px;">
-        <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/Plus_circle-icon.svg') -40px -36px/104px 104px no-repeat;flex-shrink:0;"></span>
+        <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
         Registar medicamento
       </button>
     </div>
@@ -3659,12 +3659,14 @@ function addAllDetectedMeds() {
   document.querySelectorAll('.det-card').forEach((card) => {
     const btn = card.querySelector('.det-add-btn');
     if (btn && btn.disabled) return; // already added via wizard
-    const name = (card.querySelector('.det-med-name')?.textContent || '').trim();
-    const dosage = (card.querySelector('.det-med-dosage')?.textContent || '').trim();
+    if (card.dataset.savedIdx) return; // already saved via wizard
+    const name = (card.dataset.name || '').trim();
+    const dosage = (card.dataset.dosage || '').trim();
     const unit = card.dataset.unit || 'mg';
     if (!name) return;
+    const fullDosage = dosage ? (dosage + unit) : '';
     const exists = activeMeds().some(m => m.name === name);
-    if (!exists) activeMeds().push({ name, dosage: dosage + unit, form: lookupMedForm(name), frequency: 'Conforme necessário', source: 'scan', type: 'occasional' });
+    if (!exists) activeMeds().push({ name, dosage: fullDosage, form: lookupMedForm(name), frequency: 'Conforme necessário', source: 'scan', type: 'occasional' });
   });
   renderDashboardMeds();
 }
@@ -3683,6 +3685,25 @@ function deleteMedByIndex(idx) {
 }
 
 /* ===== Render confirm list ===== */
+/* Open the ob-insert wizard pre-filled with an existing med, from #ob-confirm. */
+function editObConfirmMed(idx) {
+  const m = activeMeds()[idx];
+  if (!m) return;
+  obEditIndex = idx;
+  obInsertSource = 'manual';
+  obInsertDetIdx = -1;
+  const nameEl = document.getElementById('manual-med-name');
+  if (nameEl) nameEl.value = m.name || '';
+  const dosageDd = document.getElementById('manual-dosage-dd');
+  if (dosageDd && m.dosage) {
+    dosageDd.dataset.value = m.dosage;
+    const span = dosageDd.querySelector('span');
+    if (span) span.textContent = m.dosage.replace(/mg$/, ' mg');
+  }
+  go('ob-insert', 'r');
+  if (typeof showObStep === 'function') showObStep(1);
+}
+
 function renderConfirmList() {
   const list = document.getElementById('confirm-list');
   if (!activeMeds().length) {
@@ -3704,7 +3725,7 @@ function renderConfirmList() {
           '<div>' + times + '</div>' +
         '</div>' +
         '<div style="display:flex;gap:8px;flex-shrink:0;">' +
-          '<button onclick="openEditMedSheet(' + i + ')" aria-label="Editar" style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">' +
+          '<button onclick="editObConfirmMed(' + i + ')" aria-label="Editar" style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">' +
             '<span aria-hidden="true" style="display:inline-block;width:20px;height:20px;background:url(\'assets/icons/Edit-Icon.svg\') -6px -5.5px/32px 32px no-repeat;"></span>' +
           '</button>' +
           '<button onclick="deleteMedByIndex(' + i + ');renderConfirmList();" aria-label="Eliminar" style="width:40px;height:40px;border-radius:50%;background:var(--orange);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">' +
