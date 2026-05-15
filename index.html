@@ -295,12 +295,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   border-radius:16px;padding:4px 8px 4px 10px;font-size:13px;font-weight:600;white-space:nowrap;}
 /* standalone health chips (ob1) */
 .health-chip{display:inline-flex;align-items:center;gap:6px;border-radius:16px;padding:8px 8px 8px 20px;
-  height:56px;font-size:16px;font-weight:700;white-space:nowrap;color:#FDFEFF;background:#118596;}
-.health-chip .cx{cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  width:40px;height:40px;overflow:hidden;}
-/* close-icon.svg has a 96px viewBox with a centred 16px X — show img at 96px,
-   crop to the 40px clickable area so the X renders at its true 16px, centred. */
-.health-chip .cx img{width:96px;height:96px;display:block;flex-shrink:0;}
+  height:56px;font-size:16px;font-weight:700;line-height:1;white-space:nowrap;color:#FDFEFF;background:#118596;}
+.health-chip .ct{display:inline-flex;align-items:center;height:40px;}
+.health-chip .cx{cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:40px;height:40px;}
+.health-chip .cx svg{display:block;}
 .chip-input-wrap .cchip .cx{cursor:pointer;font-size:16px;line-height:1;opacity:.7;margin-left:2px;}
 .chip-input-wrap .cchip .cx:hover{opacity:1;}
 .chip-input-wrap input{border:none;background:none;outline:none;font-size:14px;flex:1;min-width:80px;color:var(--text);padding:4px 0;}
@@ -2778,7 +2777,12 @@ function addHealthChip(input) {
     // Primary-colour chip with close-icon
     const chip = document.createElement('span');
     chip.className = 'health-chip';
-    chip.innerHTML = val + '<span class="cx" onclick="this.parentElement.remove()"><img src="assets/icons/close-icon.svg" alt="Remover"/></span>';
+    chip.innerHTML = '<span class="ct">' + val + '</span>' +
+      '<span class="cx" onclick="this.parentElement.remove()" aria-label="Remover">' +
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+          '<path d="M4 4L12 12M12 4L4 12" stroke="#FDFEFF" stroke-width="2" stroke-linecap="round"/>' +
+        '</svg>' +
+      '</span>';
     display.appendChild(chip);
   } else {
     const chip = document.createElement('span');
