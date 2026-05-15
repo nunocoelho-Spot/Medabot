@@ -387,9 +387,30 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .freq-option-icon{width:40px;height:40px;flex-shrink:0;display:block;object-fit:contain;}
 .freq-option-title{font-size:16px;font-weight:700;color:var(--pink);}
 .freq-option-sub{font-size:14px;color:var(--text-sub);margin-top:2px;line-height:1.35;font-weight:500;}
-.freq-option-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:white;}
+/* As-needed indicator: square checkbox */
+.freq-option-check{width:24px;height:24px;border-radius:8px;border:1.5px solid var(--gray-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:white;}
 .freq-option.active .freq-option-check{background:var(--pink);border-color:var(--pink);}
 .freq-option.active .freq-option-check::after{content:'';width:6px;height:10px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px, -1px);}
+/* Other indicator: chevron */
+.freq-option-chevron{width:24px;height:24px;flex-shrink:0;transition:transform .2s;}
+.freq-option.active .freq-option-chevron{transform:rotate(180deg);}
+/* Expanded body */
+.freq-option-body{display:none;padding:0 16px 18px;flex-direction:column;gap:22px;}
+.freq-option.active .freq-option-body{display:flex;}
+.freq-option-body .stepper{gap:14px;border:none;background:transparent;border-radius:0;overflow:visible;}
+.freq-option-body .stepper button{width:32px;height:32px;border-radius:50%;background:var(--pink);color:white;font-size:18px;line-height:1;padding:0;}
+.freq-option-body .stepper .stepper-value{min-width:54px;height:32px;background:var(--white);border-radius:10px;box-shadow:var(--shadow-sm);display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--text);}
+.freq-option-body .stepper-row{flex-direction:column;align-items:flex-start;gap:8px;justify-content:flex-start;}
+.freq-option-body .stepper-row .stepper-label{font-size:16px;font-weight:700;color:var(--text);}
+.fob-time-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.fob-time-row .ifield{display:inline-flex;width:auto;padding:8px 14px;font-size:14px;font-weight:600;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);}
+.fob-add{width:32px;height:32px;border-radius:50%;border:none;background:var(--pink);color:white;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;}
+.fob-section{display:flex;flex-direction:column;gap:14px;}
+.fob-section h4{font-size:18px;font-weight:700;color:var(--text);margin:0;}
+.fob-period-row{display:flex;flex-direction:column;gap:8px;}
+.fob-period-row .fob-period-label{font-size:14px;font-weight:600;color:var(--text);}
+.fob-date{padding:10px 14px;background:var(--white);border-radius:12px;font-size:14px;font-weight:600;color:var(--text);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:8px;cursor:pointer;justify-content:space-between;}
+.fob-date img{width:18px;height:18px;}
 .freq-option-body{display:none;padding:0 16px 16px;flex-direction:column;gap:14px;border-top:1px solid rgba(233,30,140,.18);margin-top:-2px;padding-top:14px;}
 .freq-option.active .freq-option-body{display:flex;}
 
@@ -927,7 +948,42 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               <div class="freq-option-title">Todos os dias</div>
               <div class="freq-option-sub">Exemplo: de manhã e antes de deitar.</div>
             </div>
-            <div class="freq-option-check"></div>
+            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+          </div>
+          <div class="freq-option-body">
+            <div class="stepper-row">
+              <span class="stepper-label">Quantos comprimidos?</span>
+              <div class="stepper" data-input-id="daily-qty">
+                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
+                <span class="stepper-value">1</span>
+                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">A que horas?</span>
+              <div class="fob-time-row">
+                <div class="time-list" id="daily-time-list" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
+                </div>
+                <button type="button" class="fob-add" onclick="addTimeTo('daily-time-list')" aria-label="Adicionar hora">+</button>
+              </div>
+            </div>
+            <div class="fob-section">
+              <h4>Período</h4>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Início</span>
+                <div class="fob-date" onclick="openDatePicker('manual-start',this)">
+                  <span id="manual-start-display">Hoje</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="manual-start"/>
+              </div>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Fim</span>
+                <button type="button" class="fob-add" onclick="toggleEndDate(document.getElementById('has-end-date'))" aria-label="Adicionar data de fim">+</button>
+                <div class="tswitch" id="has-end-date" style="display:none;"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="freq-option" data-freq="interval" tabindex="0" role="radio" aria-checked="false">
@@ -937,7 +993,49 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               <div class="freq-option-title">A cada X dias</div>
               <div class="freq-option-sub">Exemplo: de dois em dois dias.</div>
             </div>
-            <div class="freq-option-check"></div>
+            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+          </div>
+          <div class="freq-option-body">
+            <div class="stepper-row">
+              <span class="stepper-label">Quantos comprimidos?</span>
+              <div class="stepper" data-input-id="interval-qty">
+                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
+                <span class="stepper-value">1</span>
+                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">Número de dias?</span>
+              <div class="stepper" data-input-id="interval-n">
+                <button type="button" onclick="stepperDec(this,2)" aria-label="Menos">−</button>
+                <span class="stepper-value">2</span>
+                <button type="button" onclick="stepperInc(this,30)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">A que horas?</span>
+              <div class="fob-time-row">
+                <div class="time-list" id="interval-time-list" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
+                </div>
+                <button type="button" class="fob-add" onclick="addTimeTo('interval-time-list')" aria-label="Adicionar hora">+</button>
+              </div>
+            </div>
+            <div class="fob-section">
+              <h4>Período</h4>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Início</span>
+                <div class="fob-date" onclick="openDatePicker('interval-start',this)">
+                  <span>Hoje</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="interval-start"/>
+              </div>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Fim</span>
+                <button type="button" class="fob-add" aria-label="Adicionar data de fim">+</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="freq-option" data-freq="cycle" tabindex="0" role="radio" aria-checked="false">
@@ -947,7 +1045,57 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               <div class="freq-option-title">Em ciclo</div>
               <div class="freq-option-sub">Exemplo: 21 dias e 7 de pausa.</div>
             </div>
-            <div class="freq-option-check"></div>
+            <img class="freq-option-chevron" src="assets/icons/Arrow-icon.svg" alt=""/>
+          </div>
+          <div class="freq-option-body">
+            <div class="stepper-row">
+              <span class="stepper-label">Quantos comprimidos?</span>
+              <div class="stepper" data-input-id="cycle-qty">
+                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
+                <span class="stepper-value">1</span>
+                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">Dias de tratamento?</span>
+              <div class="stepper" data-input-id="cycle-on">
+                <button type="button" onclick="stepperDec(this,1)" aria-label="Menos">−</button>
+                <span class="stepper-value">21</span>
+                <button type="button" onclick="stepperInc(this,60)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">Dias de pausa?</span>
+              <div class="stepper" data-input-id="cycle-off">
+                <button type="button" onclick="stepperDec(this,0)" aria-label="Menos">−</button>
+                <span class="stepper-value">7</span>
+                <button type="button" onclick="stepperInc(this,30)" aria-label="Mais">+</button>
+              </div>
+            </div>
+            <div class="stepper-row">
+              <span class="stepper-label">A que horas?</span>
+              <div class="fob-time-row">
+                <div class="time-list" id="cycle-time-list" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
+                </div>
+                <button type="button" class="fob-add" onclick="addTimeTo('cycle-time-list')" aria-label="Adicionar hora">+</button>
+              </div>
+            </div>
+            <div class="fob-section">
+              <h4>Período</h4>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Início</span>
+                <div class="fob-date" onclick="openDatePicker('cycle-start',this)">
+                  <span>Hoje</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="cycle-start"/>
+              </div>
+              <div class="fob-period-row">
+                <span class="fob-period-label">Fim</span>
+                <button type="button" class="fob-add" aria-label="Adicionar data de fim">+</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
