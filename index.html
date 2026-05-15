@@ -718,7 +718,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px;">
       <div role="button" tabindex="0" onclick="go('ob-scan','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
-        <span aria-hidden="true" style="display:block;width:40px;height:40px;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
+        <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Fotografar embalagens</div>
           <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Identifica automaticamente o medicamento</div>
@@ -726,7 +726,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
       </div>
       <div role="button" tabindex="0" onclick="openManualInsert()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
-        <span aria-hidden="true" style="display:block;width:40px;height:40px;background:url('assets/icons/manual_input-icon.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
+        <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/manual_input-icon.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Inserir manualmente</div>
           <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Preenche os dados do medicamento</div>
@@ -1642,7 +1642,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="background:var(--white);border-radius:18px;box-shadow:var(--shadow-sm);padding:14px 14px 10px;">
       <textarea id="chat-in" rows="1" aria-label="Mensagem" placeholder="Conversa com o MedaBot" style="width:100%;border:none;outline:none;background:transparent;font-size:14px;font-family:inherit;font-weight:500;color:var(--text);resize:none;line-height:1.45;max-height:61px;overflow-y:auto;scrollbar-width:none;display:block;" oninput="autoGrowChat(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-        <button id="chat-attach-btn" aria-label="Anexar" onclick="toggleChatAttach(event)" style="width:40px;height:40px;background:var(--pink-light);border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
+        <button id="chat-attach-btn" aria-label="Anexar" onclick="toggleChatAttach(event)" style="width:40px;height:40px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;">
           <img src="assets/icons/Camera-icon-chat.svg" alt="" style="width:40px;height:40px;display:block;"/>
         </button>
         <button onclick="sendMsg()" aria-label="Enviar" style="width:40px;height:40px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;">
