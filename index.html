@@ -123,17 +123,17 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .ni.active{color:var(--pink);}
 .ni svg{display:none;}
 .ni{position:relative;}
-/* Bg pill (visible only when active) */
-.ni::before{content:'';position:absolute;width:32px;height:32px;border-radius:10px;
-  top:0;left:50%;transform:translateX(-50%);background:transparent;transition:background .15s;}
-.ni.active::before{background:var(--pink);}
-/* Icon */
-.ni::after{content:'';display:block;width:32px;height:32px;background-position:center;background-repeat:no-repeat;background-size:40px 40px;position:relative;z-index:1;}
-.bnav .ni:nth-child(1)::after{background-image:url('assets/icons/calendar-icon.svg');background-size:20px 22px;}
-.bnav .ni:nth-child(2)::after{background-image:url('assets/icons/medicine_list-icon.svg');}
-.bnav .ni:nth-child(3)::after{background-image:url('assets/icons/search-icon.svg');}
-.bnav .ni:nth-child(4)::after{background-image:url('assets/icons/chatbox-icon.svg');}
-.ni.active::after{filter:brightness(0) invert(1);}
+/* Icon (::before — first in flow, sits ABOVE the text label) */
+.ni::before{content:'';display:block;width:40px;height:40px;background-position:center;background-repeat:no-repeat;background-size:40px 40px;position:relative;z-index:1;}
+.bnav .ni:nth-child(1)::before{background-image:url('assets/icons/calendar-icon.svg');background-size:20px 22px;}
+.bnav .ni:nth-child(2)::before{background-image:url('assets/icons/medicine_list-icon.svg');}
+.bnav .ni:nth-child(3)::before{background-image:url('assets/icons/search-icon.svg');}
+.bnav .ni:nth-child(4)::before{background-image:url('assets/icons/chatbox-icon.svg');}
+.ni.active::before{filter:brightness(0) invert(1);}
+/* Teal pill behind the icon (::after — absolute, 40x40, only visible when active) */
+.ni::after{content:'';position:absolute;width:40px;height:40px;border-radius:10px;
+  top:0;left:50%;transform:translateX(-50%);background:transparent;transition:background .15s;z-index:0;}
+.ni.active::after{background:var(--pink);}
 /* occasional med badge */
 .med-badge-occasional{display:inline-flex;align-items:center;background:#F2F2F7;color:var(--text-sub);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;}
 /* quick-log button */
