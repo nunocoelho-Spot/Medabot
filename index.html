@@ -407,7 +407,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .freq-option-body .stepper-row .stepper-label{font-size:16px;font-weight:700;color:var(--text);}
 .fob-time-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;}
 .fob-time-row .time-list{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
-.fob-time-row .ifield{display:inline-flex;width:auto;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);}
+.fob-time-row .ifield{display:inline-flex;width:120px;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);justify-content:center;align-items:center;text-align:center;}
 .fob-add{width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;font-size:0;color:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .fob-add::after{content:'';display:block;width:24px;height:24px;background:url('assets/icons/Plus_circle-icon.svg') -40px -36px/104px 104px no-repeat;}
 .fob-remove{width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;font-size:0;color:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -2988,7 +2988,7 @@ function addTimeTo(listId) {
   const wrap = document.createElement('div');
   wrap.style.cssText = 'display:flex;gap:8px;align-items:center;';
   wrap.innerHTML =
-    '<div class="ifield" style="cursor:pointer;display:inline-flex;width:auto;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);" onclick="openTimePicker(this)"><span>' + next + '</span></div>' +
+    '<div class="ifield" style="cursor:pointer;display:inline-flex;width:120px;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);justify-content:center;align-items:center;text-align:center;" onclick="openTimePicker(this)"><span>' + next + '</span></div>' +
     '<button type="button" class="fob-remove" onclick="this.parentElement.remove();renderObSummary();" aria-label="Remover hora"></button>';
   list.appendChild(wrap);
   renderObSummary();
