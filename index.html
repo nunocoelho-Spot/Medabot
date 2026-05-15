@@ -189,14 +189,15 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 
 /* -- Back btn -- */
 .back{width:40px;height:40px;cursor:pointer;flex-shrink:0;padding:0;position:relative;
-  background:none;border:none;display:flex;align-items:center;justify-content:center;}
+  background:none;border:none;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;overflow:hidden;}
 .back:active{opacity:.7;}
 /* Voltar-Button asset (white square + teal chevron + shadow) for all back buttons except chat hamburger */
 .back:not(#chat-hist-btn) > *{display:none;}
 .back:not(#chat-hist-btn)::after{content:'';position:absolute;width:122px;height:122px;
   top:-36.6px;left:-40.6px;background:url('assets/icons/Voltar-Button.svg') no-repeat center/122px 122px;}
 /* Chat hamburger keeps the white square styling */
-#chat-hist-btn{background:var(--white);border:0.6px solid #EDEDED;border-radius:8px;box-shadow:var(--shadow-sm);}
+#chat-hist-btn{background:var(--white);border:0.6px solid #EDEDED;box-shadow:var(--shadow-sm);}
 
 /* -- Info row -- */
 .irow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--gray-border);}
