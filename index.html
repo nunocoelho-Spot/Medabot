@@ -88,8 +88,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 #ob1-genero .app-dd-list{position:static !important;top:auto !important;left:auto !important;right:auto !important;
   background:transparent !important;border:none !important;border-radius:0 !important;box-shadow:none !important;
   flex-basis:100%;margin-top:12px;padding:0;overflow:visible;z-index:auto;}
-#ob1-genero .app-dd-item{padding:14px 0;font-size:16px;font-weight:500;color:var(--text);
-  border-top:1px solid var(--gray-border);}
+#ob1-genero .app-dd-item{padding:10px 0;font-size:16px;font-weight:500;color:var(--text);}
 #ob1-genero .app-dd-item:hover{background:transparent;}
 
 /* -- Scroll -- */
@@ -681,9 +680,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           <span style="color:var(--text-sub);">Selecionar</span>
           <img src="assets/icons/Push-down_up-menu-Icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>
           <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
-            <div class="app-dd-item" onclick="pickGender(event,this,'m','Masculino')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Masculino</div>
-            <div class="app-dd-item" onclick="pickGender(event,this,'f','Feminino')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Feminino</div>
-            <div class="app-dd-item" onclick="pickGender(event,this,'o','Outro')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Outro</div>
+            <div class="app-dd-item" onclick="pickGender(event,this,'m','Masculino')" style="cursor:pointer;">Masculino</div>
+            <div class="app-dd-item" onclick="pickGender(event,this,'f','Feminino')" style="cursor:pointer;">Feminino</div>
           </div>
         </div>
       </div>
