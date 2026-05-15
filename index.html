@@ -80,6 +80,17 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .ifield option{background:white;}
 .app-dropdown{position:relative;}
 .app-dd-item:hover{background:var(--gray-light);}
+/* Inline-expand variant for gender dropdown (ob1) */
+#ob1-genero{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
+#ob1-genero.open{border:1.5px solid var(--pink);}
+#ob1-genero > img{transition:transform .2s;}
+#ob1-genero.open > img{transform:rotate(180deg);}
+#ob1-genero .app-dd-list{position:static !important;top:auto !important;left:auto !important;right:auto !important;
+  background:transparent !important;border:none !important;border-radius:0 !important;box-shadow:none !important;
+  flex-basis:100%;margin-top:12px;padding:0;overflow:visible;z-index:auto;}
+#ob1-genero .app-dd-item{padding:14px 0;font-size:16px;font-weight:500;color:var(--text);
+  border-top:1px solid var(--gray-border);}
+#ob1-genero .app-dd-item:hover{background:transparent;}
 
 /* -- Scroll -- */
 .scroll{overflow-y:auto;flex:1;scrollbar-width:none;}.scroll::-webkit-scrollbar{display:none;}
@@ -3598,8 +3609,15 @@ function toggleAppDropdown(el) {
   const list = el.querySelector('.app-dd-list');
   if (!list) return;
   // Close other dropdowns
-  document.querySelectorAll('.app-dd-list').forEach(l => { if (l !== list) l.style.display = 'none'; });
-  list.style.display = list.style.display === 'block' ? 'none' : 'block';
+  document.querySelectorAll('.app-dd-list').forEach(l => {
+    if (l !== list) {
+      l.style.display = 'none';
+      l.closest('.app-dropdown')?.classList.remove('open');
+    }
+  });
+  const isOpen = list.style.display === 'block';
+  list.style.display = isOpen ? 'none' : 'block';
+  el.classList.toggle('open', !isOpen);
   event.stopPropagation();
 }
 function pickAppDropdown(ev, item, value) {
@@ -3616,6 +3634,7 @@ function pickGender(ev, item, key, label) {
   lbl.textContent = label;
   lbl.style.color = 'var(--text)';
   dd.querySelector('.app-dd-list').style.display = 'none';
+  dd.classList.remove('open');
 }
 function pickSimpleDD(ev, item, value) {
   ev.stopPropagation();
@@ -3643,6 +3662,7 @@ function pickDetFreq(ev, item, idx, key, label) {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.app-dropdown')) {
     document.querySelectorAll('.app-dd-list').forEach(l => l.style.display = 'none');
+    document.querySelectorAll('.app-dropdown.open').forEach(d => d.classList.remove('open'));
   }
 });
 
