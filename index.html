@@ -80,14 +80,16 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .ifield option{background:white;}
 .app-dropdown{position:relative;}
 .app-dd-item:hover{background:var(--gray-light);}
-/* Inline-expand variant for gender dropdown (ob1) */
-#ob1-genero{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
-#ob1-genero.open{border:1.5px solid var(--pink);}
-#ob1-genero .app-dd-list{position:static !important;top:auto !important;left:auto !important;right:auto !important;
+/* Inline-expand variant for dropdowns (gender, dosage, formato) */
+#ob1-genero, #manual-dosage-dd, #manual-formato{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
+#ob1-genero.open, #manual-dosage-dd.open, #manual-formato.open{border:1.5px solid var(--pink);}
+#ob1-genero .app-dd-list, #manual-dosage-dd .app-dd-list, #manual-formato .app-dd-list{
+  position:static !important;top:auto !important;left:auto !important;right:auto !important;
   background:transparent !important;border:none !important;border-radius:0 !important;box-shadow:none !important;
   flex-basis:100%;margin-top:12px;padding:0;overflow:visible;z-index:auto;}
-#ob1-genero .app-dd-item{padding:10px 0;font-size:16px;font-weight:500;color:var(--text);}
-#ob1-genero .app-dd-item:hover{background:transparent;}
+#ob1-genero .app-dd-item, #manual-dosage-dd .app-dd-item, #manual-formato .app-dd-item{
+  padding:10px 0 !important;font-size:16px !important;font-weight:500 !important;color:var(--text) !important;}
+#ob1-genero .app-dd-item:hover, #manual-dosage-dd .app-dd-item:hover, #manual-formato .app-dd-item:hover{background:transparent;}
 
 /* -- Scroll -- */
 .scroll{overflow-y:auto;flex:1;scrollbar-width:none;}.scroll::-webkit-scrollbar{display:none;}
@@ -887,7 +889,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <!-- ── STEP 1: Basic info ── -->
   <div id="ob-step1" class="ob-step">
     <div class="scroll">
-      <div style="padding:16px 24px 24px;display:flex;flex-direction:column;gap:14px;">
+      <div style="padding:8px 16px 24px;display:flex;flex-direction:column;gap:18px;">
+        <div>
+          <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Detalhes do medicamento.</h2>
+          <p style="font-size:16px;font-weight:500;color:var(--text);margin-top:4px;">Regista a informação do medicamento.</p>
+        </div>
         <div class="ig" style="position:relative;">
           <label class="ilbl">Nome do medicamento</label>
           <input id="manual-med-name" class="ifield" type="text" placeholder="Ex: Ben-U-Ron" oninput="showAutocomplete(this,'ac-manual');updateStep1NextBtn();renderObSummary();" onfocus="showAutocomplete(this,'ac-manual')" autocomplete="off"/>
@@ -929,8 +935,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         </div>
       </div>
     </div>
-    <div style="padding:12px 24px 32px;flex-shrink:0;">
-      <button id="ob-step1-next" class="btn btn-primary" onclick="obInsertNext()" disabled style="opacity:0.5;cursor:not-allowed;">Próximo</button>
+    <div style="padding:12px 16px 32px;flex-shrink:0;">
+      <button id="ob-step1-next" class="btn btn-primary" onclick="obInsertNext()" disabled style="opacity:0.5;cursor:not-allowed;">Continuar</button>
     </div>
   </div>
 
