@@ -187,14 +187,16 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 /* -- Notif card -- */
 .ncard{background:var(--pink-light);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
 
-/* -- Back btn (matches Go_Back-Icon asset; uses Arrow-icon rotated to point left) -- */
-.back{width:40px;height:40px;border-radius:8px;background:var(--white);border:0.6px solid #EDEDED;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;
-  box-shadow:var(--shadow-sm);position:relative;padding:0;}
-.back:active{background:var(--gray-light);}
+/* -- Back btn -- */
+.back{width:40px;height:40px;cursor:pointer;flex-shrink:0;padding:0;position:relative;
+  background:none;border:none;display:flex;align-items:center;justify-content:center;}
+.back:active{opacity:.7;}
+/* Voltar-Button asset (white square + teal chevron + shadow) for all back buttons except chat hamburger */
 .back:not(#chat-hist-btn) > *{display:none;}
-.back:not(#chat-hist-btn)::after{content:'';width:40px;height:40px;
-  background:url('assets/icons/Arrow-icon.svg') center/40px 40px no-repeat;transform:rotate(90deg);}
+.back:not(#chat-hist-btn)::after{content:'';position:absolute;width:122px;height:122px;
+  top:-36.6px;left:-40.6px;background:url('assets/icons/Voltar-Button.svg') no-repeat center/122px 122px;}
+/* Chat hamburger keeps the white square styling */
+#chat-hist-btn{background:var(--white);border:0.6px solid #EDEDED;border-radius:8px;box-shadow:var(--shadow-sm);}
 
 /* -- Info row -- */
 .irow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--gray-border);}
@@ -2811,6 +2813,10 @@ function addHealthChip(input) {
 function addHealthChipFromInput() {
   const input = document.getElementById('ob1-health-input');
   if (input) addHealthChip(input);
+  // Restore the footer (Continuar button) — the + click steals focus and
+  // bypasses the input's blur restoration path.
+  const f = document.getElementById('ob1-footer');
+  if (f) f.style.display = '';
 }
 
 /* ===== Autocomplete ===== */
