@@ -785,8 +785,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
   <!-- Cards panel anchored to bottom -->
   <div class="det-panel" style="position:absolute;left:0;right:0;bottom:40px;z-index:20;">
-    <!-- Pagination dots (custom) -->
-    <div id="det-dots" style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:16px;"></div>
+    <!-- Pagination indicator (Status-Register-Med-Pic SVG) -->
+    <div id="det-dots" style="display:flex;align-items:center;justify-content:center;margin-bottom:16px;height:24px;">
+      <div id="det-indicator" style="width:32px;height:8px;background:url('assets/Status-Register-Med-Pic-1.svg') -56.6px -52.6px no-repeat;background-size:146px 122px;"></div>
+    </div>
     <!-- Cards -->
     <div class="det-cards" id="det-cards-container" style="padding:0 16px;gap:16px;"></div>
   </div>
@@ -3520,9 +3522,8 @@ function simulateScan() {
 /* ===== Detected cards (swipeable) — compact, wizard handles freq/schedule ===== */
 function buildDetectedCards(meds) {
   const container = document.getElementById('det-cards-container');
-  const dotsContainer = document.getElementById('det-dots');
+  const indicator = document.getElementById('det-indicator');
   container.innerHTML = '';
-  dotsContainer.innerHTML = '';
   meds.forEach((m, idx) => {
     const card = document.createElement('div');
     card.className = 'det-card';
@@ -3533,29 +3534,28 @@ function buildDetectedCards(meds) {
     const detForm = m.form || lookupMedForm(m.name);
     card.dataset.form = detForm;
     card.innerHTML =
-      '<div style="display:flex;align-items:center;gap:12px;">' +
-        '<div style="width:42px;height:42px;flex-shrink:0;border-radius:14px;background:var(--lavender);display:flex;align-items:center;justify-content:center;font-size:22px;">' + formIcon(detForm) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+        '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
         '<div class="det-med-name" style="flex:1;min-width:0;font-size:18px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + m.name + ' ' + m.dosage + (m.unit || 'mg') + '</div>' +
         '<div id="det-badge-' + idx + '" style="display:none;background:#E8F9F5;color:var(--success);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap;">✓</div>' +
       '</div>' +
       '<div class="det-summary" id="det-summary-' + idx + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-border);font-size:13px;color:var(--text-sub);"></div>' +
-      '<button class="det-add-btn btn btn-primary" style="margin-top:14px;padding:13px;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="openDetCardWizard(' + idx + ')">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>' +
+      '<button class="det-add-btn btn btn-primary" style="margin-top:14px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="openDetCardWizard(' + idx + ')">' +
+        '<img src="assets/icons/Set-Up-Icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>' +
         'Configurar' +
       '</button>';
     container.appendChild(card);
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (idx === 0 ? ' active' : '');
-    dotsContainer.appendChild(dot);
   });
-  // Dots only — no arrows (rely on swipe)
-  function updateDetDots() {
+  // Toggle between Status-Register-Med-Pic-1 / -2 SVG based on which card is in view
+  function updateDetIndicator() {
+    if (!indicator) return;
     const cardWidth = container.firstElementChild ? container.firstElementChild.offsetWidth + 16 : 1;
     const activeIdx = Math.round(container.scrollLeft / cardWidth);
-    dotsContainer.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+    const which = activeIdx === 0 ? 1 : 2;
+    indicator.style.backgroundImage = "url('assets/Status-Register-Med-Pic-" + which + ".svg')";
   }
-  container.addEventListener('scroll', updateDetDots);
-  setTimeout(updateDetDots, 50);
+  container.addEventListener('scroll', updateDetIndicator);
+  setTimeout(updateDetIndicator, 50);
 }
 
 function detNav(dir) {
