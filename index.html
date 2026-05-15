@@ -267,28 +267,33 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
   color:var(--text);transition:all .2s;margin:0 auto;}
 .day-btn.active .dc{background:var(--pink);color:white;}
 
-/* -- Week strip calendar -- */
-.cal-strip{background:var(--white);padding:0 0 14px;position:relative;border-radius:var(--r-xl);
+/* -- Week strip calendar (Figma Home widget) -- */
+.cal-strip{background:var(--white);padding:16px 0 12px;position:relative;border-radius:var(--r-card);
   box-shadow:var(--shadow-sm);overflow:hidden;}
-.cal-date-hdr{font-size:15px;font-weight:700;color:var(--text);text-align:center;
-  padding:14px 20px 10px;margin-bottom:6px;}
+.cal-date-hdr{font-size:16px;font-weight:700;color:var(--text);text-align:center;
+  padding:0 16px 12px;}
 .cal-row-wrap{position:relative;}
-.cal-row{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
-  padding:4px calc(50% - 20px);scroll-snap-type:x mandatory;}
+.cal-row{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
+  padding:0 0;scroll-snap-type:x mandatory;}
 .cal-row::-webkit-scrollbar{display:none;}
-.cal-day{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;scroll-snap-align:center;min-width:40px;}
-.cal-day .cdl{font-size:11px;color:var(--text-sub);font-weight:500;}
-.cal-day .cdc{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:600;color:var(--text);transition:background .2s,color .2s,box-shadow .2s;}
-/* selected day: teal rounded-square */
-.cal-day.sel .cdc{background:var(--pink);color:white;border-radius:13px;}
-/* today: orange rounded-square highlight */
-.cal-day.today .cdc{background:var(--orange);color:white;border-radius:13px;}
-/* today + selected: keep orange (today wins) */
-.cal-day.today.sel .cdc{background:var(--orange);color:white;border-radius:13px;}
+.cal-day{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;
+  scroll-snap-align:center;width:48px;height:70px;padding:6px 2px;border-radius:24px;
+  justify-content:flex-start;transition:background .2s;}
+.cal-day .cdl{font-size:14px;color:var(--text-sub);font-weight:600;line-height:1;}
+.cal-day .cdc{font-size:16px;font-weight:700;color:var(--text);line-height:1;
+  background:transparent;border-radius:0;width:auto;height:auto;display:inline;
+  transition:color .2s;}
+.cal-day.sel:not(.today){background:var(--pink-light);}
+.cal-day.today{background:var(--orange);}
+.cal-day.today .cdl,
+.cal-day.today .cdc{color:white;}
 .cal-dot{width:6px;height:6px;border-radius:50%;background:var(--gray-border);}
 .cal-dot.done{background:var(--green);}
 .cal-dot.miss{background:var(--danger);}
+.cal-day.today .cal-dot{background:rgba(255,255,255,.55);}
+/* Scroll-position indicator track + thumb */
+.cal-track{margin:10px 16px 0;height:8px;background:var(--gray-light);border-radius:4px;position:relative;overflow:hidden;}
+.cal-thumb{position:absolute;top:1px;height:6px;background:var(--gray-border);border-radius:3px;transition:left .15s;}
 
 /* -- Section hdr -- */
 .shdr{font-size:12px;font-weight:600;color:var(--text-sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
@@ -502,7 +507,6 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   #phone{width:393px;height:min(852px,95vh);}
 }
 @media(pointer:coarse){
-  .cal-day .cdc{min-width:44px;min-height:44px;}
   .ni{min-height:44px;min-width:52px;}
   .day-btn .dc{min-width:44px;min-height:44px;}
 }
@@ -1261,6 +1265,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div class="cal-strip" style="margin-top:4px;">
       <div class="cal-date-hdr" id="cal-hdr">Hoje, 01 janeiro</div>
       <div class="cal-row-wrap"><div class="cal-row" id="cal-row"></div></div>
+      <div class="cal-track" aria-hidden="true"><div class="cal-thumb" id="cal-thumb" style="width:48px;left:50%;"></div></div>
     </div>
 
     <!-- NUNO'S CONTENT -->
@@ -4334,6 +4339,21 @@ function buildCal() {
   }
   // Scroll row so today is in the center — use scrollLeft to target the inner container
   let ignoreScroll = true;
+  function updateCalThumb() {
+    const thumb = document.getElementById('cal-thumb');
+    if (!thumb) return;
+    const track = thumb.parentElement;
+    if (!track) return;
+    const maxScroll = row.scrollWidth - row.clientWidth;
+    const trackW = track.clientWidth;
+    if (maxScroll <= 0 || trackW <= 0) { thumb.style.left = '0'; thumb.style.width = '100%'; return; }
+    const ratio = row.clientWidth / row.scrollWidth;
+    const thumbW = Math.max(24, trackW * ratio);
+    const maxThumbLeft = trackW - thumbW;
+    const left = (row.scrollLeft / maxScroll) * maxThumbLeft;
+    thumb.style.width = thumbW + 'px';
+    thumb.style.left = left + 'px';
+  }
   function calCenterToday() {
     const todayEl = row.querySelector('.cal-day.today');
     if (!todayEl) return;
@@ -4344,8 +4364,10 @@ function buildCal() {
     row.querySelectorAll('.cal-day').forEach(c => c.classList.remove('sel'));
     todayEl.classList.add('sel');
     updateCalHeader();
+    updateCalThumb();
     setTimeout(() => { ignoreScroll = false; }, 200);
   }
+  row.addEventListener('scroll', updateCalThumb, { passive: true });
   window.calCenterToday = calCenterToday;
   // Initial centre — dashboard starts as the active screen on first load
   setTimeout(calCenterToday, 100);
