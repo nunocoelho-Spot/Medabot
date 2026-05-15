@@ -786,8 +786,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <!-- Cards panel anchored to bottom -->
   <div class="det-panel" style="position:absolute;left:0;right:0;bottom:40px;z-index:20;">
     <!-- Pagination indicator (Status-Register-Med-Pic SVG) -->
-    <div id="det-dots" style="display:flex;align-items:center;justify-content:center;margin-bottom:16px;height:24px;">
-      <div id="det-indicator" style="width:32px;height:8px;background:url('assets/Status-Register-Med-Pic-1.svg') -56.6px -52.6px no-repeat;background-size:146px 122px;"></div>
+    <div id="det-dots" style="display:flex;align-items:center;justify-content:center;padding:16px;">
+      <div id="det-indicator" style="width:64.6px;height:40.6px;background:url('assets/Status-Register-Med-Pic-1.svg') -40.3px -36.3px no-repeat;background-size:146px 122px;"></div>
     </div>
     <!-- Cards -->
     <div class="det-cards" id="det-cards-container" style="padding:0 16px;gap:16px;"></div>
@@ -3556,6 +3556,24 @@ function buildDetectedCards(meds) {
   }
   container.addEventListener('scroll', updateDetIndicator);
   setTimeout(updateDetIndicator, 50);
+  // Mouse drag-to-scroll (desktop prototype usability)
+  if (!container.dataset.dragBound) {
+    let isDown = false, startX = 0, startLeft = 0;
+    container.addEventListener('mousedown', (e) => {
+      isDown = true; startX = e.pageX; startLeft = container.scrollLeft;
+      container.style.cursor = 'grabbing';
+    });
+    const endDrag = () => { isDown = false; container.style.cursor = ''; };
+    container.addEventListener('mouseup', endDrag);
+    container.addEventListener('mouseleave', endDrag);
+    container.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      container.scrollLeft = startLeft - (e.pageX - startX);
+    });
+    container.style.cursor = 'grab';
+    container.dataset.dragBound = '1';
+  }
 }
 
 function detNav(dir) {
