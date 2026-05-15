@@ -811,13 +811,17 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="color:white;font-size:13px;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.5);">A identificar medicamentos…</div>
   </div>
   <!-- Cards panel anchored to bottom -->
-  <div class="det-panel" style="position:absolute;left:0;right:0;bottom:40px;z-index:20;">
+  <div class="det-panel" style="position:absolute;left:0;right:0;bottom:32px;z-index:20;display:flex;flex-direction:column;gap:14px;">
     <!-- Pagination indicator (Status-Register-Med-Pic SVG) -->
-    <div id="det-dots" style="display:flex;align-items:center;justify-content:center;padding:16px;">
+    <div id="det-dots" style="display:flex;align-items:center;justify-content:center;padding:0 16px;">
       <div id="det-indicator" style="width:64.6px;height:40.6px;background:url('assets/Status-Register-Med-Pic-1.svg') -40.3px -36.3px no-repeat;background-size:146px 122px;"></div>
     </div>
     <!-- Cards -->
     <div class="det-cards" id="det-cards-container" style="padding:0 16px;gap:16px;"></div>
+    <!-- Continue button -->
+    <div style="padding:4px 16px 0;">
+      <button class="btn btn-primary" onclick="addAllDetectedMeds();go('ob-confirm','r')">Continuar</button>
+    </div>
   </div>
 </div>
 
@@ -3516,10 +3520,14 @@ function buildDetectedCards(meds) {
         '<div class="det-med-name" style="flex:1;min-width:0;font-size:18px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + m.name + ' ' + m.dosage + (m.unit || 'mg') + '</div>' +
         '<div id="det-badge-' + idx + '" style="display:none;background:#E8F9F5;color:var(--success);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;white-space:nowrap;">✓</div>' +
       '</div>' +
-      '<div class="det-summary" id="det-summary-' + idx + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-border);font-size:13px;color:var(--text-sub);"></div>' +
+      '<div style="height:1px;background:var(--gray-border);margin:12px 0;"></div>' +
+      '<div class="det-summary" id="det-summary-' + idx + '" style="font-size:14px;font-weight:500;color:var(--text);line-height:1.4;">' +
+        '<div>Todos os dias</div>' +
+        '<div>08:00&nbsp;&nbsp;|&nbsp;&nbsp;16:00</div>' +
+      '</div>' +
       '<button class="det-add-btn btn btn-primary" style="margin-top:14px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="openDetCardWizard(' + idx + ')">' +
-        '<span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url(\'assets/icons/Set-Up-Icon.svg\') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>' +
-        'Configurar' +
+        '<span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url(\'assets/icons/Edit-Icon.svg\') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>' +
+        'Editar Toma' +
       '</button>';
     container.appendChild(card);
   });
