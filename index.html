@@ -1177,18 +1177,16 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == DASHBOARD == -->
-<div id="dashboard" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
+<div id="dashboard" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
   <!-- Header -->
-  <div style="padding:4px 24px 12px;display:flex;justify-content:space-between;align-items:center;position:relative;">
-    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="toggleProfileDropdown()" role="button" tabindex="0">
-      <div id="dash-avatar" style="width:40px;height:40px;border-radius:50%;background:var(--text);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">NC</div>
-      <div>
-        <div style="font-size:14px;color:var(--text-sub);">Ola,</div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span id="dash-greeting" style="font-size:26px;font-weight:700;">Utilizador</span>
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" style="opacity:.5;margin-top:4px;"><path d="M5 8L10 13L15 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+  <div style="padding:78px 16px 12px;display:flex;justify-content:space-between;align-items:center;position:relative;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="toggleProfileDropdown()" role="button" tabindex="0">
+      <div id="dash-avatar" style="width:36px;height:36px;border-radius:50%;background:var(--text);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">NC</div>
+      <div style="display:flex;align-items:baseline;gap:6px;">
+        <span style="font-size:18px;font-weight:500;color:var(--text);">Olá,</span>
+        <span id="dash-greeting" style="font-size:24px;font-weight:700;color:var(--text);">Utilizador</span>
+        <span class="dd-chevron" aria-hidden="true" style="margin-left:-2px;"></span>
       </div>
     </div>
     <!-- Profile dropdown -->
@@ -1238,41 +1236,37 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       </div>
     </div>
     <!-- Bell icon (right side of header) -->
-    <button onclick="closeProfileDropdown();go('alertas','r')" style="position:relative;width:40px;height:40px;border-radius:50%;background:var(--gray-light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;" aria-label="Alertas">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <button onclick="closeProfileDropdown();go('alertas','r')" style="position:relative;width:48px;height:48px;border-radius:50%;background:var(--white);border:0.6px solid #EDEDED;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);padding:0;" aria-label="Alertas">
+      <img src="assets/icons/Notifications-icon.svg" alt="" style="width:40px;height:40px;display:block;"/>
       <span id="alert-badge" style="display:none;position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;background:var(--danger);border-radius:9px;font-size:10px;font-weight:700;color:white;align-items:center;justify-content:center;border:2px solid white;padding:0 3px;">4</span>
     </button>
   </div>
 
-  <!-- Calendar strip (scrollable 14+ days) -->
-  <div class="cal-strip">
-    <div class="cal-date-hdr" id="cal-hdr">Hoje, 01 janeiro</div>
-    <div class="cal-row-wrap"><div class="cal-row" id="cal-row"></div></div>
-  </div>
+  <div class="scroll" style="padding:0 16px;">
+    <!-- Calendar widget card -->
+    <div class="cal-strip" style="margin-top:4px;">
+      <div class="cal-date-hdr" id="cal-hdr">Hoje, 01 janeiro</div>
+      <div class="cal-row-wrap"><div class="cal-row" id="cal-row"></div></div>
+    </div>
 
-  <div class="scroll">
     <!-- NUNO'S CONTENT -->
-    <div id="dash-nuno" style="padding:14px 24px;display:flex;flex-direction:column;gap:14px;padding-bottom:20px;">
-      <!-- Meds today - rendered dynamically -->
-      <div>
-        <div style="margin-bottom:10px;">
-          <div class="shdr meds-day-label" style="margin-bottom:0;">Medicação de hoje</div>
-        </div>
-        <button onclick="openAddSheet()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:transparent;color:var(--text-sub);border:1.5px dashed var(--gray-border);border-radius:14px;padding:14px;cursor:pointer;font-size:14px;font-weight:500;margin-bottom:10px;transition:border-color .15s, color .15s;" onmouseover="this.style.borderColor='var(--pink)';this.style.color='var(--pink)';" onmouseout="this.style.borderColor='var(--gray-border)';this.style.color='var(--text-sub)';">+ Registar toma</button>
-        <div id="dash-nuno-meds"></div>
-      </div>
+    <div id="dash-nuno" style="padding:24px 0 24px;display:flex;flex-direction:column;gap:14px;">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Medicação de hoje</h2>
+      <button onclick="openAddSheet()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
+        Registar medicamento
+      </button>
+      <div id="dash-nuno-meds"></div>
     </div>
 
     <!-- MARIA'S CONTENT -->
-    <div id="dash-maria" style="display:none;padding:14px 24px;flex-direction:column;gap:14px;padding-bottom:20px;">
-      <!-- Meds Maria -->
-      <div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div class="shdr meds-day-label" style="margin-bottom:0;">Medicação de hoje</div>
-        </div>
-        <button onclick="openAddSheet()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:transparent;color:var(--text-sub);border:1.5px dashed var(--gray-border);border-radius:14px;padding:14px;cursor:pointer;font-size:14px;font-weight:500;margin-bottom:10px;transition:border-color .15s, color .15s;" onmouseover="this.style.borderColor='var(--pink)';this.style.color='var(--pink)';" onmouseout="this.style.borderColor='var(--gray-border)';this.style.color='var(--text-sub)';">+ Registar toma</button>
-        <div id="dash-maria-meds"></div>
-      </div>
+    <div id="dash-maria" style="display:none;padding:24px 0;flex-direction:column;gap:14px;">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Medicação de hoje</h2>
+      <button onclick="openAddSheet()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
+        Registar medicamento
+      </button>
+      <div id="dash-maria-meds"></div>
     </div>
   </div>
   <!-- Bottom nav: Calendário · Medicamentos · Pesquisa · Chat -->
