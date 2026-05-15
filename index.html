@@ -902,251 +902,59 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
   </div>
 
-  <!-- ── STEP 2: Como vais tomar? (unified frequency + schedule) ── -->
+  <!-- ── STEP 2: Como vais tomar? (matches Figma "Register-Medication-When-Are-you-Taking-It") ── -->
   <div id="ob-step2" class="ob-step" style="display:none;">
     <div class="scroll">
-      <div style="padding:16px 24px 24px;display:flex;flex-direction:column;gap:14px;">
+      <div style="padding:16px 16px 24px;display:flex;flex-direction:column;gap:16px;">
         <div>
           <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Como vais tomar?</h2>
           <p id="ob-step2-intro" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Escolhe uma frequência abaixo.</p>
         </div>
-
-        <!-- 1: Conforme necessário -->
         <div class="freq-option" data-freq="asneeded" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('asneeded')">
             <img class="freq-option-icon" src="assets/icons/As_needed-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Conforme necessário</div>
-              <div class="freq-option-sub">Só quando preciso — sem horário fixo.</div>
+              <div class="freq-option-sub">Só quando preciso. Sem horário fixo.</div>
             </div>
             <div class="freq-option-check"></div>
           </div>
-          <div class="freq-option-body">
-            <div class="stepper-row">
-              <span class="stepper-label">No máximo por dia</span>
-              <div class="stepper" data-input-id="asneeded-max-units">
-                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
-                <span class="stepper-value">3</span>
-                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
-              </div>
-            </div>
-            <p style="font-size:12px;color:var(--text-sub);line-height:1.4;margin:0;">Por segurança. A app avisa-te se exceder.</p>
-          </div>
         </div>
-
-        <!-- 2: Todos os dias -->
         <div class="freq-option" data-freq="daily" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('daily')">
             <img class="freq-option-icon" src="assets/icons/everyday-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Todos os dias</div>
-              <div class="freq-option-sub">Exemplo: de manhã e à noite.</div>
+              <div class="freq-option-sub">Exemplo: de manhã e antes de deitar.</div>
             </div>
             <div class="freq-option-check"></div>
           </div>
-          <div class="freq-option-body">
-            <div class="stepper-row">
-              <span class="stepper-label">Por toma</span>
-              <div class="stepper" data-input-id="daily-qty">
-                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
-                <span class="stepper-value">1</span>
-                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
-              </div>
-            </div>
-            <div class="ig">
-              <label class="ilbl">A que horas?</label>
-              <div class="time-list" id="daily-time-list" style="display:flex;flex-direction:column;gap:8px;">
-                <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
-              </div>
-              <button type="button" onclick="addTimeTo('daily-time-list')" style="margin-top:8px;display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--pink);font-size:14px;font-weight:600;cursor:pointer;padding:0;"><span style="font-size:18px;">+</span> Adicionar hora</button>
-            </div>
-          </div>
         </div>
-
-        <!-- 2: Em ciclo (pílula, anticoagulantes — comum) -->
-        <div class="freq-option" data-freq="cycle" tabindex="0" role="radio" aria-checked="false">
-          <div class="freq-option-header" onclick="selectFreqOption('cycle')">
-            <img class="freq-option-icon" src="assets/icons/cycle-icon.svg" alt=""/>
-            <div style="flex:1;min-width:0;">
-              <div class="freq-option-title">Em ciclo</div>
-              <div class="freq-option-sub">Ex: pílula — 21 dias toma, 7 de pausa.</div>
-            </div>
-            <div class="freq-option-check"></div>
-          </div>
-          <div class="freq-option-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div class="stepper-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-                <span class="stepper-label">Dias de toma</span>
-                <div class="stepper" data-input-id="cycle-on">
-                  <button type="button" onclick="stepperDec(this,1)" aria-label="Menos">−</button>
-                  <span class="stepper-value">21</span>
-                  <button type="button" onclick="stepperInc(this,60)" aria-label="Mais">+</button>
-                </div>
-              </div>
-              <div class="stepper-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-                <span class="stepper-label">Dias de pausa</span>
-                <div class="stepper" data-input-id="cycle-off">
-                  <button type="button" onclick="stepperDec(this,0)" aria-label="Menos">−</button>
-                  <span class="stepper-value">7</span>
-                  <button type="button" onclick="stepperInc(this,30)" aria-label="Mais">+</button>
-                </div>
-              </div>
-            </div>
-            <div class="stepper-row">
-              <span class="stepper-label">Por toma</span>
-              <div class="stepper" data-input-id="cycle-qty">
-                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
-                <span class="stepper-value">1</span>
-                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
-              </div>
-            </div>
-            <div class="ig">
-              <label class="ilbl">A que horas?</label>
-              <div class="time-list" id="cycle-time-list" style="display:flex;flex-direction:column;gap:8px;">
-                <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
-              </div>
-              <button type="button" onclick="addTimeTo('cycle-time-list')" style="margin-top:8px;display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--pink);font-size:14px;font-weight:600;cursor:pointer;padding:0;"><span style="font-size:18px;">+</span> Adicionar hora</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3: A cada X dias (intervalo fixo) -->
         <div class="freq-option" data-freq="interval" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('interval')">
             <img class="freq-option-icon" src="assets/icons/every_few_days-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">A cada X dias</div>
-              <div class="freq-option-sub">Ex: de 2 em 2 dias, de 3 em 3 dias.</div>
+              <div class="freq-option-sub">Exemplo: de dois em dois dias.</div>
             </div>
             <div class="freq-option-check"></div>
           </div>
-          <div class="freq-option-body">
-            <div class="stepper-row">
-              <span class="stepper-label">A cada</span>
-              <div class="stepper" data-input-id="interval-n">
-                <button type="button" onclick="stepperDec(this,2)" aria-label="Menos">−</button>
-                <span class="stepper-value">2</span>
-                <button type="button" onclick="stepperInc(this,30)" aria-label="Mais">+</button>
-              </div>
-              <span class="stepper-unit">dias</span>
-            </div>
-            <div class="stepper-row">
-              <span class="stepper-label">Por toma</span>
-              <div class="stepper" data-input-id="interval-qty">
-                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
-                <span class="stepper-value">1</span>
-                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
-              </div>
-            </div>
-            <div class="ig">
-              <label class="ilbl">A que horas?</label>
-              <div class="time-list" id="interval-time-list" style="display:flex;flex-direction:column;gap:8px;">
-                <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
-              </div>
-              <button type="button" onclick="addTimeTo('interval-time-list')" style="margin-top:8px;display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--pink);font-size:14px;font-weight:600;cursor:pointer;padding:0;"><span style="font-size:18px;">+</span> Adicionar hora</button>
-            </div>
-          </div>
         </div>
-
-        <!-- 4: Só em certos dias (dias da semana) -->
-        <div class="freq-option" data-freq="specific" tabindex="0" role="radio" aria-checked="false">
-          <div class="freq-option-header" onclick="selectFreqOption('specific')">
-            <img class="freq-option-icon" src="assets/icons/everyday-icon.svg" alt=""/>
+        <div class="freq-option" data-freq="cycle" tabindex="0" role="radio" aria-checked="false">
+          <div class="freq-option-header" onclick="selectFreqOption('cycle')">
+            <img class="freq-option-icon" src="assets/icons/cycle-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
-              <div class="freq-option-title">Só em certos dias</div>
-              <div class="freq-option-sub">Exemplo: segunda, quarta e sexta.</div>
+              <div class="freq-option-title">Em ciclo</div>
+              <div class="freq-option-sub">Exemplo: 21 dias e 7 de pausa.</div>
             </div>
             <div class="freq-option-check"></div>
           </div>
-          <div class="freq-option-body">
-            <div class="ig">
-              <label class="ilbl">Que dias da semana?</label>
-              <div class="day-grid" id="specific-day-grid">
-                <div class="day-btn active" onclick="toggleDay(this)"><div class="dl">Seg</div><div class="dc">S</div></div>
-                <div class="day-btn" onclick="toggleDay(this)"><div class="dl">Ter</div><div class="dc">T</div></div>
-                <div class="day-btn active" onclick="toggleDay(this)"><div class="dl">Qua</div><div class="dc">Q</div></div>
-                <div class="day-btn" onclick="toggleDay(this)"><div class="dl">Qui</div><div class="dc">Q</div></div>
-                <div class="day-btn active" onclick="toggleDay(this)"><div class="dl">Sex</div><div class="dc">S</div></div>
-                <div class="day-btn" onclick="toggleDay(this)"><div class="dl">Sáb</div><div class="dc">S</div></div>
-                <div class="day-btn" onclick="toggleDay(this)"><div class="dl">Dom</div><div class="dc">D</div></div>
-              </div>
-            </div>
-            <div class="stepper-row">
-              <span class="stepper-label">Por toma</span>
-              <div class="stepper" data-input-id="specific-qty">
-                <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
-                <span class="stepper-value">1</span>
-                <button type="button" onclick="stepperInc(this)" aria-label="Mais">+</button>
-              </div>
-            </div>
-            <div class="ig">
-              <label class="ilbl">A que horas?</label>
-              <div class="time-list" id="specific-time-list" style="display:flex;flex-direction:column;gap:8px;">
-                <div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>08:00</span></div>
-              </div>
-              <button type="button" onclick="addTimeTo('specific-time-list')" style="margin-top:8px;display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--pink);font-size:14px;font-weight:600;cursor:pointer;padding:0;"><span style="font-size:18px;">+</span> Adicionar hora</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Duration (hidden when asneeded) -->
-        <div id="dur-section" style="display:none;border-top:1px solid var(--gray-border);padding-top:16px;">
-          <p style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin:0 0 10px;">Período</p>
-          <div class="ig" style="margin-bottom:10px;">
-            <label class="ilbl" style="display:flex;align-items:center;justify-content:space-between;">
-              <span>Início</span>
-              <span style="font-size:12px;color:var(--text-sub);font-weight:500;">A partir de quando</span>
-            </label>
-            <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('manual-start',this)">
-              <span id="manual-start-display">Hoje</span>
-              <span style="font-size:14px;">&#128197;</span>
-            </div>
-            <input type="hidden" id="manual-start"/>
-          </div>
-          <div class="toggle" style="padding:8px 0;">
-            <div>
-              <div style="font-size:14px;font-weight:600;color:var(--text);">Com data de fim</div>
-              <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">Tratamento contínuo se desligado</div>
-            </div>
-            <div class="tswitch" id="has-end-date" onclick="toggleEndDate(this)"></div>
-          </div>
-          <div class="ig" id="end-date-row" style="display:none;">
-            <label class="ilbl">Fim</label>
-            <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('manual-end',this)">
-              <span id="manual-end-display" style="color:var(--gray);">Selecionar data</span>
-              <span style="font-size:14px;">&#128197;</span>
-            </div>
-            <input type="hidden" id="manual-end" value=""/>
-          </div>
-        </div>
-
-        <!-- Optional notes (collapsed by default) -->
-        <button type="button" id="add-note-btn" class="adv-toggle" onclick="toggleNote(this)" aria-expanded="false" style="align-self:flex-start;">
-          <span>＋ Adicionar nota</span>
-        </button>
-        <div class="ig" id="note-row" style="display:none;">
-          <label class="ilbl">Nota para ti</label>
-          <textarea id="manual-note" class="ifield" rows="2" placeholder="Ex: Tomar às refeições, com água."></textarea>
-        </div>
-
-        <!-- Live summary -->
-        <div class="ob-summary" id="ob-summary">
-          <div class="ob-summary-label">Resumo</div>
-          <div class="ob-summary-line" id="ob-summary-content">A preencher…</div>
-        </div>
-
-        <!-- Save-to-catalog toggle (only visible in log-dose mode) -->
-        <div id="ob-save-catalog-row" class="toggle" style="display:none;padding:12px 14px;background:var(--gray-light);border-radius:14px;">
-          <div style="flex:1;padding-right:12px;">
-            <div style="font-size:14px;font-weight:600;color:var(--text);">Guardar na minha lista</div>
-            <div style="font-size:12px;color:var(--text-sub);margin-top:2px;line-height:1.4;">Para usares este medicamento noutros dias sem preencher tudo outra vez.</div>
-          </div>
-          <div class="tswitch" id="ob-save-catalog-switch" onclick="this.classList.toggle('on')"></div>
         </div>
       </div>
     </div>
-    <div style="padding:12px 24px 32px;flex-shrink:0;">
-      <button id="ob-save-btn" class="btn btn-primary" onclick="saveObInsert()">Guardar medicamento</button>
+    <div style="padding:12px 16px 24px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+      <button id="ob-save-btn" class="btn btn-primary" onclick="saveObInsert()">Continuar</button>
+      <button onclick="go('ob-confirm','r')" style="background:none;border:none;color:var(--pink);font-size:16px;font-weight:700;cursor:pointer;padding:12px;font-family:inherit;">Fazer depois</button>
     </div>
   </div>
 </div>
@@ -3197,7 +3005,8 @@ function saveObInsert() {
     }
     // Default: new one-off or catalog entry — use the actual freq selection
     if (!document.querySelector('#ob-step2 .freq-option.active')) return;
-    const saveToCatalog = document.getElementById('ob-save-catalog-switch').classList.contains('on');
+    const swEl = document.getElementById('ob-save-catalog-switch');
+    const saveToCatalog = swEl ? swEl.classList.contains('on') : false;
     const freqLabelLog = obFreqLabels[obSelectedFreq] || 'Conforme necessário';
     const medTypeLog = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
     const cfgLog = (typeof collectObConfig === 'function') ? collectObConfig() : null;
