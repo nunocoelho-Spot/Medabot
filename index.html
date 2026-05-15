@@ -3541,7 +3541,7 @@ function buildDetectedCards(meds) {
       '</div>' +
       '<div class="det-summary" id="det-summary-' + idx + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-border);font-size:13px;color:var(--text-sub);"></div>' +
       '<button class="det-add-btn btn btn-primary" style="margin-top:14px;padding:12px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="openDetCardWizard(' + idx + ')">' +
-        '<img src="assets/icons/Set-Up-Icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>' +
+        '<span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url(\'assets/icons/Set-Up-Icon.svg\') center/48px 48px no-repeat;flex-shrink:0;"></span>' +
         'Configurar' +
       '</button>';
     container.appendChild(card);
