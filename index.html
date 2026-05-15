@@ -986,8 +986,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               </div>
               <div class="fob-period-row">
                 <span class="fob-period-label">Fim</span>
-                <button type="button" class="fob-add" onclick="toggleEndDate(document.getElementById('has-end-date'))" aria-label="Adicionar data de fim">+</button>
-                <div class="tswitch" id="has-end-date" style="display:none;"></div>
+                <button type="button" class="fob-add" data-end-add="daily" onclick="openEndPicker('daily')" aria-label="Adicionar data de fim"></button>
+                <div class="fob-date" id="daily-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('daily')">
+                  <span id="daily-end-display">Selecionar</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="daily-end"/>
               </div>
             </div>
           </div>
@@ -1039,7 +1043,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               </div>
               <div class="fob-period-row">
                 <span class="fob-period-label">Fim</span>
-                <button type="button" class="fob-add" aria-label="Adicionar data de fim">+</button>
+                <button type="button" class="fob-add" data-end-add="interval" onclick="openEndPicker('interval')" aria-label="Adicionar data de fim"></button>
+                <div class="fob-date" id="interval-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('interval')">
+                  <span id="interval-end-display">Selecionar</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="interval-end"/>
               </div>
             </div>
           </div>
@@ -1099,7 +1108,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
               </div>
               <div class="fob-period-row">
                 <span class="fob-period-label">Fim</span>
-                <button type="button" class="fob-add" aria-label="Adicionar data de fim">+</button>
+                <button type="button" class="fob-add" data-end-add="cycle" onclick="openEndPicker('cycle')" aria-label="Adicionar data de fim"></button>
+                <div class="fob-date" id="cycle-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('cycle')">
+                  <span id="cycle-end-display">Selecionar</span>
+                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                </div>
+                <input type="hidden" id="cycle-end"/>
               </div>
             </div>
           </div>
@@ -4290,11 +4304,16 @@ let pickerTargetId = '';
 let pickerDisplayEl = null;
 let pickerDate = new Date();
 let pickerSelectedDate = null;
+let pickerMode = 'past';        // 'past' = no future days allowed, 'future' = no past days before minDate
+let pickerMinDate = null;       // for mode 'future' — earliest allowed date
 
-function openDatePicker(targetId, displayEl) {
+function openDatePicker(targetId, displayEl, opts) {
+  opts = opts || {};
   pickerTargetId = targetId;
   pickerDisplayEl = displayEl;
-  pickerDate = new Date();
+  pickerMode = opts.mode || 'past';
+  pickerMinDate = opts.minDate ? new Date(opts.minDate) : null;
+  pickerDate = pickerMinDate ? new Date(pickerMinDate) : new Date();
   pickerSelectedDate = null;
   document.getElementById('picker-month-grid').style.display = 'none';
   document.getElementById('picker-year-grid').style.display = 'none';
@@ -4308,9 +4327,14 @@ function closeDatePicker() {
 function changePickerMonth(delta) {
   const d = new Date(pickerDate);
   d.setMonth(d.getMonth() + delta);
-  const now = new Date();
-  // Clamp so we never go past current month
-  if (d.getFullYear() > now.getFullYear() || (d.getFullYear() === now.getFullYear() && d.getMonth() > now.getMonth())) return;
+  if (pickerMode === 'past') {
+    const now = new Date();
+    if (d.getFullYear() > now.getFullYear() || (d.getFullYear() === now.getFullYear() && d.getMonth() > now.getMonth())) return;
+  } else {
+    // future mode — don't go before minDate's month
+    const min = pickerMinDate || new Date();
+    if (d.getFullYear() < min.getFullYear() || (d.getFullYear() === min.getFullYear() && d.getMonth() < min.getMonth())) return;
+  }
   pickerDate = d;
   renderPickerMonth();
 }
@@ -4322,10 +4346,14 @@ function showPickerMode(mode) {
     const monthNamesShort = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     mGrid.innerHTML = '';
     const now = new Date();
+    const min = pickerMinDate || now;
     const isCurYear = pickerDate.getFullYear() === now.getFullYear();
+    const isMinYear = pickerDate.getFullYear() === min.getFullYear();
     monthNamesShort.forEach((m, i) => {
       const isActive = i === pickerDate.getMonth();
-      const isDisabled = isCurYear && i > now.getMonth();
+      const isDisabled = pickerMode === 'past'
+        ? (isCurYear && i > now.getMonth())
+        : (isMinYear && i < min.getMonth());
       const onclick = isDisabled ? '' : 'onclick="pickMonth(' + i + ')"';
       const bg = isActive ? 'var(--pink)' : (isDisabled ? 'transparent' : 'var(--gray-light)');
       const color = isActive ? 'white' : (isDisabled ? 'var(--gray)' : 'var(--text)');
@@ -4339,8 +4367,10 @@ function showPickerMode(mode) {
   } else if (mode === 'year') {
     yGrid.innerHTML = '';
     const currentYear = pickerDate.getFullYear();
-    const startYear = new Date().getFullYear() - 100;
-    const endYear = new Date().getFullYear();
+    const nowY = new Date().getFullYear();
+    const minY = (pickerMinDate || new Date()).getFullYear();
+    const startYear = pickerMode === 'past' ? (nowY - 100) : minY;
+    const endYear = pickerMode === 'past' ? nowY : (nowY + 100);
     for (let y = endYear; y >= startYear; y--) {
       const isActive = y === currentYear;
       yGrid.innerHTML += '<div onclick="pickYear(' + y + ')" style="padding:12px 4px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:' + (isActive ? '700' : '500') + ';background:' + (isActive ? 'var(--pink)' : 'var(--gray-light)') + ';color:' + (isActive ? 'white' : 'var(--text)') + ';">' + y + '</div>';
@@ -4397,15 +4427,36 @@ function renderPickerMonth() {
     const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
     const isSel = pickerSelectedDate && d === pickerSelectedDate.getDate() && month === pickerSelectedDate.getMonth() && year === pickerSelectedDate.getFullYear();
     const cellDate = new Date(year, month, d);
-    const isFuture = cellDate > today && !isToday;
-    const cls = 'cal-cell' + (isToday ? ' today' : '') + (isSel ? ' selected' : '') + (isFuture ? ' other' : '');
-    const onclick = isFuture ? '' : 'onclick="selectPickerDate(' + d + ')"';
-    grid.innerHTML += '<div class="' + cls + '" ' + onclick + ' style="' + (isFuture ? 'opacity:.35;cursor:default;' : '') + '">' + d + '</div>';
+    let isDisabled;
+    if (pickerMode === 'past') {
+      isDisabled = cellDate > today && !isToday;
+    } else {
+      // future mode — disable anything before the min date
+      const min = pickerMinDate || today;
+      const minDay = new Date(min.getFullYear(), min.getMonth(), min.getDate());
+      isDisabled = cellDate < minDay;
+    }
+    const cls = 'cal-cell' + (isToday ? ' today' : '') + (isSel ? ' selected' : '') + (isDisabled ? ' other' : '');
+    const onclick = isDisabled ? '' : 'onclick="selectPickerDate(' + d + ')"';
+    grid.innerHTML += '<div class="' + cls + '" ' + onclick + ' style="' + (isDisabled ? 'opacity:.35;cursor:default;' : '') + '">' + d + '</div>';
   }
 }
 function selectPickerDate(day) {
   pickerSelectedDate = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), day);
   renderPickerMonth();
+}
+/* Open date picker in "future" mode for the end-date of a freq option.
+   Min date = the corresponding start date (or today if not set). */
+function openEndPicker(prefix) {
+  const startMap = { daily: 'manual-start' };
+  const startId = startMap[prefix] || (prefix + '-start');
+  const startHidden = document.getElementById(startId);
+  let minDate = new Date();
+  if (startHidden && startHidden.value) {
+    const parsed = new Date(startHidden.value);
+    if (!isNaN(parsed)) minDate = parsed;
+  }
+  openDatePicker(prefix + '-end', null, { mode: 'future', minDate });
 }
 function confirmDatePicker() {
   if (!pickerSelectedDate) { closeDatePicker(); return; }
@@ -4416,6 +4467,14 @@ function confirmDatePicker() {
   if (hidden) hidden.value = iso;
   const display = document.getElementById(pickerTargetId + '-display');
   if (display) { display.textContent = formatted; display.style.color = 'var(--text)'; }
+  // For end-date pickers (id ending in -end), swap the "+" button for the date display.
+  if (pickerTargetId.endsWith('-end')) {
+    const prefix = pickerTargetId.slice(0, -4);
+    const addBtn = document.querySelector('[data-end-add="' + prefix + '"]');
+    const wrap = document.getElementById(prefix + '-end-row-display');
+    if (addBtn) addBtn.style.display = 'none';
+    if (wrap) wrap.style.display = 'flex';
+  }
   closeDatePicker();
 }
 
