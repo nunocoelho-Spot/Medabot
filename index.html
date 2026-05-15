@@ -563,7 +563,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div style="padding:0 16px 40px;display:flex;flex-direction:column;gap:16px;">
     <button class="btn btn-primary" onclick="go('auth-register','r')">Criar conta</button>
     <button class="btn btn-outline" onclick="go('auth-login','r')">Já tenho conta</button>
-    <button class="btn" style="background:var(--white);color:var(--pink);box-shadow:var(--shadow-sm);" onclick="openGuestChat()">Conversar sem conta</button>
+    <button class="btn" style="background:none;color:var(--pink);" onclick="openGuestChat()">Conversar sem conta</button>
   </div>
 </div>
 
@@ -718,7 +718,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-top:20px;">
       <div role="button" tabindex="0" onclick="go('ob-scan','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
-        <img src="assets/icons/Camera-icon-packaging.svg" alt="" style="width:40px;height:40px;flex-shrink:0;"/>
+        <span aria-hidden="true" style="display:block;width:40px;height:40px;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Fotografar embalagens</div>
           <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Identifica automaticamente o medicamento</div>
@@ -726,7 +726,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
       </div>
       <div role="button" tabindex="0" onclick="openManualInsert()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-lg);cursor:pointer;box-shadow:var(--shadow-sm);">
-        <img src="assets/icons/manual_input-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;"/>
+        <span aria-hidden="true" style="display:block;width:40px;height:40px;background:url('assets/icons/manual_input-icon.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:16px;font-weight:700;color:var(--pink);">Inserir manualmente</div>
           <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Preenche os dados do medicamento</div>
