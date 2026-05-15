@@ -380,15 +380,14 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   letter-spacing:0.5px;padding:12px 12px 6px;}
 
 /* -- Frequency options (unified Step 2) -- */
-.freq-option{border:1.5px solid var(--gray-border);border-radius:16px;background:white;transition:border-color .2s, background .2s;overflow:hidden;}
-.freq-option.active{border-color:var(--pink);background:var(--pink-light);}
-.freq-option-header{display:flex;align-items:flex-start;gap:14px;padding:16px;cursor:pointer;}
+.freq-option{border:1.5px solid transparent;border-radius:16px;background:var(--white);transition:border-color .2s;overflow:hidden;box-shadow:var(--shadow-sm);}
+.freq-option.active{border-color:var(--pink);}
+.freq-option-header{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;}
 .freq-option-header:active{opacity:.85;}
-.freq-option-icon{width:40px;height:40px;border-radius:12px;background:var(--gray-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
-.freq-option.active .freq-option-icon{background:white;}
-.freq-option-title{font-size:15px;font-weight:700;color:var(--text);}
-.freq-option-sub{font-size:13px;color:var(--text-sub);margin-top:2px;line-height:1.35;}
-.freq-option-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:6px;transition:all .2s;background:white;}
+.freq-option-icon{width:40px;height:40px;flex-shrink:0;display:block;object-fit:contain;}
+.freq-option-title{font-size:16px;font-weight:700;color:var(--pink);}
+.freq-option-sub{font-size:14px;color:var(--text-sub);margin-top:2px;line-height:1.35;font-weight:500;}
+.freq-option-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;background:white;}
 .freq-option.active .freq-option-check{background:var(--pink);border-color:var(--pink);}
 .freq-option.active .freq-option-check::after{content:'';width:6px;height:10px;border:solid white;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px, -1px);}
 .freq-option-body{display:none;padding:0 16px 16px;flex-direction:column;gap:14px;border-top:1px solid rgba(233,30,140,.18);margin-top:-2px;padding-top:14px;}
@@ -850,7 +849,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <!-- Wizard header -->
   <div style="padding:8px 24px 12px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
     <button class="back" aria-label="Voltar" onclick="obInsertBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 id="ob-ins-title" style="font-size:18px;font-weight:700;flex:1;">Medicamento</h2>
+    <h2 id="ob-ins-title" style="display:none;">Medicamento</h2>
   </div>
 
   <!-- ── STEP 1: Basic info ── -->
@@ -907,12 +906,15 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div id="ob-step2" class="ob-step" style="display:none;">
     <div class="scroll">
       <div style="padding:16px 24px 24px;display:flex;flex-direction:column;gap:14px;">
-        <p id="ob-step2-intro" style="font-size:15px;color:var(--text-sub);margin:0 0 4px;">Escolhe como vais tomar este medicamento.</p>
+        <div>
+          <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Como vais tomar?</h2>
+          <p id="ob-step2-intro" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Escolhe uma frequência abaixo.</p>
+        </div>
 
         <!-- 1: Conforme necessário -->
         <div class="freq-option" data-freq="asneeded" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('asneeded')">
-            <div class="freq-option-icon">💊</div>
+            <img class="freq-option-icon" src="assets/icons/As_needed-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Conforme necessário</div>
               <div class="freq-option-sub">Só quando preciso — sem horário fixo.</div>
@@ -935,7 +937,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <!-- 2: Todos os dias -->
         <div class="freq-option" data-freq="daily" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('daily')">
-            <div class="freq-option-icon">🗓️</div>
+            <img class="freq-option-icon" src="assets/icons/everyday-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Todos os dias</div>
               <div class="freq-option-sub">Exemplo: de manhã e à noite.</div>
@@ -964,7 +966,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <!-- 2: Em ciclo (pílula, anticoagulantes — comum) -->
         <div class="freq-option" data-freq="cycle" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('cycle')">
-            <div class="freq-option-icon">🔄</div>
+            <img class="freq-option-icon" src="assets/icons/cycle-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Em ciclo</div>
               <div class="freq-option-sub">Ex: pílula — 21 dias toma, 7 de pausa.</div>
@@ -1011,7 +1013,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <!-- 3: A cada X dias (intervalo fixo) -->
         <div class="freq-option" data-freq="interval" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('interval')">
-            <div class="freq-option-icon">⏱️</div>
+            <img class="freq-option-icon" src="assets/icons/every_few_days-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">A cada X dias</div>
               <div class="freq-option-sub">Ex: de 2 em 2 dias, de 3 em 3 dias.</div>
@@ -1049,7 +1051,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <!-- 4: Só em certos dias (dias da semana) -->
         <div class="freq-option" data-freq="specific" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('specific')">
-            <div class="freq-option-icon">📆</div>
+            <img class="freq-option-icon" src="assets/icons/everyday-icon.svg" alt=""/>
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Só em certos dias</div>
               <div class="freq-option-sub">Exemplo: segunda, quarta e sexta.</div>
