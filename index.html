@@ -1124,7 +1124,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
     <div style="padding:12px 16px 24px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
       <button id="ob-save-btn" class="btn btn-primary" onclick="saveObInsert()">Continuar</button>
-      <button onclick="go('ob-confirm','r')" style="background:none;border:none;color:var(--pink);font-size:16px;font-weight:700;cursor:pointer;padding:12px;font-family:inherit;">Fazer depois</button>
+      <button onclick="obInsertSkip()" style="background:none;border:none;color:var(--pink);font-size:16px;font-weight:700;cursor:pointer;padding:12px;font-family:inherit;">Fazer depois</button>
     </div>
   </div>
 </div>
@@ -2914,6 +2914,12 @@ function obInsertBack() {
 
 /* Unified frequency option selection (5 top-level options) */
 const FREQ_TO_KEY = { daily:'daily', cycle:'periodic', interval:'interval', specific:'specific', asneeded:'asneeded' };
+/* "Fazer depois" on ob-insert step 2: save the med with default "Conforme necessário" so it's still kept. */
+function obInsertSkip() {
+  if (typeof selectFreqOption === 'function') selectFreqOption('asneeded');
+  saveObInsert();
+}
+
 function selectFreqOption(freq) {
   obSelectedFreq = FREQ_TO_KEY[freq] || 'asneeded';
   document.querySelectorAll('#ob-step2 .freq-option').forEach(opt => {
