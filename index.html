@@ -209,7 +209,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 
 /* -- App header (fixed top bar with back button + optional centered title) -- */
 .app-header{position:absolute;top:62px;left:0;right:0;min-height:56px;padding:8px 16px;
-  display:flex;align-items:center;gap:14px;z-index:6;}
+  display:flex;align-items:center;gap:14px;z-index:6;background:var(--bg);}
 .app-header-title{position:absolute;left:0;right:0;text-align:center;
   font-size:32px;font-weight:900;color:var(--text);pointer-events:none;}
 
@@ -1401,21 +1401,11 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div id="detail-today-rows" style="display:flex;flex-direction:column;"></div>
     </div>
 
-    <!-- Calendar widget (static visual) -->
+    <!-- Calendar widget (mirrors the dashboard calendar) -->
     <div class="cal-strip" style="margin-top:14px;padding:24px 0 24px;">
       <div class="cal-date-hdr" id="detail-cal-hdr" style="padding:0 24px 16px;">Hoje, 29 janeiro</div>
-      <div class="cal-row-wrap">
-        <div class="cal-row" style="justify-content:space-between;padding:0 24px;">
-          <div class="cal-day"><div class="cdl">S</div><div class="cdc">26</div><div class="cal-dot done"></div></div>
-          <div class="cal-day"><div class="cdl">T</div><div class="cdc">27</div><div class="cal-dot done"></div></div>
-          <div class="cal-day"><div class="cdl">Q</div><div class="cdc">28</div><div class="cal-dot miss"></div></div>
-          <div class="cal-day today"><div class="cdl">Q</div><div class="cdc">29</div><div class="cal-dot"></div></div>
-          <div class="cal-day"><div class="cdl">S</div><div class="cdc">30</div><div class="cal-dot"></div></div>
-          <div class="cal-day"><div class="cdl">S</div><div class="cdc">31</div><div class="cal-dot"></div></div>
-          <div class="cal-day"><div class="cdl">D</div><div class="cdc">1</div><div class="cal-dot"></div></div>
-        </div>
-      </div>
-      <div class="cal-track" aria-hidden="true" style="margin:14px 24px 0;"><div class="cal-thumb" style="width:48px;"></div></div>
+      <div class="cal-row-wrap"><div class="cal-row" id="cal-row-detail"></div></div>
+      <div class="cal-track" aria-hidden="true" style="margin:14px 24px 0;"><div class="cal-thumb" id="cal-thumb-detail" style="width:48px;"></div></div>
     </div>
 
     <!-- Details card -->
@@ -3907,6 +3897,8 @@ function openMedDetail(profileId, idx) {
     const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
     detStart.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
+  // Refresh the mirrored calendar so it reflects current meds/state
+  if (typeof buildCal === 'function') buildCal();
   go('med-detail', 'r');
 }
 
@@ -4408,7 +4400,10 @@ function updateCalHeader() {
   const d = selectedCalDate;
   const isToday = d.toDateString() === today.toDateString();
   const label = (isToday ? 'Hoje, ' : '') + d.getDate() + ' ' + CAL_MONTH_NAMES[d.getMonth()];
-  document.getElementById('cal-hdr').textContent = label;
+  const main = document.getElementById('cal-hdr');
+  if (main) main.textContent = label;
+  const detail = document.getElementById('detail-cal-hdr');
+  if (detail) detail.textContent = label;
   // Update "Medicação de hoje" header labels
   document.querySelectorAll('.meds-day-label').forEach(el => {
     el.textContent = isToday ? 'Medicação de hoje' : 'Medicação de ' + d.getDate() + ' ' + CAL_MONTH_NAMES[d.getMonth()];
@@ -4445,6 +4440,20 @@ function buildCal() {
       row.scrollTo({ left: div.offsetLeft - (row.clientWidth / 2) + (div.offsetWidth / 2), behavior: 'smooth' });
     };
     row.appendChild(div);
+  }
+  // Mirror cells into the med-detail calendar (visual-only clone)
+  const detRow = document.getElementById('cal-row-detail');
+  if (detRow) {
+    detRow.innerHTML = row.innerHTML;
+    // Inherit the same scroll layout
+    detRow.style.cssText = row.style.cssText;
+    // Center today in the detail row too
+    const todayInDet = detRow.querySelector('.cal-day.today');
+    if (todayInDet) {
+      requestAnimationFrame(() => {
+        detRow.scrollLeft = todayInDet.offsetLeft - (detRow.clientWidth / 2) + (todayInDet.offsetWidth / 2);
+      });
+    }
   }
   // Scroll row so today is in the center — use scrollLeft to target the inner container
   let ignoreScroll = true;
