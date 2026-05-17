@@ -407,18 +407,17 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .settings-menu .smenu-label{font-size:15px;font-weight:600;}
 
 /* -- Chat history sidebar -- */
-.chat-sidebar{position:absolute;top:0;left:0;bottom:0;width:280px;background:white;z-index:180;
-  box-shadow:4px 0 20px rgba(0,0,0,.15);transform:translateX(-100%);transition:transform .28s ease;
-  display:flex;flex-direction:column;}
+.chat-sidebar{position:absolute;top:0;right:0;bottom:0;width:240px;background:var(--white);z-index:180;
+  box-shadow:-4px 0 20px rgba(0,0,0,.15);transform:translateX(100%);transition:transform .28s ease;
+  display:flex;flex-direction:column;border-radius:20px 0 0 20px;}
 .chat-sidebar.open{transform:translateX(0);}
 .chat-sidebar-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:170;display:none;}
 .chat-sidebar-backdrop.open{display:block;}
-.chat-hist-item{padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--text);
-  display:flex;align-items:center;gap:8px;transition:background .15s;}
+.chat-hist-item{padding:8px 4px;cursor:pointer;font-size:15px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:10px;transition:background .15s;border-radius:8px;}
 .chat-hist-item:hover{background:var(--gray-light);}
-.chat-hist-item.active{background:var(--pink-light);color:var(--pink);font-weight:600;}
-.chat-hist-group{font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;
-  letter-spacing:0.5px;padding:12px 12px 6px;}
+.chat-hist-item .chat-hist-ico{flex:0 0 22px;width:22px;height:22px;background:url('assets/icons/chatbox-icon.svg') center/40px 40px no-repeat;}
+.chat-hist-item-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* -- Frequency options (unified Step 2) -- */
 .freq-option{border:1.5px solid transparent;border-radius:var(--r-card);background:var(--white);transition:border-color .2s;overflow:hidden;box-shadow:var(--shadow-sm);}
@@ -1569,36 +1568,34 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <div id="chat-sidebar-backdrop" class="chat-sidebar-backdrop" onclick="toggleChatSidebar()"></div>
   <!-- Sidebar -->
   <aside id="chat-sidebar" class="chat-sidebar" aria-label="Histórico de conversas">
-    <div style="padding:14px 12px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--gray-border);">
-      <div style="font-size:15px;font-weight:700;">Conversas</div>
-      <button onclick="toggleChatSidebar()" aria-label="Fechar" style="background:none;border:none;cursor:pointer;padding:6px;">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5L7 10L12 15" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div style="padding:18px 18px 4px;display:flex;justify-content:flex-start;">
+      <button onclick="toggleChatSidebar()" aria-label="Fechar" style="background:none;border:none;cursor:pointer;padding:6px;display:inline-flex;align-items:center;justify-content:center;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.2" stroke-linecap="round"><path d="M6 6L18 18M18 6L6 18"/></svg>
       </button>
     </div>
-    <div style="padding:10px 12px;">
-      <button onclick="newChat()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--pink);color:white;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;">
-        <span style="font-size:16px;">+</span> Nova conversa
+    <div style="padding:6px 18px 14px;">
+      <button onclick="newChat()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;">
+        <span aria-hidden="true" style="display:inline-block;width:18px;height:18px;background:url('assets/icons/chatbox-icon.svg') center/40px 40px no-repeat;flex-shrink:0;"></span>
+        Nova conversa
       </button>
     </div>
-    <div class="scroll" style="flex:1;padding:0 8px 12px;">
-      <div class="chat-hist-group">Hoje</div>
-      <div class="chat-hist-item active" onclick="selectChat(this,'today-1')">&#128172; Jardiance + Metformina</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'today-2')">&#128172; Dose falhada Levetiracetam</div>
-      <div class="chat-hist-group">Ontem</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'y-1')">&#128172; Amoxicilina e álcool</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'y-2')">&#128172; Efeitos Jardiance</div>
-      <div class="chat-hist-group">Mais antigos</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'old-1')">&#128172; Stock Levetiracetam</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'old-2')">&#128172; Interações paracetamol</div>
-      <div class="chat-hist-item" onclick="selectChat(this,'old-3')">&#128172; Amoxicilina efeitos secundários</div>
+    <div style="padding:8px 18px 4px;">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Recente</h2>
+    </div>
+    <div class="scroll" style="flex:1;padding:8px 18px 16px;display:flex;flex-direction:column;gap:6px;">
+      <div class="chat-hist-item" onclick="selectChat(this,'today-1')"><span class="chat-hist-ico" aria-hidden="true"></span><span class="chat-hist-item-label">Brufen com estômago vazio</span></div>
+      <div class="chat-hist-item" onclick="selectChat(this,'today-2')"><span class="chat-hist-ico" aria-hidden="true"></span><span class="chat-hist-item-label">Ibuprofeno com comida</span></div>
+      <div class="chat-hist-item" onclick="selectChat(this,'y-1')"><span class="chat-hist-ico" aria-hidden="true"></span><span class="chat-hist-item-label">Paracetamol antes de dormir</span></div>
+      <div class="chat-hist-item" onclick="selectChat(this,'y-2')"><span class="chat-hist-ico" aria-hidden="true"></span><span class="chat-hist-item-label">Aspirina após refeições</span></div>
+      <div class="chat-hist-item" onclick="selectChat(this,'old-1')"><span class="chat-hist-ico" aria-hidden="true"></span><span class="chat-hist-item-label">Naproxeno com leite</span></div>
     </div>
   </aside>
   <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
   <div class="app-header" style="justify-content:space-between;">
     <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="app-header-title">MedaBot Chat</div>
-    <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()">
-      <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()" style="background:none;border:none;box-shadow:none;padding:0;">
+      <img src="assets/icons/chat-menu-BTN-icon.png" alt="" style="width:40px;height:40px;display:block;"/>
     </button>
   </div>
   <div style="height:118px;flex-shrink:0;"></div>
