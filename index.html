@@ -4117,10 +4117,9 @@ function renderArquivoMeds() {
   if (!activeMeds().length) {
     list.innerHTML =
       '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:48px;">' +
-        '<span style="font-size:48px;">💊</span>' +
+        '<img src="assets/Pill-Label.svg" alt="" style="width:80px;height:80px;"/>' +
         '<div style="font-size:16px;font-weight:600;color:var(--text-sub);">Nenhum medicamento adicionado</div>' +
         '<p style="font-size:13px;color:var(--gray);text-align:center;">Adiciona os teus medicamentos para os gerir aqui.</p>' +
-        '<button onclick="openAddSheet()" style="margin-top:8px;background:var(--pink);color:white;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;">+ Adicionar medicamento</button>' +
       '</div>';
     return;
   }
