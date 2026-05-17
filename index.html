@@ -1386,24 +1386,26 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <!-- == MED DETAIL == -->
 <div id="med-detail" class="screen" style="background:var(--bg);">
   <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
-  <div class="app-header">
-    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <!-- App header: back + title + subtitle in same frame, 16px gap, horizontally aligned -->
+  <div class="app-header" style="gap:16px;align-items:flex-start;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="flex:1;min-width:0;">
+      <h1 id="detail-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Jardiance</h1>
+      <p id="detail-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:2px;">25mg | Comprimido</p>
+    </div>
   </div>
-  <div class="scroll" style="padding:124px 16px 32px;">
-    <h1 id="detail-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.1;">Jardiance</h1>
-    <p id="detail-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:4px;">25mg | Comprimido</p>
-
+  <div class="scroll" style="padding:144px 16px 32px;">
     <!-- Today card -->
-    <div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);margin-top:20px;">
-      <h3 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">Hoje</h3>
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 8px;">Hoje</h2>
       <div id="detail-today-rows" style="display:flex;flex-direction:column;"></div>
     </div>
 
     <!-- Calendar widget (static visual) -->
-    <div class="cal-strip" style="margin-top:14px;">
-      <div class="cal-date-hdr" id="detail-cal-hdr">Hoje, 29 janeiro</div>
+    <div class="cal-strip" style="margin-top:14px;padding:24px 0 24px;">
+      <div class="cal-date-hdr" id="detail-cal-hdr" style="padding:0 24px 16px;">Hoje, 29 janeiro</div>
       <div class="cal-row-wrap">
-        <div class="cal-row" style="justify-content:space-between;padding:0 16px;">
+        <div class="cal-row" style="justify-content:space-between;padding:0 24px;">
           <div class="cal-day"><div class="cdl">S</div><div class="cdc">26</div><div class="cal-dot done"></div></div>
           <div class="cal-day"><div class="cdl">T</div><div class="cdc">27</div><div class="cal-dot done"></div></div>
           <div class="cal-day"><div class="cdl">Q</div><div class="cdc">28</div><div class="cal-dot miss"></div></div>
@@ -1413,12 +1415,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           <div class="cal-day"><div class="cdl">D</div><div class="cdc">1</div><div class="cal-dot"></div></div>
         </div>
       </div>
-      <div class="cal-track" aria-hidden="true"><div class="cal-thumb" style="width:48px;"></div></div>
+      <div class="cal-track" aria-hidden="true" style="margin:14px 24px 0;"><div class="cal-thumb" style="width:48px;"></div></div>
     </div>
 
     <!-- Details card -->
-    <div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);margin-top:14px;">
-      <h3 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">Detalhes</h3>
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);margin-top:14px;">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Detalhes</h2>
       <div class="md-row"><span class="md-key">Substância ativa</span><span id="detail-substance" class="md-val">Empagliflozina</span></div>
       <div class="md-row"><span class="md-key">Dosagem</span><span id="detail-dosage" class="md-val">25mg</span></div>
       <div class="md-row"><span class="md-key">Frequência</span><span id="detail-frequency" class="md-val">Diariamente · 2x</span></div>
@@ -1427,7 +1429,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
 
     <!-- More info card -->
-    <div onclick="openMedInfoFromDetail()" style="background:var(--white);border-radius:var(--r-card);padding:14px 16px;box-shadow:var(--shadow-sm);margin-top:14px;display:flex;align-items:center;gap:14px;cursor:pointer;">
+    <div onclick="openMedInfoFromDetail()" style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);margin-top:14px;display:flex;align-items:center;gap:14px;cursor:pointer;">
       <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Leaflet-Icon.svg') -20px -14px/81px 78px no-repeat;flex-shrink:0;"></span>
       <div style="flex:1;min-width:0;">
         <div style="font-size:16px;font-weight:700;color:var(--pink);">Mais info</div>
@@ -2213,6 +2215,53 @@ let activeProfile = 'nuno';
 /* Returns the active profile's meds array (mutable reference) */
 function activeMeds() { return PROFILES[activeProfile].meds; }
 
+/* ===== Persistence (localStorage) =====
+   Keeps the meds, profiles and key flags alive across reloads so the user
+   doesn't lose data when refreshing to see UI tweaks. */
+const STATE_KEY = 'medabot-state-v1';
+function saveState() {
+  try {
+    localStorage.setItem(STATE_KEY, JSON.stringify({
+      profiles: PROFILES,
+      activeProfile,
+      familiarAdded: typeof familiarAdded !== 'undefined' ? familiarAdded : false,
+      healthConditions,
+      obOnboarding,
+    }));
+  } catch (e) { /* storage full or disabled — ignore */ }
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    if (s.profiles) {
+      // merge so we keep any defaults missing in stored data
+      if (s.profiles.nuno)  Object.assign(PROFILES.nuno, s.profiles.nuno);
+      if (s.profiles.maria) Object.assign(PROFILES.maria, s.profiles.maria);
+    }
+    if (s.activeProfile) activeProfile = s.activeProfile;
+    if (typeof s.familiarAdded === 'boolean') window.__pendingFamiliarAdded = s.familiarAdded;
+    if (Array.isArray(s.healthConditions)) healthConditions = s.healthConditions;
+    if (typeof s.obOnboarding === 'boolean') obOnboarding = s.obOnboarding;
+    return true;
+  } catch (e) { return false; }
+}
+/* Refresh the visible UI to reflect loaded state (called after loadState). */
+function refreshUIFromState() {
+  const p = PROFILES[activeProfile] || PROFILES.nuno;
+  const greetEl = document.getElementById('dash-greeting');
+  if (greetEl && p.greeting) greetEl.textContent = p.greeting;
+  const ddName = document.getElementById('dd-nuno-name');
+  if (ddName && PROFILES.nuno.name && PROFILES.nuno.name !== 'Eu') ddName.textContent = PROFILES.nuno.greeting || PROFILES.nuno.name;
+  if (window.__pendingFamiliarAdded) { familiarAdded = true; delete window.__pendingFamiliarAdded; }
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+  if (typeof renderArquivoMeds === 'function') renderArquivoMeds();
+  if (typeof buildCal === 'function') buildCal();
+  if (typeof refreshArqProfileTabs === 'function') refreshArqProfileTabs();
+}
+loadState();
+
 /* ===== Medication forms (tipo farmacêutico) ===== */
 const MED_FORMS = {
   comprimido: { label: 'Comprimido', icon: '💊' },
@@ -2408,6 +2457,7 @@ function go(id, dir, isBack) {
   if (location.hash.slice(1) !== hashId) {
     history.replaceState(null, '', '#' + hashId);
   }
+  if (typeof saveState === 'function') saveState();
   // Sync bottom-nav active state on destination screen
   const destBnav = to.querySelector('.bnav');
   if (destBnav) {
@@ -3880,6 +3930,7 @@ function toggleMedDose(btn, profileId, idx) {
     btn.style.cssText = 'background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;';
   }
   renderDashboardMeds();
+  if (typeof saveState === 'function') saveState();
 }
 
 /* ===== Circular dose-progress SVG ===== */
@@ -5104,6 +5155,8 @@ document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
 
 /* Restore the current screen from the URL hash on load, and follow browser back/forward. */
 (function() {
+  // Restore any persisted UI state (saved meds, names, etc.) before navigating.
+  if (typeof refreshUIFromState === 'function') refreshUIFromState();
   const initial = location.hash.slice(1);
   if (initial === 'chat-guest') {
     guestMode = true;
