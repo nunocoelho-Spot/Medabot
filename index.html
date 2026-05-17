@@ -1185,7 +1185,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div style="margin-top:14px;">
       <button class="btn btn-outline" onclick="go('ob2','r')" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
-        Registar medicamento
+        Registar toma
       </button>
     </div>
   </div>
@@ -1275,7 +1275,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Medicação de hoje</h2>
       <button onclick="openAddSheet()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
-        Registar medicamento
+        Registar toma
       </button>
       <div id="dash-nuno-meds"></div>
     </div>
@@ -1285,7 +1285,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Medicação de hoje</h2>
       <button onclick="openAddSheet()" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;">
         <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
-        Registar medicamento
+        Registar toma
       </button>
       <div id="dash-maria-meds"></div>
     </div>
@@ -3904,30 +3904,55 @@ function renderMedList(meds, container, profileId) {
     return;
   }
   const pid = profileId || activeProfile;
-  let html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+  const eyeBtn = (idx) =>
+    '<button onclick="openMedDetail(\'' + pid + '\',' + idx + ');event.stopPropagation()" aria-label="Ver detalhe" style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
+      '<img src="assets/icons/eye-icon.svg" alt="" style="width:20px;height:20px;"/>' +
+    '</button>';
+  let html = '<div style="display:flex;flex-direction:column;gap:14px;">';
   visibleMeds.forEach(({ m, idx }) => {
     const isOccasional = m.type === 'occasional';
-    const mForm = m.form || lookupMedForm(m.name);
     if (isOccasional) {
       const time = lastTakenTime(m);
-      html += '<div class="mcard">' +
-        '<div class="micon">' + formIcon(mForm) + '</div>' +
-        '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
-        '<div class="msub"><span style="color:var(--text-sub);">' + formLabel(mForm) + '</span> · <span style="color:var(--success);">✓ Tomado' + (time ? ' às ' + time : '') + '</span></div></div>' +
-        '<span class="med-badge-occasional">Ocasional</span>' +
+      html += '<div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);" onclick="openMedDetail(\'' + pid + '\',' + idx + ')">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:18px;font-weight:700;color:var(--text);">' + m.name + ' ' + (m.dosage || '') + '</div>' +
+            '<div style="font-size:14px;color:var(--text-sub);font-weight:500;">Comprimido</div>' +
+          '</div>' +
+          eyeBtn(idx) +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:14px;font-weight:500;color:var(--text-sub);">' +
+          '<span>Doses do dia</span>' +
+          '<span style="color:var(--success);">✓ Tomada' + (time ? ' às ' + time : '') + '</span>' +
+        '</div>' +
+        '<div style="height:4px;background:var(--lavender);border-radius:2px;margin-top:8px;overflow:hidden;">' +
+          '<div style="height:100%;width:100%;background:var(--purple);"></div>' +
+        '</div>' +
       '</div>';
     } else {
       const todayKey = new Date().toDateString();
       const times = (m.times && m.times.length) ? m.times : ['08:00'];
       const taken = ((m.takenSlots && m.takenSlots[todayKey]) || []).length;
       const total = times.length;
-      html += '<div class="mcard" style="cursor:pointer;" onclick="openMedDetail(\'' + pid + '\',' + idx + ')">' +
-        '<div class="micon">' + formIcon(mForm) + '</div>' +
-        '<div class="minfo"><div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
-        '<div class="msub">' + formLabel(mForm) + ' · ' + m.frequency + '</div></div>' +
-        '<div style="display:flex;gap:6px;align-items:center;">' +
-          doseProgressSVG(taken, total) +
-          '<button onclick="openEditMedSheet(' + idx + ');event.stopPropagation()" title="Editar horários" style="background:var(--gray-light);border:none;border-radius:10px;width:32px;height:32px;cursor:pointer;color:var(--text-sub);font-size:14px;flex-shrink:0;">✎</button>' +
+      const done = taken >= total;
+      const right = done ? 'Concluído' : (taken + '/' + total);
+      const percent = total ? Math.round((taken / total) * 100) : 0;
+      html += '<div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);cursor:pointer;" onclick="openMedDetail(\'' + pid + '\',' + idx + ')">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:18px;font-weight:700;color:var(--text);">' + m.name + ' ' + (m.dosage || '') + '</div>' +
+            '<div style="font-size:14px;color:var(--text-sub);font-weight:500;">Comprimido</div>' +
+          '</div>' +
+          eyeBtn(idx) +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:14px;font-weight:500;color:var(--text-sub);">' +
+          '<span>Doses do dia</span>' +
+          '<span>' + right + '</span>' +
+        '</div>' +
+        '<div style="height:4px;background:var(--lavender);border-radius:2px;margin-top:8px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + percent + '%;background:var(--purple);"></div>' +
         '</div>' +
       '</div>';
     }
