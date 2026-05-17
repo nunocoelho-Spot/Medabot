@@ -63,9 +63,10 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .btn{border:none;border-radius:var(--r-pill);cursor:pointer;font-size:16px;font-weight:700;padding:17px;
   width:100%;transition:opacity .15s,transform .1s;font-family:inherit;}
 .btn:active{transform:scale(.97);opacity:.85;}
-.btn-primary{background:var(--pink);color:var(--bg);}
-.btn-teal{background:var(--teal);color:#fff;}
-.btn-outline{background:var(--white);border:1.5px solid var(--pink);color:var(--pink);}
+.btn-primary{background:var(--pink);color:var(--bg);box-shadow:0 4px 14px rgba(17,133,150,.30);}
+.btn-primary img,.btn-primary span[style*="background:url"]{filter:brightness(0) invert(1);}
+.btn-teal{background:var(--teal);color:#fff;box-shadow:0 4px 14px rgba(17,133,150,.30);}
+.btn-outline{background:var(--white);border:1.5px solid var(--pink);color:var(--pink);box-shadow:var(--shadow-sm);}
 .btn-ghost{background:transparent;color:var(--pink);font-weight:700;font-size:15px;}
 .btn-danger{background:var(--danger-light);color:var(--danger);border:1.5px solid var(--danger-border);}
 
@@ -278,7 +279,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .cal-row::-webkit-scrollbar{display:none;}
 .cal-day{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;
   scroll-snap-align:center;width:48px;height:70px;padding:6px 2px;border-radius:14px;
-  justify-content:flex-start;transition:background .2s;}
+  justify-content:center;transition:background .2s;}
 .cal-day .cdl{font-size:12px;color:#AAAAAA;font-weight:500;line-height:1;}
 .cal-day .cdc{font-size:12px;font-weight:500;color:#AAAAAA;line-height:1;
   background:transparent;border-radius:0;width:auto;height:auto;display:inline;
@@ -293,7 +294,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .cal-day.today .cal-dot{background:rgba(255,255,255,.55);}
 /* Scroll-position indicator track + thumb */
 .cal-track{margin:10px 16px 0;height:8px;background:var(--gray-light);border-radius:4px;position:relative;overflow:hidden;}
-.cal-thumb{position:absolute;top:1px;height:6px;background:var(--gray-border);border-radius:3px;transition:left .15s;}
+.cal-thumb{position:absolute;top:1px;height:6px;background:var(--gray-border);border-radius:3px;transition:left .15s;left:50%;transform:translateX(-50%);}
 
 /* -- Section hdr -- */
 .shdr{font-size:12px;font-weight:600;color:var(--text-sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
@@ -1265,7 +1266,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div class="cal-strip" style="margin-top:4px;">
       <div class="cal-date-hdr" id="cal-hdr">Hoje, 01 janeiro</div>
       <div class="cal-row-wrap"><div class="cal-row" id="cal-row"></div></div>
-      <div class="cal-track" aria-hidden="true"><div class="cal-thumb" id="cal-thumb" style="width:48px;left:50%;"></div></div>
+      <div class="cal-track" aria-hidden="true"><div class="cal-thumb" id="cal-thumb"></div></div>
     </div>
 
     <!-- NUNO'S CONTENT -->
@@ -4346,11 +4347,12 @@ function buildCal() {
     if (!track) return;
     const maxScroll = row.scrollWidth - row.clientWidth;
     const trackW = track.clientWidth;
-    if (maxScroll <= 0 || trackW <= 0) { thumb.style.left = '0'; thumb.style.width = '100%'; return; }
+    if (maxScroll <= 0 || trackW <= 0) return; // keep CSS default (centered)
     const ratio = row.clientWidth / row.scrollWidth;
     const thumbW = Math.max(24, trackW * ratio);
     const maxThumbLeft = trackW - thumbW;
     const left = (row.scrollLeft / maxScroll) * maxThumbLeft;
+    thumb.style.transform = 'none';
     thumb.style.width = thumbW + 'px';
     thumb.style.left = left + 'px';
   }
