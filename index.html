@@ -2205,52 +2205,6 @@ let activeProfile = 'nuno';
 /* Returns the active profile's meds array (mutable reference) */
 function activeMeds() { return PROFILES[activeProfile].meds; }
 
-/* ===== Persistence (localStorage) =====
-   Keeps the meds, profiles and key flags alive across reloads so the user
-   doesn't lose data when refreshing to see UI tweaks. */
-const STATE_KEY = 'medabot-state-v1';
-function saveState() {
-  try {
-    localStorage.setItem(STATE_KEY, JSON.stringify({
-      profiles: PROFILES,
-      activeProfile,
-      familiarAdded: typeof familiarAdded !== 'undefined' ? familiarAdded : false,
-      healthConditions,
-      obOnboarding,
-    }));
-  } catch (e) { /* storage full or disabled — ignore */ }
-}
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STATE_KEY);
-    if (!raw) return false;
-    const s = JSON.parse(raw);
-    if (s.profiles) {
-      // merge so we keep any defaults missing in stored data
-      if (s.profiles.nuno)  Object.assign(PROFILES.nuno, s.profiles.nuno);
-      if (s.profiles.maria) Object.assign(PROFILES.maria, s.profiles.maria);
-    }
-    if (s.activeProfile) activeProfile = s.activeProfile;
-    if (typeof s.familiarAdded === 'boolean') window.__pendingFamiliarAdded = s.familiarAdded;
-    if (Array.isArray(s.healthConditions)) healthConditions = s.healthConditions;
-    if (typeof s.obOnboarding === 'boolean') obOnboarding = s.obOnboarding;
-    return true;
-  } catch (e) { return false; }
-}
-/* Refresh the visible UI to reflect loaded state (called after loadState). */
-function refreshUIFromState() {
-  const p = PROFILES[activeProfile] || PROFILES.nuno;
-  const greetEl = document.getElementById('dash-greeting');
-  if (greetEl && p.greeting) greetEl.textContent = p.greeting;
-  const ddName = document.getElementById('dd-nuno-name');
-  if (ddName && PROFILES.nuno.name && PROFILES.nuno.name !== 'Eu') ddName.textContent = PROFILES.nuno.greeting || PROFILES.nuno.name;
-  if (window.__pendingFamiliarAdded) { familiarAdded = true; delete window.__pendingFamiliarAdded; }
-  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
-  if (typeof renderArquivoMeds === 'function') renderArquivoMeds();
-  if (typeof buildCal === 'function') buildCal();
-  if (typeof refreshArqProfileTabs === 'function') refreshArqProfileTabs();
-}
-loadState();
 
 /* ===== Medication forms (tipo farmacêutico) ===== */
 const MED_FORMS = {
@@ -2447,7 +2401,6 @@ function go(id, dir, isBack) {
   if (location.hash.slice(1) !== hashId) {
     history.replaceState(null, '', '#' + hashId);
   }
-  if (typeof saveState === 'function') saveState();
   // Sync bottom-nav active state on destination screen
   const destBnav = to.querySelector('.bnav');
   if (destBnav) {
@@ -3922,7 +3875,6 @@ function toggleMedDose(btn, profileId, idx) {
     btn.style.cssText = 'background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;';
   }
   renderDashboardMeds();
-  if (typeof saveState === 'function') saveState();
 }
 
 /* ===== Circular dose-progress SVG ===== */
@@ -5164,8 +5116,6 @@ document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
 
 /* Restore the current screen from the URL hash on load, and follow browser back/forward. */
 (function() {
-  // Restore any persisted UI state (saved meds, names, etc.) before navigating.
-  if (typeof refreshUIFromState === 'function') refreshUIFromState();
   const initial = location.hash.slice(1);
   if (initial === 'chat-guest') {
     guestMode = true;
