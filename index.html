@@ -201,6 +201,12 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 /* -- Notif card -- */
 .ncard{background:var(--pink-light);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
 
+/* -- Med detail rows -- */
+.md-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--gray-border);}
+.md-row.md-row-last{border-bottom:none;}
+.md-key{font-size:14px;font-weight:500;color:var(--text-sub);}
+.md-val{font-size:14px;font-weight:700;color:var(--text);text-align:right;}
+
 /* -- App header (fixed top bar with back button + optional centered title) -- */
 .app-header{position:absolute;top:62px;left:0;right:0;min-height:56px;padding:8px 16px;
   display:flex;align-items:center;gap:14px;z-index:6;}
@@ -1378,60 +1384,57 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == MED DETAIL == -->
-<div id="med-detail" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;display:flex;align-items:center;gap:14px;">
-    <button class="back" aria-label="Voltar" onclick="go('dashboard','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="flex:1;">
-      <h2 id="detail-name" style="font-size:20px;font-weight:700;">Ben-U-Ron</h2>
-      <p id="detail-sub" style="font-size:13px;color:var(--text-sub);">1000mg - Paracetamol</p>
-    </div>
+<div id="med-detail" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div class="app-header">
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
-  <div class="scroll">
-    <div style="padding:16px 24px;display:flex;flex-direction:column;gap:18px;">
-      <!-- Hoje -->
-      <div style="background:var(--pink-light);border-radius:16px;padding:6px 14px 2px;">
-        <div style="font-size:12px;font-weight:700;color:var(--pink);padding:10px 0 6px;letter-spacing:.5px;">HOJE</div>
-        <div id="detail-today-rows" style="display:flex;flex-direction:column;">
-          <!-- populated by openMedDetail() -->
-        </div>
-      </div>
-      <!-- Semana -->
-      <div>
-        <div class="shdr">Esta semana</div>
-        <div style="display:flex;gap:6px;">
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Seg</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:#E6FAF5;display:flex;align-items:center;justify-content:center;font-size:14px;">&#10003;</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Ter</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:#E6FAF5;display:flex;align-items:center;justify-content:center;font-size:14px;">&#10003;</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Qua</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:#E6FAF5;display:flex;align-items:center;justify-content:center;font-size:14px;">&#10003;</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--text);font-weight:700;">Qui</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:700;">2/3</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Sex</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gray);">-</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Sab</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gray);">-</div></div>
-          <div style="flex:1;text-align:center;"><div style="font-size:11px;color:var(--gray);">Dom</div><div style="width:32px;height:32px;margin:4px auto;border-radius:50%;background:var(--gray-light);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gray);">-</div></div>
-        </div>
-      </div>
-      <!-- Detalhes -->
-      <div>
-        <div class="shdr">Detalhes</div>
-        <div style="background:var(--gray-light);border-radius:16px;padding:4px 16px;">
-          <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Substância</span><span style="font-size:14px;font-weight:600;">Paracetamol</span></div>
-          <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Dosagem</span><span style="font-size:14px;font-weight:600;">1000mg</span></div>
-          <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Frequência</span><span style="font-size:14px;font-weight:600;">Diária - 3x</span></div>
-          <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Fim</span><span style="font-size:14px;font-weight:600;">-</span></div>
-        </div>
-      </div>
-      <!-- Mais detalhes card -->
-      <div onclick="openMedInfoFromDetail()" style="display:flex;align-items:center;gap:12px;background:var(--gray-light);border-radius:16px;padding:14px 16px;cursor:pointer;">
-        <div style="width:44px;height:44px;border-radius:12px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📋</div>
-        <div style="flex:1;">
-          <div style="font-size:14px;font-weight:600;">Mais detalhes</div>
-          <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">Bula, interações e posologia</div>
-        </div>
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M8 5L13 10L8 15" stroke="#8E8E93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
+  <div class="scroll" style="padding:124px 16px 32px;">
+    <h1 id="detail-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.1;">Jardiance</h1>
+    <p id="detail-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:4px;">25mg | Comprimido</p>
+
+    <!-- Today card -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);margin-top:20px;">
+      <h3 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">Hoje</h3>
+      <div id="detail-today-rows" style="display:flex;flex-direction:column;"></div>
     </div>
-  </div>
-  <div style="padding:12px 24px 32px;">
-    <button class="btn btn-ghost" onclick="go('chat','r')" style="color:var(--pink);font-weight:600;">💊 Falar com o MedaBot</button>
+
+    <!-- Calendar widget (static visual) -->
+    <div class="cal-strip" style="margin-top:14px;">
+      <div class="cal-date-hdr" id="detail-cal-hdr">Hoje, 29 janeiro</div>
+      <div class="cal-row-wrap">
+        <div class="cal-row" style="justify-content:space-between;padding:0 16px;">
+          <div class="cal-day"><div class="cdl">S</div><div class="cdc">26</div><div class="cal-dot done"></div></div>
+          <div class="cal-day"><div class="cdl">T</div><div class="cdc">27</div><div class="cal-dot done"></div></div>
+          <div class="cal-day"><div class="cdl">Q</div><div class="cdc">28</div><div class="cal-dot miss"></div></div>
+          <div class="cal-day today"><div class="cdl">Q</div><div class="cdc">29</div><div class="cal-dot"></div></div>
+          <div class="cal-day"><div class="cdl">S</div><div class="cdc">30</div><div class="cal-dot"></div></div>
+          <div class="cal-day"><div class="cdl">S</div><div class="cdc">31</div><div class="cal-dot"></div></div>
+          <div class="cal-day"><div class="cdl">D</div><div class="cdc">1</div><div class="cal-dot"></div></div>
+        </div>
+      </div>
+      <div class="cal-track" aria-hidden="true"><div class="cal-thumb" style="width:48px;"></div></div>
+    </div>
+
+    <!-- Details card -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:16px;box-shadow:var(--shadow-sm);margin-top:14px;">
+      <h3 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">Detalhes</h3>
+      <div class="md-row"><span class="md-key">Substância ativa</span><span id="detail-substance" class="md-val">Empagliflozina</span></div>
+      <div class="md-row"><span class="md-key">Dosagem</span><span id="detail-dosage" class="md-val">25mg</span></div>
+      <div class="md-row"><span class="md-key">Frequência</span><span id="detail-frequency" class="md-val">Diariamente · 2x</span></div>
+      <div class="md-row"><span class="md-key">Início do tratamento</span><span id="detail-start" class="md-val">29 janeiro 2026</span></div>
+      <div class="md-row md-row-last"><span class="md-key">Fim do tratamento</span><span id="detail-end" class="md-val">N/A</span></div>
+    </div>
+
+    <!-- More info card -->
+    <div onclick="openMedInfoFromDetail()" style="background:var(--white);border-radius:var(--r-card);padding:14px 16px;box-shadow:var(--shadow-sm);margin-top:14px;display:flex;align-items:center;gap:14px;cursor:pointer;">
+      <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Leaflet-Icon.svg') -20px -14px/81px 78px no-repeat;flex-shrink:0;"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:16px;font-weight:700;color:var(--pink);">Mais info</div>
+        <div style="font-size:14px;color:var(--text-sub);font-weight:500;margin-top:2px;">Bula, interações, etc.</div>
+      </div>
+      <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;transform:rotate(-90deg);flex-shrink:0;"/>
+    </div>
   </div>
 </div>
 
@@ -3817,13 +3820,15 @@ function openMedDetail(profileId, idx) {
   const m = (PROFILES[profileId] && PROFILES[profileId].meds) ? PROFILES[profileId].meds[idx] : null;
   if (!m) { go('med-detail', 'r'); return; }
 
-  // Header
+  // Header — name and subtitle "Dose | Form"
   const nameEl = document.getElementById('detail-name');
   const subEl  = document.getElementById('detail-sub');
-  if (nameEl) nameEl.textContent = m.name;
-  if (subEl)  subEl.textContent  = m.dosage + (m.form ? ' · ' + formLabel(m.form) : '');
+  // Strip dose from name (e.g., "Jardiance 25mg" -> "Jardiance")
+  const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name;
+  if (nameEl) nameEl.textContent = cleanName;
+  if (subEl)  subEl.textContent  = (m.dosage || '') + ' | ' + (m.form ? formLabel(m.form) : 'Comprimido');
 
-  // Today's dose rows
+  // Today's dose rows — Taken (filled teal) vs Take (outline teal)
   const todayKey = new Date().toDateString();
   const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
   const times = (m.times && m.times.length) ? m.times : ['08:00'];
@@ -3832,13 +3837,25 @@ function openMedDetail(profileId, idx) {
     container.innerHTML = times.map((t, i) => {
       const isTaken = takenSet.has(t);
       const isLast = i === times.length - 1;
-      const border = isLast ? '' : 'border-bottom:1px solid rgba(233,30,140,.15);';
+      const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
       const btn = isTaken
-        ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:white;border:1.5px solid var(--gray-border);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--success);cursor:pointer;">Tomado</button>'
-        : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;">Tomar ✓</button>';
+        ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>'
+        : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;">Tomar</button>';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
-        '<span style="font-size:16px;font-weight:600;color:var(--text);">' + t + '</span>' + btn + '</div>';
+        '<span style="font-size:16px;font-weight:500;color:var(--text);">' + t + '</span>' + btn + '</div>';
     }).join('');
+  }
+
+  // Details card — dosage, frequency, start/end
+  const detDosage = document.getElementById('detail-dosage');
+  if (detDosage) detDosage.textContent = m.dosage || '—';
+  const detFreq = document.getElementById('detail-frequency');
+  if (detFreq) detFreq.textContent = (m.frequency || 'Diariamente') + (times.length > 1 ? ' · ' + times.length + 'x' : '');
+  const detStart = document.getElementById('detail-start');
+  if (detStart) {
+    const d = new Date();
+    const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    detStart.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
   go('med-detail', 'r');
 }
@@ -3854,13 +3871,13 @@ function toggleMedDose(btn, profileId, idx) {
   if (wasTaken) {
     m.takenSlots[todayKey] = m.takenSlots[todayKey].filter(t => t !== time);
     btn.dataset.taken = '0';
-    btn.textContent = 'Tomar ✓';
-    btn.style.cssText = 'background:var(--text);border:none;border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:white;cursor:pointer;';
+    btn.textContent = 'Tomar';
+    btn.style.cssText = 'background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;';
   } else {
     if (!m.takenSlots[todayKey].includes(time)) m.takenSlots[todayKey].push(time);
     btn.dataset.taken = '1';
-    btn.textContent = 'Tomado';
-    btn.style.cssText = 'background:white;border:1.5px solid var(--gray-border);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:600;color:var(--success);cursor:pointer;';
+    btn.textContent = 'Tomada';
+    btn.style.cssText = 'background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;';
   }
   renderDashboardMeds();
 }
