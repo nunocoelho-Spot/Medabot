@@ -63,10 +63,10 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .btn{border:none;border-radius:var(--r-pill);cursor:pointer;font-size:16px;font-weight:700;padding:17px;
   width:100%;transition:opacity .15s,transform .1s;font-family:inherit;}
 .btn:active{transform:scale(.97);opacity:.85;}
-.btn-primary{background:var(--pink);color:var(--bg);box-shadow:0 4px 14px rgba(17,133,150,.30);}
+.btn-primary{background:var(--pink);color:var(--bg);box-shadow:0 4px 40px 0 rgba(28,43,48,.10);}
 .btn-primary img,.btn-primary span[style*="background:url"]{filter:brightness(0) invert(1);}
-.btn-teal{background:var(--teal);color:#fff;box-shadow:0 4px 14px rgba(17,133,150,.30);}
-.btn-outline{background:var(--white);border:1.5px solid var(--pink);color:var(--pink);box-shadow:var(--shadow-sm);}
+.btn-teal{background:var(--teal);color:#fff;box-shadow:0 4px 40px 0 rgba(28,43,48,.10);}
+.btn-outline{background:var(--white);border:1.5px solid var(--pink);color:var(--pink);box-shadow:0 4px 40px 0 rgba(28,43,48,.10);}
 .btn-ghost{background:transparent;color:var(--pink);font-weight:700;font-size:15px;}
 .btn-danger{background:var(--danger-light);color:var(--danger);border:1.5px solid var(--danger-border);}
 
@@ -4313,8 +4313,8 @@ function buildCal() {
   const dayNames = ['D','S','T','Q','Q','S','S'];
   const row = document.getElementById('cal-row');
   row.innerHTML = '';
-  const pastDays = 30;
-  const futureDays = 14;
+  const pastDays = 21;
+  const futureDays = 21;
   const totalDays = pastDays + 1 + futureDays;
   const startDate = new Date(today);
   startDate.setDate(today.getDate() - pastDays);
