@@ -130,6 +130,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .bnav .ni:nth-child(1)::before{background-image:url('assets/icons/calendar-icon.svg');background-size:20px 22px;}
 .bnav .ni:nth-child(2)::before{background-image:url('assets/icons/medicine_list-icon.svg');}
 .bnav .ni:nth-child(3)::before{background-image:url('assets/icons/search-icon.svg');}
+.bnav .ni:nth-child(3).active::before{background-image:url('assets/icons/Search-icon-ACTIVE.svg');background-size:22px 22px;filter:none;}
 .bnav .ni:nth-child(4)::before{background-image:url('assets/icons/chatbox-icon.svg');}
 .ni.active::before{filter:brightness(0) invert(1);}
 /* Teal pill behind the icon (::after — absolute, 40x40, only visible when active) */
@@ -1670,55 +1671,52 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == SEARCH SCREEN == -->
-<div id="search" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 16px;">
-    <h2 style="font-size:24px;font-weight:700;">Pesquisar</h2>
-    <p style="font-size:14px;color:var(--text-sub);margin-top:2px;">Encontra informação sobre qualquer medicamento</p>
-  </div>
-  <!-- Search bar -->
-  <div style="padding:0 24px;">
-    <div style="position:relative;">
-      <input id="search-input" class="ifield" type="text" aria-label="Pesquisar medicamento" placeholder="Nome do medicamento..." oninput="doSearch(this.value)"
-        style="padding-left:42px;"/>
-      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;">&#128269;</span>
+<div id="search" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div class="scroll" style="padding:78px 16px 20px;">
+    <h1 style="font-size:32px;font-weight:900;color:var(--text);margin:0;">Procura</h1>
+    <p style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:4px;">Encontra informação sobre qualquer medicamento</p>
+    <!-- Search input -->
+    <div style="position:relative;margin-top:18px;">
+      <input id="search-input" class="ifield" type="text" aria-label="Pesquisar medicamento" placeholder="Procurar" oninput="doSearch(this.value)" style="padding-left:54px;border-radius:24px;"/>
+      <span aria-hidden="true" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--pink) url('assets/icons/Search-icon-ACTIVE.svg') center/16px 16px no-repeat;flex-shrink:0;display:inline-block;"></span>
     </div>
-  </div>
-  <!-- Photo option hint -->
-  <div style="padding:12px 24px 0;">
-    <button onclick="openScanFromSearch()" style="display:flex;align-items:center;gap:12px;width:100%;background:var(--gray-light);border:none;border-radius:16px;padding:14px 16px;cursor:pointer;text-align:left;">
-      <span style="font-size:24px;">📷</span>
-      <div>
-        <div style="font-size:14px;font-weight:600;">Fotografar embalagem/s</div>
-        <div style="font-size:12px;color:var(--text-sub);">Identificação automática por foto</div>
+    <!-- Photograph packaging card -->
+    <div onclick="openScanFromSearch()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;margin-top:14px;">
+      <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:16px;font-weight:700;color:var(--pink);">Fotografar embalagens</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Identifica automaticamente o medicamento</div>
       </div>
-      <svg style="margin-left:auto;color:var(--gray)" width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
-  <!-- Results -->
-  <div class="scroll" style="padding:16px 24px;">
-    <div id="search-results">
-      <div class="shdr">Pesquisas recentes</div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;" id="search-list">
-        <div class="mcard" onclick="openScanMedInfo('jardiance');go('med-info','r')">
-          <div class="micon" style="background:#EEF4FF;">💊</div>
-          <div class="minfo"><div class="mname">Jardiance 10mg</div><div class="msub">Empagliflozina - Antidiabético SGLT2</div></div>
-          <svg style="color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
+    </div>
+    <!-- Recent -->
+    <div id="search-results" style="margin-top:24px;">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 12px;">Recente</h2>
+      <div id="search-list" style="display:flex;flex-direction:column;gap:10px;">
+        <div onclick="openScanMedInfo('jardiance');go('med-info','r')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;">
+          <img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:16px;font-weight:700;color:var(--text);">Jardiance 25mg</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text-sub);">Comprimido</div>
+          </div>
+          <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
         </div>
-        <div class="mcard" onclick="openScanMedInfo('levetiracetam');go('med-info','r')">
-          <div class="micon" style="background:#FFF8E8;">💊</div>
-          <div class="minfo"><div class="mname">Levetiracetam 500mg</div><div class="msub">Antiepilético - Keppra</div></div>
-          <svg style="color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div onclick="openScanMedInfo('levetiracetam');go('med-info','r')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;">
+          <img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:16px;font-weight:700;color:var(--text);">Levetiracetam 500mg</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text-sub);">Comprimido</div>
+          </div>
+          <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
         </div>
-        <div class="mcard" onclick="openScanMedInfo('amoxicilina');go('med-info','r')">
-          <div class="micon" style="background:#F0F8E8;">💊</div>
-          <div class="minfo"><div class="mname">Amoxicilina 500mg</div><div class="msub">Antibiótico - Penicilinas</div></div>
-          <svg style="color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="mcard" onclick="openMedInfoFromSearch()">
-          <div class="micon">💊</div>
-          <div class="minfo"><div class="mname">Ben-U-Ron 1000mg</div><div class="msub">Paracetamol - Analgesico</div></div>
-          <svg style="color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div onclick="openScanMedInfo('amoxicilina');go('med-info','r')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;">
+          <img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:16px;font-weight:700;color:var(--text);">Amoxicilina 500mg</div>
+            <div style="font-size:13px;font-weight:500;color:var(--text-sub);">Cápsula</div>
+          </div>
+          <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
         </div>
       </div>
     </div>
