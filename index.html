@@ -876,52 +876,35 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == SCAN RESULTS (from search) == -->
-<div id="scan-results" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;display:flex;align-items:center;gap:12px;flex-shrink:0;">
-    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 style="font-size:18px;font-weight:700;flex:1;">Resultado da foto</h2>
-  </div>
-  <div class="scroll">
-    <div style="padding:16px 24px;display:flex;flex-direction:column;gap:16px;">
-      <!-- Success banner -->
-      <div style="display:flex;align-items:center;gap:10px;background:#E8F9F5;border-radius:14px;padding:14px 16px;">
-        <span style="font-size:20px;">✅</span>
-        <div>
-          <div style="font-size:14px;font-weight:700;color:var(--teal);">2 medicamentos identificados</div>
-          <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">Carrega em cada um para ver a informação</div>
-        </div>
-      </div>
-      <!-- Med cards -->
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div onclick="openScanMedInfo('ben-u-ron')" style="display:flex;align-items:center;gap:14px;background:white;border:1.5px solid var(--gray-border);border-radius:18px;padding:16px;cursor:pointer;transition:box-shadow .2s;" onmousedown="this.style.boxShadow='0 0 0 3px var(--pink-light)'" onmouseup="this.style.boxShadow=''">
-          <div style="width:52px;height:52px;background:var(--pink-light);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">💊</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:16px;font-weight:700;color:var(--text);">Ben-U-Ron</div>
-            <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">1000mg · Paracetamol</div>
-            <div style="display:flex;gap:5px;margin-top:7px;">
-              <span class="chip" style="font-size:10px;padding:2px 8px;">Analgésico</span>
-              <span class="chip" style="font-size:10px;padding:2px 8px;">Antipirético</span>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;color:var(--gray)"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div onclick="openScanMedInfo('brufen')" style="display:flex;align-items:center;gap:14px;background:white;border:1.5px solid var(--gray-border);border-radius:18px;padding:16px;cursor:pointer;transition:box-shadow .2s;" onmousedown="this.style.boxShadow='0 0 0 3px #E8F0FD'" onmouseup="this.style.boxShadow=''">
-          <div style="width:52px;height:52px;background:#E8F0FD;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">💊</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:16px;font-weight:700;color:var(--text);">Brufen</div>
-            <div style="font-size:12px;color:var(--text-sub);margin-top:2px;">400mg · Ibuprofeno</div>
-            <div style="display:flex;gap:5px;margin-top:7px;">
-              <span class="chip" style="font-size:10px;padding:2px 8px;">Anti-inflamatório</span>
-              <span class="chip" style="font-size:10px;padding:2px 8px;">Analgésico</span>
-            </div>
-          </div>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;color:var(--gray)"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-      </div>
-      <!-- Tip -->
-      <p style="font-size:12px;color:var(--text-sub);text-align:center;padding:0 12px;">Verifica as informações antes de adicionar à tua medicação</p>
+<div id="scan-results" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div class="app-header" style="gap:16px;align-items:flex-start;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="flex:1;min-width:0;">
+      <h1 style="font-size:32px;font-weight:900;color:var(--text);margin:0;line-height:1.05;">Resultado</h1>
+      <p style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:2px;">2 medicamentos identificados</p>
     </div>
+  </div>
+  <div class="scroll" style="padding:144px 16px 32px;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div onclick="openScanMedInfo('ben-u-ron')" style="background:var(--white);border-radius:var(--r-card);padding:14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px;cursor:pointer;">
+        <img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:16px;font-weight:700;color:var(--text);">Ben-U-Ron 1000mg</div>
+          <div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:2px;">Paracetamol · Analgésico</div>
+        </div>
+        <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
+      </div>
+      <div onclick="openScanMedInfo('brufen')" style="background:var(--white);border-radius:var(--r-card);padding:14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px;cursor:pointer;">
+        <img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:16px;font-weight:700;color:var(--text);">Brufen 400mg</div>
+          <div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:2px;">Ibuprofeno · Anti-inflamatório</div>
+        </div>
+        <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
+      </div>
+    </div>
+    <p style="font-size:13px;font-weight:500;color:var(--text-sub);text-align:center;margin-top:20px;">Verifica as informações antes de adicionar à tua medicação.</p>
   </div>
 </div>
 
