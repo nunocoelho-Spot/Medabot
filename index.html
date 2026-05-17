@@ -1989,25 +1989,36 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 
 <!-- == ADD SHEET (modal overlay) == -->
 <div id="add-sheet" class="sheet-overlay" onclick="closeAddSheet()">
-  <div class="sheet" onclick="event.stopPropagation()">
+  <div class="sheet" onclick="event.stopPropagation()" style="padding:14px 16px 32px;">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Registar medicamento</div>
-    <div id="add-sheet-log-opt" class="sheet-opt" role="button" tabindex="0" onclick="closeAddSheet();go('log-dose','r')">
-      <div class="sheet-opt-icon">📋</div>
-      <div><div class="sheet-opt-title">Escolher da lista</div><div class="sheet-opt-sub">Dos medicamentos que já tens</div></div>
-      <svg style="margin-left:auto;color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="sheet-title" style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:18px;">Registar medicamento</div>
+    <div id="add-sheet-log-opt" role="button" tabindex="0" onclick="closeAddSheet();go('log-dose','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;margin-bottom:12px;">
+      <span style="width:40px;height:40px;background:var(--pink);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <img src="assets/icons/medicine_list-icon.svg" alt="" style="width:24px;height:24px;filter:brightness(0) invert(1);"/>
+      </span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:16px;font-weight:700;color:var(--pink);">Escolher da lista</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Dos medicamentos já adicionados</div>
+      </div>
+      <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
     </div>
-    <div class="sheet-opt" role="button" tabindex="0" onclick="closeAddSheet();go('ob-scan','r')">
-      <div class="sheet-opt-icon">📷</div>
-      <div><div class="sheet-opt-title">Fotografar embalagem/s</div><div class="sheet-opt-sub">Deteção automática por câmara</div></div>
-      <svg style="margin-left:auto;color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div role="button" tabindex="0" onclick="closeAddSheet();go('ob-scan','r')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;margin-bottom:12px;">
+      <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/Camera-icon-packaging.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:16px;font-weight:700;color:var(--pink);">Fotografar embalagens</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Identifica automaticamente o medicamento</div>
+      </div>
+      <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
     </div>
-    <div class="sheet-opt" role="button" tabindex="0" onclick="closeAddSheet();openManualInsert()">
-      <div class="sheet-opt-icon">&#9000;</div>
-      <div><div class="sheet-opt-title">Inserir manualmente</div><div class="sheet-opt-sub">Preenche os dados do medicamento</div></div>
-      <svg style="margin-left:auto;color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div role="button" tabindex="0" onclick="closeAddSheet();openManualInsert()" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;margin-bottom:20px;">
+      <span aria-hidden="true" style="display:block;width:40px;height:40px;border-radius:50%;background:url('assets/icons/manual_input-icon.svg') -20px -15px/80px 80px no-repeat;flex-shrink:0;"></span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:16px;font-weight:700;color:var(--pink);">Inserir manualmente</div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">Preenche os dados do medicamento</div>
+      </div>
+      <img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>
     </div>
-    <button class="btn btn-ghost" onclick="closeAddSheet()" style="margin-top:4px;">Cancelar</button>
+    <button class="btn btn-outline" onclick="closeAddSheet()">Fechar</button>
   </div>
 </div>
 
