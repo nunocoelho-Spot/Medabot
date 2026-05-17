@@ -2627,7 +2627,7 @@ function openAddSheet() {
   // Dashboard "Registar toma" = logging a dose (default). Arquivo/onboarding = adding to catalog.
   logDoseMode = cur === 'dashboard';
   const logOpt = document.getElementById('add-sheet-log-opt');
-  if (logOpt) logOpt.style.display = cur === 'arquivo' ? 'none' : '';
+  if (logOpt) logOpt.style.display = cur === 'arquivo' ? 'none' : 'flex';
   const titleEl = document.querySelector('#add-sheet .sheet-title');
   if (titleEl) titleEl.textContent = cur === 'arquivo' ? 'Adicionar medicamento' : 'Registar medicamento';
   document.getElementById('add-sheet').classList.add('open');
