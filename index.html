@@ -202,9 +202,12 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .ncard{background:var(--pink-light);border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
 
 /* -- Arquivo filter chips -- */
-.arq-chip{background:var(--pink-light);color:var(--text);border:1.5px solid transparent;border-radius:24px;
+.arq-chip{background:var(--white);color:var(--text);border:1.5px solid transparent;border-radius:24px;
   padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;
   font-family:inherit;transition:all .15s;}
+#arq-filter-regular{background:#C6E7F3;}
+#arq-filter-occasional{background:#E8DFF7;}
+#arq-filter-inactive{background:#EBEBEB;}
 .arq-chip.arq-chip-active{background:var(--white);border-color:var(--orange);color:var(--text);}
 
 /* -- Med detail rows -- */
@@ -4158,7 +4161,7 @@ function renderArquivoMeds() {
 
   if (arqFilter === 'all' || arqFilter === 'regular') {
     if (regularMeds.length > 0) {
-      html += '<div style="background:var(--pink-light);border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
+      html += '<div style="background:#C6E7F3;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
         '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Regulares</h2>' +
         regularMeds.map(({ m, i }) => regularCard(m, i)).join('') +
       '</div>';
@@ -4169,7 +4172,7 @@ function renderArquivoMeds() {
 
   if (arqFilter === 'all' || arqFilter === 'occasional') {
     if (occasionalMeds.length > 0) {
-      html += '<div style="background:var(--lavender);border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
+      html += '<div style="background:#E8DFF7;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
         '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Ocasionais</h2>' +
         occasionalMeds.map(({ m, i }) => occasionalCard(m, i)).join('') +
       '</div>';
@@ -4179,7 +4182,10 @@ function renderArquivoMeds() {
   }
 
   if (arqFilter === 'inactive') {
-    html += '<div style="text-align:center;padding:28px 0;color:var(--gray);font-size:14px;">Nenhum medicamento inativo.</div>';
+    html += '<div style="background:#EBEBEB;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
+      '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Inativos</h2>' +
+      '<div style="text-align:center;padding:18px 0;color:var(--text-sub);font-size:14px;">Nenhum medicamento inativo.</div>' +
+    '</div>';
   }
 
   list.innerHTML = html;
