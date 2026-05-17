@@ -3432,6 +3432,9 @@ function openDetCardWizard(idx) {
   obInsertSource = 'detected';
   obInsertDetIdx = idx;
   backTarget = 'ob-detected';
+  // Detected flow always returns to ob-detected after save — disable log-dose so the
+  // save path takes the 'detected' branch (not the dashboard return).
+  logDoseMode = false;
   go('ob-insert', 'r');
   showObStep(2);
 }
@@ -3906,7 +3909,7 @@ function renderMedList(meds, container, profileId) {
   const pid = profileId || activeProfile;
   const eyeBtn = (idx) =>
     '<button onclick="openMedDetail(\'' + pid + '\',' + idx + ');event.stopPropagation()" aria-label="Ver detalhe" style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
-      '<img src="assets/icons/eye-icon.svg" alt="" style="width:20px;height:20px;"/>' +
+      '<img src="assets/icons/eye-icon.svg" alt="" style="width:32px;height:32px;"/>' +
     '</button>';
   let html = '<div style="display:flex;flex-direction:column;gap:14px;">';
   visibleMeds.forEach(({ m, idx }) => {
@@ -3927,7 +3930,7 @@ function renderMedList(meds, container, profileId) {
           '<span style="color:var(--success);">✓ Tomada' + (time ? ' às ' + time : '') + '</span>' +
         '</div>' +
         '<div style="height:4px;background:var(--lavender);border-radius:2px;margin-top:8px;overflow:hidden;">' +
-          '<div style="height:100%;width:100%;background:var(--purple);"></div>' +
+          '<div style="height:100%;width:100%;background:linear-gradient(90deg,#B994F7 0%,#E8DFF7 100%);"></div>' +
         '</div>' +
       '</div>';
     } else {
@@ -3952,7 +3955,7 @@ function renderMedList(meds, container, profileId) {
           '<span>' + right + '</span>' +
         '</div>' +
         '<div style="height:4px;background:var(--lavender);border-radius:2px;margin-top:8px;overflow:hidden;">' +
-          '<div style="height:100%;width:' + percent + '%;background:var(--purple);"></div>' +
+          '<div style="height:100%;width:' + percent + '%;background:linear-gradient(90deg,#B994F7 0%,#E8DFF7 100%);"></div>' +
         '</div>' +
       '</div>';
     }
