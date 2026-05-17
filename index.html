@@ -127,8 +127,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .ni{position:relative;}
 /* Icon (::before — first in flow, sits ABOVE the text label) */
 .ni::before{content:'';display:block;width:40px;height:40px;background-position:center;background-repeat:no-repeat;background-size:40px 40px;position:relative;z-index:1;}
-.bnav .ni:nth-child(1)::before{background-image:url('assets/icons/calendar-icon.svg');background-size:20px 22px;filter:brightness(0);}
-.bnav .ni:nth-child(1).active::before{filter:brightness(0) invert(1);}
+.bnav .ni:nth-child(1)::before{background-image:url('assets/icons/calendar-icon.svg');background-size:20px 22px;}
 .bnav .ni:nth-child(2)::before{background-image:url('assets/icons/medicine_list-icon.svg');}
 .bnav .ni:nth-child(3)::before{background-image:url('assets/icons/search-icon.svg');}
 .bnav .ni:nth-child(4)::before{background-image:url('assets/icons/chatbox-icon.svg');}
@@ -1211,45 +1210,49 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       </div>
     </div>
     <!-- Profile dropdown (Figma: Home-Add-family-member) -->
-    <div id="profile-dropdown" style="display:none;position:absolute;top:76px;left:16px;width:220px;background:var(--white);border-radius:14px;box-shadow:0 4px 40px 0 rgba(28,43,48,.10);z-index:100;padding:6px;overflow:hidden;">
-      <!-- Current profile name + label -->
-      <div id="dd-nuno" onclick="switchProfile('nuno');closeProfileDropdown()" style="padding:12px 12px 8px;cursor:pointer;">
-        <div id="dd-nuno-name" style="font-size:16px;font-weight:700;color:var(--text);line-height:1.2;">Utilizador</div>
-        <div style="font-size:13px;color:var(--text-sub);font-weight:500;margin-top:2px;">Perfil principal</div>
+    <div id="profile-dropdown" style="display:none;position:absolute;top:76px;left:16px;width:248px;background:var(--white);border-radius:14px;box-shadow:0 4px 40px 0 rgba(28,43,48,.10);z-index:100;padding:8px;overflow:hidden;">
+      <!-- Current profile: avatar + name/role in horizontal auto-layout -->
+      <div id="dd-nuno" onclick="switchProfile('nuno');closeProfileDropdown()" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;">
+        <img src="assets/User.png" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0;">
+          <div id="dd-nuno-name" style="font-size:20px;font-weight:700;color:var(--text);line-height:1.1;">Utilizador</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text-sub);line-height:1.1;">Perfil principal</div>
+        </div>
       </div>
       <!-- Familiar profile (hidden until added) -->
-      <div id="dd-maria" onclick="switchProfile('maria');closeProfileDropdown()" style="display:none;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;cursor:pointer;">
-        <div>
-          <div id="dd-maria-name" style="font-size:15px;font-weight:700;color:var(--text);">Familiar</div>
-          <div style="font-size:13px;color:var(--text-sub);">Familiar</div>
+      <div id="dd-maria" onclick="switchProfile('maria');closeProfileDropdown()" style="display:none;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;">
+        <img src="assets/User2.png" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+        <div style="flex:1;min-width:0;">
+          <div id="dd-maria-name" style="font-size:16px;font-weight:700;color:var(--text);">Familiar</div>
+          <div style="font-size:13px;color:var(--text-sub);font-weight:500;">Familiar</div>
         </div>
         <span id="dd-maria-check" style="color:var(--pink);font-size:16px;display:none;">&#10003;</span>
         <span id="dd-maria-del" onclick="event.stopPropagation();removeFamiliar();" style="color:var(--danger);font-size:18px;padding:4px 8px;cursor:pointer;">&#128465;</span>
         <span id="dd-maria-avatar" style="display:none;">?</span>
-        <span id="dd-maria-avatar-hidden" style="display:none;">?</span>
       </div>
-      <!-- Hidden span needed because legacy JS sets textContent on this id (no longer rendered as avatar) -->
+      <!-- Hidden legacy spans (JS still references these IDs) -->
       <span id="dd-nuno-avatar" style="display:none;">?</span>
-      <!-- Hidden check span (legacy JS) -->
       <span id="dd-nuno-check" style="display:none;">&#10003;</span>
       <!-- Divider -->
       <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
-      <!-- Add familiar -->
+      <!-- Add family member -->
       <div onclick="closeProfileDropdown();go('familiar','r')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
-        <span aria-hidden="true" style="display:inline-block;width:20px;height:20px;background:url('assets/icons/add-icon.svg') -6px -6px/32px 32px no-repeat;flex-shrink:0;"></span>
-        <span style="font-size:15px;font-weight:700;color:var(--pink);">Adicionar familiar</span>
+        <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/add-circle-icon.svg') -30px -36px/88px 104px no-repeat;flex-shrink:0;"></span>
+        <span style="font-size:16px;font-weight:700;color:var(--pink);">Adicionar familiar</span>
       </div>
       <!-- Divider -->
       <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
       <!-- Settings -->
       <div onclick="closeProfileDropdown();go('settings','r')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
-        <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:16px;color:var(--text);">&#9881;</span>
-        <span style="font-size:15px;font-weight:500;color:var(--text);">Definições</span>
+        <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/setting-icon.svg') -8px -8px/40px 40px no-repeat;flex-shrink:0;"></span>
+        <span style="font-size:16px;font-weight:700;color:var(--text);">Definições</span>
       </div>
+      <!-- Divider -->
+      <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
       <!-- Logout -->
       <div onclick="closeProfileDropdown();go('s1','l')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
-        <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;font-size:16px;color:var(--orange);">&#128682;</span>
-        <span style="font-size:15px;font-weight:700;color:var(--orange);">Terminar sessão</span>
+        <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/Logout-Icon.svg') -8px -8px/40px 40px no-repeat;flex-shrink:0;"></span>
+        <span style="font-size:16px;font-weight:700;color:var(--orange);">Terminar sessão</span>
       </div>
     </div>
     <!-- Bell icon (right side of header) -->
