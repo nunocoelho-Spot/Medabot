@@ -119,8 +119,9 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
   display:flex;align-items:flex-start;justify-content:center;gap:20px;padding:8px 38.5px 21px;flex-shrink:0;
   height:91px;box-shadow:0 -2px 20px rgba(28,43,48,.05);}
 .ni{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;cursor:pointer;
-  color:var(--text);font-size:16px;font-weight:700;transition:color .2s;
-  width:64px;height:62px;-webkit-tap-highlight-color:transparent;}
+  color:var(--text);font-size:14px;font-weight:700;transition:color .2s;text-align:center;
+  width:64px;height:62px;flex-shrink:0;flex-grow:0;
+  white-space:nowrap;overflow:visible;-webkit-tap-highlight-color:transparent;}
 .ni.active{color:var(--pink);}
 .ni svg{display:none;}
 .ni{position:relative;}
@@ -1293,15 +1294,15 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <nav class="bnav" aria-label="Navegação principal">
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Calendário
+      Início
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-      Medicamentos
+      Meds
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('search','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      Pesquisa
+      Procura
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('chat','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1339,15 +1340,15 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <nav class="bnav" aria-label="Navegação principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Calendário
+      Início
     </div>
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
-      Medicamentos
+      Meds
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('search','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      Pesquisa
+      Procura
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('chat','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1644,15 +1645,15 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <nav id="chat-bnav" class="bnav" aria-label="Navegacao principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Calendário
+      Início
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Medicamentos
+      Meds
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('search','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      Pesquisa
+      Procura
     </div>
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1719,7 +1720,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   <nav class="bnav" aria-label="Navegacao principal">
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('dashboard','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      Calendário
+      Início
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('arquivo','l')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1727,7 +1728,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
     <div class="ni active" role="button" tabindex="0" onclick="setNav(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      Pesquisa
+      Procura
     </div>
     <div class="ni" role="button" tabindex="0" onclick="setNav(this);go('chat','r')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
