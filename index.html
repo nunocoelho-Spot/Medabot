@@ -1361,23 +1361,20 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == ALERTAS == -->
-<div id="alertas" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <!-- Header -->
-  <div style="padding:8px 24px 14px;display:flex;align-items:center;gap:12px;">
-    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 style="font-size:24px;font-weight:700;flex:1;">Alertas</h2>
-    <button id="alerts-mark-all" onclick="markAllRead()" style="display:none;background:none;border:none;font-size:13px;font-weight:600;color:var(--pink);cursor:pointer;">Marcar lidos</button>
+<div id="alertas" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;background:var(--bg);z-index:5;"/>
+  <div class="app-header" style="gap:16px;align-items:center;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <h1 style="font-size:28px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Notificações</h1>
   </div>
-  <!-- Filter chips -->
-  <div class="filter-chips">
-    <div class="fchip active" onclick="setAlertFilter(this,'todos')">Todos</div>
-    <div class="fchip" onclick="setAlertFilter(this,'nao-lidos')">Não lidos</div>
-    <div class="fchip" onclick="setAlertFilter(this,'medicacao')">Medicação</div>
-    <div class="fchip" onclick="setAlertFilter(this,'stock')">Stock</div>
+  <!-- Filter chips (orange-bordered active) -->
+  <div style="position:absolute;top:118px;left:0;right:0;padding:0 16px 6px;display:flex;gap:10px;overflow-x:auto;z-index:6;background:var(--bg);">
+    <button class="set-chip active" onclick="setAlertFilter(this,'todos')" type="button">Todas</button>
+    <button class="set-chip" onclick="setAlertFilter(this,'interacoes')" type="button">Interações</button>
+    <button class="set-chip" onclick="setAlertFilter(this,'lembretes')" type="button">Lembretes de toma</button>
   </div>
   <!-- List -->
-  <div class="scroll" id="alerts-list" style="padding-bottom:24px;display:flex;flex-direction:column;gap:0;"></div>
+  <div class="scroll" id="alerts-list" style="padding:170px 16px 32px;display:flex;flex-direction:column;gap:14px;"></div>
 </div>
 
 <!-- == MED DETAIL == -->
@@ -5128,63 +5125,157 @@ function renderAlerts() {
   const container = document.getElementById('alerts-list');
   if (!container) return;
 
-  let filtered = ALERTS.slice();
-  if (alertFilter === 'nao-lidos') filtered = ALERTS.filter(a => a.unread);
-  else if (alertFilter === 'medicacao') filtered = ALERTS.filter(a =>
-    ['dose-late','dose-missed','dose-taken','familiar-late','interaction'].includes(a.type));
-  else if (alertFilter === 'stock') filtered = ALERTS.filter(a =>
-    ['stock-low','stock-empty','refill'].includes(a.type));
+  // Build the three sections from real-ish data (interactions come from getMedInteractions,
+  // reminders / missed come from the active profile's meds + dose state).
+  const showInteractions = (alertFilter === 'todos' || alertFilter === 'interacoes');
+  const showReminders    = (alertFilter === 'todos' || alertFilter === 'lembretes');
+  const showMissed       = (alertFilter === 'todos' || alertFilter === 'lembretes');
 
-  const groups = {hoje:[], ontem:[], semana:[]};
-  filtered.forEach(a => { if (groups[a.date]) groups[a.date].push(a); });
+  const meds = (PROFILES[activeProfile] && PROFILES[activeProfile].meds) || [];
+  const todayKey = new Date().toDateString();
 
-  const unreadCount = ALERTS.filter(a => a.unread).length;
-  const badge = document.getElementById('alert-badge');
-  if (badge) { badge.textContent = unreadCount; badge.style.display = unreadCount > 0 ? 'flex' : 'none'; }
-  const markBtn = document.getElementById('alerts-mark-all');
-  if (markBtn) markBtn.style.display = unreadCount > 0 ? 'block' : 'none';
-
-  const groupLabels = [['hoje','Hoje'],['ontem','Ontem'],['semana','Esta semana']];
   let html = '';
-  let firstGroup = true;
 
-  for (const [key, label] of groupLabels) {
-    if (!groups[key].length) continue;
-    html += `<div class="shdr" style="padding:0 24px;margin-bottom:8px;${firstGroup?'':'margin-top:20px;'}">${label}</div>`;
-    html += '<div style="padding:0 24px;display:flex;flex-direction:column;gap:10px;">';
-    firstGroup = false;
-    for (const a of groups[key]) {
-      const dot = a.unread ? `<span class="alert-unread-dot" style="background:${ALERT_COLOR_MAP[a.color]||'var(--pink)'};"></span>` : '';
-      const actionBtn = a.action
-        ? `<button onclick="event.stopPropagation();${a.action.fn}" style="margin-top:8px;background:none;border:1.5px solid var(--gray-border);border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--text);cursor:pointer;display:inline-block;">${a.action.label}</button>`
-        : '';
-      html += `<div class="alert-card${a.unread?' unread':''} ac-${a.color}" onclick="markAlertRead(${a.id})">
-        <div class="alert-icon ac-${a.color}">${a.icon}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:3px;">
-            <div style="font-size:14px;font-weight:${a.unread?700:600};color:var(--text);line-height:1.3;">${a.title}</div>
-            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-              <span style="font-size:11px;color:var(--text-sub);white-space:nowrap;">${a.time}</span>
-              ${dot}
-            </div>
-          </div>
-          <div style="font-size:12px;color:var(--text-sub);line-height:1.5;">${a.desc}</div>
-          ${actionBtn}
-        </div>
-      </div>`;
+  // ===== Interactions (#FFF8E1) =====
+  if (showInteractions) {
+    const interactiveMeds = meds.filter(m => {
+      const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name;
+      return getMedInteractions(cleanName).length > 0;
+    });
+    if (interactiveMeds.length) {
+      html += '<div style="background:#FFF8E1;border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">';
+      html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">' +
+        '<span aria-hidden="true" style="display:block;width:24px;height:24px;background:url(\'assets/icons/Alert-Icon.svg\') -28px -28px/92px 96px no-repeat;flex-shrink:0;"></span>' +
+        '<h2 style="font-size:20px;font-weight:700;color:var(--orange);margin:0;">Interações</h2>' +
+      '</div>';
+      interactiveMeds.forEach((m, mi) => {
+        const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name;
+        const items = getMedInteractions(cleanName);
+        html += '<div style="margin-top:' + (mi === 0 ? '0' : '14px') + ';">';
+        html += '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">' + cleanName + '</div>';
+        html += '<p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.45;margin:0 0 10px;">Usa com cautela quando combinado com outros medicamentos que possam interagir.</p>';
+        items.forEach(it => {
+          const bg  = it.tone === 'pink' ? '#F4D9D2' : '#F8ECC5';
+          const dot = it.tone === 'pink' ? '#D9534F' : '#F39D58';
+          const txt = (it.text || '').replace(/\{([^}]+)\}/g, '<span style="text-decoration:underline;color:var(--text);font-weight:700;cursor:pointer;">$1</span>');
+          html += '<div style="background:' + bg + ';border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">' +
+            '<span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:6px;"></span>' +
+            '<p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">' + txt + '</p>' +
+          '</div>';
+        });
+        html += '</div>';
+      });
+      html += '</div>';
     }
-    html += '</div>';
   }
 
-  if (!filtered.length) {
-    html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;gap:16px;text-align:center;">
-      <div style="font-size:52px;line-height:1;">🔔</div>
-      <div style="font-size:17px;font-weight:700;">Sem alertas</div>
-      <div style="font-size:14px;color:var(--text-sub);max-width:240px;line-height:1.5;">Quando houver novidades, aparecem aqui.</div>
-    </div>`;
+  // Helper for "Take" button
+  function takeBtn(profileId, medIdx, time) {
+    return '<button onclick="event.stopPropagation();markDoseFromAlerts(\'' + profileId + '\',' + medIdx + ',\'' + time + '\')" ' +
+      'style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:8px 20px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;flex-shrink:0;">Tomar</button>';
+  }
+
+  // ===== Intake Reminders (#E8F5E9) — upcoming doses today (not taken yet) =====
+  if (showReminders) {
+    const reminders = [];
+    const nowMin = (() => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); })();
+    meds.forEach((m, idx) => {
+      if (m.type === 'occasional') return;
+      const times = (m.times && m.times.length) ? m.times : ['08:00'];
+      const taken = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
+      times.forEach(t => {
+        if (taken.has(t)) return;
+        const [hh, mm] = t.split(':').map(Number);
+        const tMin = hh * 60 + (mm || 0);
+        if (tMin >= nowMin) reminders.push({ med: m, idx, time: t });
+      });
+    });
+    if (reminders.length) {
+      html += '<div style="background:#E8F5E9;border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">';
+      html += '<h2 style="font-size:20px;font-weight:700;color:#1B5E20;margin:0 0 14px;">Lembretes de toma</h2>';
+      reminders.forEach((r, i) => {
+        const isLast = i === reminders.length - 1;
+        const name = (r.med.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || r.med.name;
+        const dose = r.med.dosage || '';
+        html += '<div style="padding:10px 0;' + (isLast ? '' : 'border-bottom:1px solid rgba(27,94,32,.15);') + '">' +
+          '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">' + name + (dose ? ' ' + dose : '') + '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">' +
+            '<div>' +
+              '<div style="font-size:12px;color:var(--text-sub);font-weight:500;">A chegar:</div>' +
+              '<div style="font-size:16px;font-weight:600;color:var(--text);">' + r.time + '</div>' +
+            '</div>' +
+            takeBtn(activeProfile, r.idx, r.time) +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    }
+  }
+
+  // ===== Missed Doses (#FFEBEE) — past doses today that are not marked taken =====
+  if (showMissed) {
+    const missed = [];
+    const nowMin = (() => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); })();
+    meds.forEach((m, idx) => {
+      if (m.type === 'occasional') return;
+      const times = (m.times && m.times.length) ? m.times : ['08:00'];
+      const taken = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
+      times.forEach(t => {
+        if (taken.has(t)) return;
+        const [hh, mm] = t.split(':').map(Number);
+        const tMin = hh * 60 + (mm || 0);
+        if (tMin < nowMin) missed.push({ med: m, idx, time: t });
+      });
+    });
+    if (missed.length) {
+      html += '<div style="background:#FFEBEE;border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">';
+      html += '<h2 style="font-size:20px;font-weight:700;color:#C62828;margin:0 0 14px;">Doses falhadas</h2>';
+      missed.forEach((r, i) => {
+        const isLast = i === missed.length - 1;
+        const name = (r.med.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || r.med.name;
+        const dose = r.med.dosage || '';
+        html += '<div style="padding:10px 0;' + (isLast ? '' : 'border-bottom:1px solid rgba(198,40,40,.15);') + '">' +
+          '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">' + name + (dose ? ' ' + dose : '') + '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">' +
+            '<div>' +
+              '<div style="font-size:12px;color:var(--text-sub);font-weight:500;">Falhada:</div>' +
+              '<div style="font-size:16px;font-weight:600;color:var(--text);">' + r.time + '</div>' +
+            '</div>' +
+            takeBtn(activeProfile, r.idx, r.time) +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    }
+  }
+
+  if (!html) {
+    html = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:14px;text-align:center;">' +
+      '<div style="font-size:48px;line-height:1;">🔔</div>' +
+      '<div style="font-size:18px;font-weight:700;color:var(--text);">Sem notificações</div>' +
+      '<div style="font-size:14px;color:var(--text-sub);font-weight:500;max-width:240px;line-height:1.5;">Quando houver novidades, aparecem aqui.</div>' +
+    '</div>';
   }
 
   container.innerHTML = html;
+
+  // legacy badge
+  const badge = document.getElementById('alert-badge');
+  if (badge) badge.style.display = 'none';
+}
+
+/* Mark a single dose as taken from the alerts screen */
+function markDoseFromAlerts(profileId, medIdx, time) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[medIdx];
+  if (!m) return;
+  const key = new Date().toDateString();
+  if (!m.takenSlots) m.takenSlots = {};
+  if (!m.takenSlots[key]) m.takenSlots[key] = [];
+  if (!m.takenSlots[key].includes(time)) m.takenSlots[key].push(time);
+  renderAlerts();
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+  if (typeof buildCal === 'function') buildCal();
+  showToast('Toma registada às ' + time);
 }
 
 function markAlertRead(id) {
@@ -5199,7 +5290,7 @@ function markAllRead() {
 
 function setAlertFilter(chip, filter) {
   alertFilter = filter;
-  document.querySelectorAll('#alertas .fchip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#alertas .fchip, #alertas .set-chip').forEach(c => c.classList.remove('active'));
   chip.classList.add('active');
   renderAlerts();
 }
