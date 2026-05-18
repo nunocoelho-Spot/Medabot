@@ -1467,10 +1467,22 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 6px;">Detalhes principais</h2>
       <div id="medinfo-keydetails"></div>
     </div>
+
+    <!-- Informação de uso -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 6px;">Informação de uso</h2>
+      <div id="medinfo-usage"></div>
+    </div>
+
+    <!-- Avisos e Precauções -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 12px;">Avisos e Precauções</h2>
+      <div id="medinfo-warnings" style="display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.55;color:var(--text);"></div>
+    </div>
   </div>
 
   <div style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="go('chat','r')">Perguntar ao MedaBot</button>
+    <button class="btn btn-primary" onclick="go('chat','r')">Falar com o MedaBot</button>
     <button id="med-info-add-btn" class="btn btn-teal" onclick="addMedFromSearch()">Adicionar medicamento</button>
   </div>
   <!-- Tooltip overlay -->
@@ -2900,6 +2912,27 @@ function populateMedInfoSections(cleanName, dosage) {
       '<div class="md-row' + (i === rows.length - 1 ? ' md-row-last' : '') + '"><span class="md-key">' + r.key + '</span><span class="md-val">' + r.val + '</span></div>'
     ).join('');
   }
+
+  // Informação de uso (key on the left, body on the right — same md-row pattern)
+  const usage = document.getElementById('medinfo-usage');
+  if (usage) {
+    const rows = getMedUsage(cleanName);
+    usage.innerHTML = rows.map((r, i) =>
+      '<div class="md-row' + (i === rows.length - 1 ? ' md-row-last' : '') + '" style="align-items:flex-start;">' +
+        '<span class="md-key" style="color:var(--pink);font-weight:700;flex-shrink:0;">' + r.key + ':</span>' +
+        '<span class="md-val" style="text-align:right;font-weight:500;color:var(--text);">' + r.val + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  // Avisos e Precauções
+  const warn = document.getElementById('medinfo-warnings');
+  if (warn) {
+    const rows = getMedWarnings(cleanName);
+    warn.innerHTML = rows.map(r =>
+      '<p style="margin:0;"><strong style="color:var(--pink);font-weight:700;">' + r.title + ':</strong> ' + r.body + '</p>'
+    ).join('');
+  }
 }
 
 /* Prototype copy for "Para que serve" */
@@ -2920,12 +2953,36 @@ function getMedKeyDetails(medName, dosage) {
   const n = (medName || '').toLowerCase();
   if (n.includes('jardiance')) {
     return [
-      { key: 'Dosagem',           val: 'Tipicamente ' + dosage + ' uma vez por dia' },
-      { key: 'Substância ativa',  val: 'Empagliflozina' },
-      { key: 'Classe',            val: 'Inibidor SGLT2' }
+      { key: 'Dosagem', val: 'Tipicamente uma vez por dia, de manhã, com ou sem comida. A dose inicial é frequentemente 10 mg, podendo ser aumentada para 25 mg.' }
     ];
   }
   return [{ key: 'Dosagem', val: dosage }];
+}
+
+/* Prototype copy for "Informação de uso" */
+function getMedUsage(medName) {
+  const n = (medName || '').toLowerCase();
+  if (n.includes('jardiance')) {
+    return [
+      { key: 'Administração', val: 'Tomar de manhã, com ou sem comida.' },
+      { key: 'Ajuste',        val: 'A dose pode ser aumentada por um profissional de saúde para controlo da diabetes tipo 2, desde que a dose inicial seja tolerada.' },
+      { key: 'Nível máximo',  val: 'Uma vez por dia, de manhã.' }
+    ];
+  }
+  return [{ key: 'Administração', val: 'Consulta a bula para mais detalhes.' }];
+}
+
+/* Prototype copy for "Avisos e Precauções" */
+function getMedWarnings(medName) {
+  const n = (medName || '').toLowerCase();
+  if (n.includes('jardiance')) {
+    return [
+      { title: 'Infeções',         body: 'Pode causar infeções urinárias e genitais graves.' },
+      { title: 'Hipoglicemia',     body: 'O risco aumenta quando combinado com insulina ou sulfonilureias.' },
+      { title: 'Função renal',     body: 'Não deve ser iniciado em doentes com problemas renais graves.' }
+    ];
+  }
+  return [{ title: 'Aviso', body: 'Consulta o teu médico ou farmacêutico em caso de dúvidas.' }];
 }
 function openMedInfoFromSearch() {
   medInfoFromDetail = false;
