@@ -2353,7 +2353,11 @@ function go(id, dir, isBack) {
   if (id !== 'chat') guestMode = false; // leaving chat resets guest mode
   // Keep the URL hash in sync so refresh lands on the same screen.
   // Guest chat gets its own hash (#chat-guest) so a reload restores no-account mode.
-  const hashId = (id === 'chat' && guestMode) ? 'chat-guest' : id;
+  // The familiar-med flow reuses the ob-* screens but exposes them under fam-*
+  // hashes so the URL history is distinct from the onboarding flow.
+  let hashId = id;
+  if (id === 'chat' && guestMode) hashId = 'chat-guest';
+  else if (familiarMedFlow && FAM_HASH_MAP[id]) hashId = FAM_HASH_MAP[id];
   if (location.hash.slice(1) !== hashId) {
     history.replaceState(null, '', '#' + hashId);
   }
@@ -2522,6 +2526,16 @@ function addFamiliar() {
  */
 let familiarMedFlow = false;
 let familiarPreviousProfile = null;
+/* Map ob-* screens (reused) to fam-* hash aliases, so the URL history of the
+ * familiar-med flow is distinct from onboarding. */
+const FAM_HASH_MAP = {
+  'ob2':         'fam-meds',
+  'ob-scan':     'fam-scan',
+  'ob-detected': 'fam-detected',
+  'ob-insert':   'fam-insert',
+  'ob-confirm':  'fam-confirm'
+};
+const FAM_HASH_REVERSE = Object.fromEntries(Object.entries(FAM_HASH_MAP).map(([k,v]) => [v,k]));
 function startFamiliarMedFlow() {
   const name = document.getElementById('familiar-name').value.trim();
   if (!name) { document.getElementById('familiar-name').focus(); return; }
@@ -5361,6 +5375,10 @@ document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
   if (initial === 'chat-guest') {
     guestMode = true;
     go('chat', 'r');
+  } else if (FAM_HASH_REVERSE[initial]) {
+    familiarMedFlow = true;
+    if (activeProfile !== 'maria') { familiarPreviousProfile = activeProfile; activeProfile = 'maria'; }
+    go(FAM_HASH_REVERSE[initial], 'r');
   } else if (initial && document.getElementById(initial) && initial !== cur) {
     go(initial, 'r');
   }
@@ -5369,6 +5387,12 @@ document.getElementById('chat-back-btn')?.setAttribute('onclick', "chatBack()");
     if (id === 'chat-guest') {
       guestMode = true;
       if (cur !== 'chat') go('chat', 'l', true);
+      return;
+    }
+    if (FAM_HASH_REVERSE[id]) {
+      familiarMedFlow = true;
+      if (activeProfile !== 'maria') { familiarPreviousProfile = activeProfile; activeProfile = 'maria'; }
+      if (cur !== FAM_HASH_REVERSE[id]) go(FAM_HASH_REVERSE[id], 'l', true);
       return;
     }
     if (id && id !== cur && document.getElementById(id)) {
