@@ -1434,65 +1434,44 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
 </div>
 
-<!-- == MED INFO -- Bula == -->
-<div id="med-info" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="background:linear-gradient(135deg,var(--pink-light),#E8F4FD);padding:16px 24px 24px;">
-    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-bottom:14px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="display:flex;gap:14px;align-items:center;">
-      <div style="width:64px;height:64px;background:white;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 4px 12px rgba(0,0,0,.1);">💊</div>
-      <div>
-        <h2 id="med-info-name" style="font-size:22px;font-weight:700;">Ben-U-Ron</h2>
-        <p id="med-info-sub" style="font-size:13px;color:var(--text-sub);">1000mg · Paracetamol</p>
-        <div id="med-info-chips" style="display:flex;gap:6px;margin-top:8px;">
-          <span class="chip" style="font-size:11px;">Analgésico</span>
-          <span class="chip" style="font-size:11px;">Antipirético</span>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:12px;display:flex;align-items:center;gap:8px;background:white;border-radius:10px;padding:8px 12px;flex-wrap:wrap;">
-      <span style="font-size:14px;">&#128279;</span>
-      <span style="font-size:12px;color:var(--text-sub);">Fonte: <span class="src-tag" onclick="openSrcDrawer()">Infarmed</span></span>
-      <span style="font-size:11px;color:var(--gray-border);">&#8226;</span>
-      <span onclick="openBula()" style="font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;text-decoration:underline;">Ver bula completa</span>
+<!-- == MED INFO -- Detalhes do medicamento == -->
+<div id="med-info" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;background:var(--bg);z-index:5;"/>
+  <div class="app-header" style="gap:16px;align-items:flex-start;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="flex:1;min-width:0;">
+      <h1 id="med-info-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Jardiance</h1>
+      <p id="med-info-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:2px;">25mg | Comprimido</p>
+      <p style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:6px;">Fonte: <span class="src-tag" onclick="openSrcDrawer()" style="text-decoration:underline;color:var(--pink);font-weight:700;cursor:pointer;">Infarmed</span> &nbsp;|&nbsp; <span onclick="openBula()" style="text-decoration:underline;color:var(--pink);font-weight:700;cursor:pointer;">Ver bula completa</span></p>
     </div>
   </div>
-  <div class="scroll" style="padding:18px 24px;display:flex;flex-direction:column;gap:18px;">
-    <!-- Card critico -->
-    <div style="background:var(--danger-light);border:1.5px solid var(--danger-border);border-radius:14px;padding:14px;">
-      <div style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:8px;">&#128680; Atenção crítica</div>
-      <p id="med-info-critical" style="font-size:13px;line-height:1.5;color:var(--text);">Não ultrapassar <strong>4000mg/dia</strong>. Sobredosagem pode causar insuficiência hepática grave. Evitar com álcool.</p>
-    </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Para que serve</h3>
-      <p style="font-size:14px;color:var(--text-sub);line-height:1.6;">Alivia dores ligeiras a moderadas (dores de cabeça, musculares, dentárias) e reduz a <span style="color:var(--pink);text-decoration:underline;cursor:pointer;" onclick="showTooltip('febre')">febre</span>.</p>
-    </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">&#9888; Interações</h3>
-      <div style="background:#FFF4E5;border-radius:12px;padding:12px;">
-        <div style="font-size:12px;font-weight:700;color:#F79009;margin-bottom:4px;">Atencao moderada</div>
-        <p style="font-size:13px;color:var(--text-sub);line-height:1.5;">Pode interagir com <span style="color:var(--pink);text-decoration:underline;cursor:pointer;" onclick="showTooltip('varfarina')">varfarina</span> e anticoagulantes. Fala com o teu médico.</p>
+  <div class="scroll" style="padding:170px 16px 32px;display:flex;flex-direction:column;gap:14px;">
+    <!-- Interações (cream/yellow card) — only shown when interactions exist -->
+    <div id="medinfo-interactions" style="display:none;background:#FFF8E1;border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span aria-hidden="true" style="display:block;width:24px;height:24px;background:url('assets/icons/Alert-Icon.svg') -28px -28px/92px 96px no-repeat;flex-shrink:0;"></span>
+        <h2 style="font-size:20px;font-weight:700;color:var(--orange);margin:0;">Interações</h2>
       </div>
+      <p id="medinfo-interactions-intro" style="font-size:14px;color:var(--text);font-weight:500;line-height:1.5;margin:0 0 12px;">Usa com cautela quando combinado com insulina ou outros medicamentos que reduzem a glicose no sangue.</p>
+      <div id="medinfo-interactions-list" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Posologia</h3>
-      <div style="background:var(--gray-light);border-radius:14px;padding:4px 16px;">
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Adultos</span><span style="font-size:14px;font-weight:600;">500-1000mg</span></div>
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Intervalo min.</span><span style="font-size:14px;font-weight:600;">4-6 horas</span></div>
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Máximo/dia</span><span style="font-size:14px;font-weight:600;">4000mg</span></div>
-      </div>
+
+    <!-- Para que serve -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 12px;">Para que serve:</h2>
+      <div id="medinfo-uses" style="display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.55;color:var(--text);"></div>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">Efeitos secundários comuns</h3>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--gray-light);border-radius:10px;"><span>&#128558;</span><span style="font-size:13px;">Nauseas (raro)</span></div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--gray-light);border-radius:10px;"><span>&#129656;</span><span style="font-size:13px;">Alterações hepáticas em sobredosagem</span></div>
-      </div>
+
+    <!-- Detalhes principais -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 6px;">Detalhes principais</h2>
+      <div id="medinfo-keydetails"></div>
     </div>
   </div>
-  <div style="padding:12px 24px 32px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="go('chat','r')">&#128172; Perguntar ao MedaBot</button>
-    <button id="med-info-add-btn" class="btn btn-teal" onclick="addMedFromSearch()">&#10010; Adicionar medicamento</button>
+
+  <div style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
+    <button class="btn btn-primary" onclick="go('chat','r')">Perguntar ao MedaBot</button>
+    <button id="med-info-add-btn" class="btn btn-teal" onclick="addMedFromSearch()">Adicionar medicamento</button>
   </div>
   <!-- Tooltip overlay -->
   <div id="tooltip" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;" onclick="hideTooltip()">
@@ -2859,7 +2838,94 @@ function openMedInfoFromDetail() {
   medInfoFromScan = false;
   const btn = document.getElementById('med-info-add-btn');
   if (btn) btn.style.display = 'none';
+  populateMedInfoFromCurrent();
   go('med-info', 'r');
+}
+
+/* Populate med-info screen using the med currently open in #med-detail */
+function populateMedInfoFromCurrent() {
+  const m = (PROFILES[activeProfile] && PROFILES[activeProfile].meds) ? PROFILES[activeProfile].meds[currentMedDetailIdx] : null;
+  const cleanName = m ? ((m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name) : 'Jardiance';
+  const dosage = m ? (m.dosage || '25mg') : '25mg';
+  const form   = m && m.form ? formLabel(m.form) : 'Comprimido';
+
+  const nameEl = document.getElementById('med-info-name');
+  if (nameEl) nameEl.textContent = cleanName;
+  const subEl = document.getElementById('med-info-sub');
+  if (subEl) subEl.textContent = dosage + ' | ' + form;
+
+  populateMedInfoSections(cleanName, dosage);
+}
+
+/* Populate the three info sections (Interações / Para que serve / Detalhes principais) for any med name */
+function populateMedInfoSections(cleanName, dosage) {
+  // Interactions
+  const box  = document.getElementById('medinfo-interactions');
+  const list = document.getElementById('medinfo-interactions-list');
+  const intro = document.getElementById('medinfo-interactions-intro');
+  const interactions = getMedInteractions(cleanName);
+  if (box && list) {
+    if (interactions.length) {
+      list.innerHTML = interactions.map(it => {
+        const bg  = it.tone === 'pink' ? '#F4D9D2' : '#F8ECC5';
+        const dot = it.tone === 'pink' ? '#D9534F' : '#F39D58';
+        const html = (it.text || '').replace(/\{([^}]+)\}/g, '<span style="text-decoration:underline;color:var(--text);font-weight:700;cursor:pointer;">$1</span>');
+        return '<div style="background:' + bg + ';border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;">' +
+          '<span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:6px;"></span>' +
+          '<p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">' + html + '</p>' +
+        '</div>';
+      }).join('');
+      box.style.display = 'block';
+      if (intro) intro.style.display = (cleanName.toLowerCase().includes('jardiance')) ? 'block' : 'none';
+    } else {
+      box.style.display = 'none';
+      list.innerHTML = '';
+    }
+  }
+
+  // Para que serve
+  const usesEl = document.getElementById('medinfo-uses');
+  if (usesEl) {
+    const uses = getMedUses(cleanName);
+    usesEl.innerHTML = uses.map(u =>
+      '<p style="margin:0;"><strong style="font-weight:700;">' + u.title + ':</strong> ' + u.body + '</p>'
+    ).join('');
+  }
+
+  // Detalhes principais
+  const kd = document.getElementById('medinfo-keydetails');
+  if (kd) {
+    const rows = getMedKeyDetails(cleanName, dosage);
+    kd.innerHTML = rows.map((r, i) =>
+      '<div class="md-row' + (i === rows.length - 1 ? ' md-row-last' : '') + '"><span class="md-key">' + r.key + '</span><span class="md-val">' + r.val + '</span></div>'
+    ).join('');
+  }
+}
+
+/* Prototype copy for "Para que serve" */
+function getMedUses(medName) {
+  const n = (medName || '').toLowerCase();
+  if (n.includes('jardiance')) {
+    return [
+      { title: 'Diabetes Tipo 2', body: 'Como complemento à dieta e exercício para melhorar o controlo glicémico.' },
+      { title: 'Insuficiência cardíaca', body: 'Para reduzir o risco de morte cardiovascular e hospitalização.' },
+      { title: 'Doença renal', body: 'Para reduzir o risco de mais declínio renal e doença renal em fase terminal.' }
+    ];
+  }
+  return [{ title: 'Indicação', body: 'Consulta a bula completa para mais informação.' }];
+}
+
+/* Prototype copy for "Detalhes principais" */
+function getMedKeyDetails(medName, dosage) {
+  const n = (medName || '').toLowerCase();
+  if (n.includes('jardiance')) {
+    return [
+      { key: 'Dosagem',           val: 'Tipicamente ' + dosage + ' uma vez por dia' },
+      { key: 'Substância ativa',  val: 'Empagliflozina' },
+      { key: 'Classe',            val: 'Inibidor SGLT2' }
+    ];
+  }
+  return [{ key: 'Dosagem', val: dosage }];
 }
 function openMedInfoFromSearch() {
   medInfoFromDetail = false;
@@ -3520,6 +3586,8 @@ function openScanMedInfo(key) {
   if (subEl) subEl.textContent = med.sub + ' · ' + formLabel(medForm);
   if (chipsEl) chipsEl.innerHTML = med.chips.map(c => `<span class="chip" style="font-size:11px;">${c}</span>`).join('');
   if (critEl) critEl.innerHTML = med.critical;
+  // Populate new-style sections (interactions / uses / key details)
+  populateMedInfoSections(med.name, med.sub.split('·')[0].trim());
   // Set back target to scan-results and show add button
   medInfoFromDetail = false;
   medInfoFromScan = true;
