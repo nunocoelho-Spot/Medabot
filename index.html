@@ -1730,55 +1730,70 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == ADICIONAR FAMILIAR == -->
-<div id="familiar" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;display:flex;align-items:center;gap:12px;">
+<div id="familiar" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div class="app-header">
     <button class="back" aria-label="Voltar" onclick="go('dashboard','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 style="font-size:18px;font-weight:700;">Adicionar familiar</h2>
   </div>
-  <div style="display:flex;flex-direction:column;align-items:center;padding:28px 24px 16px;gap:10px;text-align:center;">
-    <div style="width:80px;height:80px;background:var(--pink-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;">&#128106;</div>
-    <h3 style="font-size:20px;font-weight:700;">Gerir medicação de um familiar</h3>
-    <p style="font-size:14px;color:var(--text-sub);line-height:1.5;">Adiciona um familiar para gerir a medicação dele a partir da tua conta.</p>
-  </div>
-  <div class="scroll">
-    <div style="padding:0 24px;display:flex;flex-direction:column;gap:14px;">
-      <div class="ig"><label class="ilbl" for="familiar-name">Nome do familiar</label><input id="familiar-name" class="ifield" type="text" placeholder="Ex: Maria Silva" autocomplete="name"/></div>
+  <div class="scroll" style="padding:124px 16px 0;">
+    <div class="pbar" style="margin-top:16px;"><div class="pfill" style="width:35%"></div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:20px;">
+      <img src="assets/icons/Family-icon-round.svg" alt="" style="width:64px;height:64px;"/>
+      <h2 style="font-size:24px;font-weight:700;color:var(--text);margin-top:8px;">Adicionar familiar</h2>
+      <p style="font-size:16px;font-weight:500;color:var(--text);margin-top:4px;">Gere a medicação de um familiar a partir da tua conta.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
+      <div class="ig"><label class="ilbl" for="familiar-name">Nome do familiar</label><input id="familiar-name" class="ifield" type="text" placeholder="O nome dele" autocomplete="name"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div class="ig">
           <label class="ilbl">Data de nascimento</label>
-          <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="openDatePicker('fam-dob',this)">
-            <span id="fam-dob-display" style="color:var(--gray);">Selecionar</span>
-            <span style="font-size:14px;">&#128197;</span>
+          <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('fam-dob',this)">
+            <span id="fam-dob-display" style="color:var(--text-sub);">Selecionar</span>
+            <span aria-hidden="true" style="display:inline-block;width:22px;height:22px;background:#118596;flex-shrink:0;-webkit-mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;"></span>
           </div>
           <input type="hidden" id="fam-dob" value=""/>
         </div>
         <div class="ig">
-          <label class="ilbl">Relação</label>
-          <div id="fam-relação" class="ifield app-dropdown" data-value="Pai / Mae" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleAppDropdown(this)">
-            <span>Pai / Mae</span><span class="dd-chevron" aria-hidden="true"></span>
+          <label class="ilbl">Relação familiar</label>
+          <div id="fam-rel" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleAppDropdown(this)">
+            <span style="color:var(--text-sub);">Selecionar</span>
+            <span class="dd-chevron" aria-hidden="true"></span>
             <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Pai / Mãe')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Pai / Mãe</div>
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Filho/a')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Filho/a</div>
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Cônjuge')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Cônjuge</div>
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Irmão/Irmã')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Irmão/Irmã</div>
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Avô/Avó')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Avô/Avó</div>
-              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Outro')" style="padding:12px 14px;font-size:14px;cursor:pointer;">Outro</div>
+              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Pai / Mãe')" style="cursor:pointer;">Pai / Mãe</div>
+              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Filho/a')" style="cursor:pointer;">Filho/a</div>
+              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Cônjuge')" style="cursor:pointer;">Cônjuge</div>
+              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Irmão/Irmã')" style="cursor:pointer;">Irmão/Irmã</div>
+              <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Avô/Avó')" style="cursor:pointer;">Avô/Avó</div>
             </div>
           </div>
         </div>
       </div>
       <div class="ig">
-        <label class="ilbl">Condições de saúde (opcional)</label>
-        <div class="chip-input-wrap" id="fam-health-chips" onclick="this.querySelector('input').focus()">
-          <input type="text" placeholder="Escreve e prime Enter..." onkeydown="handleChipKey(event,this)"/>
+        <label class="ilbl">Género</label>
+        <div id="fam-gender" class="ifield app-dropdown" data-value="" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleAppDropdown(this)">
+          <span style="color:var(--text-sub);">Selecionar</span>
+          <span class="dd-chevron" aria-hidden="true"></span>
+          <div class="app-dd-list" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--gray-border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;overflow:hidden;">
+            <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Masculino')" style="cursor:pointer;">Masculino</div>
+            <div class="app-dd-item" onclick="pickSimpleDD(event,this,'Feminino')" style="cursor:pointer;">Feminino</div>
+          </div>
         </div>
+      </div>
+      <div class="ig">
+        <label class="ilbl">Condições de saúde</label>
+        <div style="position:relative;">
+          <input id="fam-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:52px;"/>
+          <button type="button" aria-label="Adicionar condição" onclick="addFamHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+            <img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>
+          </button>
+        </div>
+        <div id="fam-chips-display" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+        <input type="hidden" id="fam-health-data" value=""/>
       </div>
     </div>
   </div>
-  <div style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="addFamiliar()">Adicionar familiar</button>
-    <button class="btn btn-ghost" onclick="go('dashboard','l')">Cancelar</button>
+  <div style="padding:16px 16px 32px;">
+    <button class="btn btn-primary" onclick="addFamiliar()">Continuar</button>
   </div>
 </div>
 
@@ -2724,8 +2739,9 @@ let chipColorIdx = 0;
 function addHealthChip(input) {
   const val = input.value.trim();
   if (!val) return;
-  const display = document.getElementById('ob1-chips-display');
-  if (display && input.id === 'ob1-health-input') {
+  const isFam = input.id === 'fam-health-input';
+  const display = document.getElementById(isFam ? 'fam-chips-display' : 'ob1-chips-display');
+  if (display && (input.id === 'ob1-health-input' || isFam)) {
     // Primary-colour chip with close-icon
     const chip = document.createElement('span');
     chip.className = 'health-chip';
@@ -2753,6 +2769,10 @@ function addHealthChipFromInput() {
   // bypasses the input's blur restoration path.
   const f = document.getElementById('ob1-footer');
   if (f) f.style.display = '';
+}
+function addFamHealthChipFromInput() {
+  const input = document.getElementById('fam-health-input');
+  if (input) addHealthChip(input);
 }
 
 /* ===== Autocomplete ===== */
