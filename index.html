@@ -791,7 +791,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 <div id="ob2" class="screen" style="background:var(--bg);">
   <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
   <div class="app-header">
-    <button class="back" aria-label="Voltar" onclick="go('ob1','l')"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back" aria-label="Voltar" onclick="if(familiarMedFlow){go('familiar','l');}else{go('ob1','l');}"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
   <div class="scroll" style="padding:124px 16px 0;">
     <div class="pbar" style="margin-top:16px;"><div class="pfill" style="width:49%"></div></div>
@@ -1193,7 +1193,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
   </div>
   <div style="padding:12px 16px 32px;flex-shrink:0;">
-    <button class="btn btn-primary" onclick="go('dashboard','r')">Continuar</button>
+    <button class="btn btn-primary" onclick="if(familiarMedFlow){finishFamiliarMedFlow();}else{go('dashboard','r');}">Continuar</button>
   </div>
 </div>
 
@@ -1746,7 +1746,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig"><label class="ilbl" for="familiar-name">Nome do familiar</label><input id="familiar-name" class="ifield" type="text" placeholder="O nome dele" autocomplete="name"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div class="ig">
-          <label class="ilbl">Data de nascimento</label>
+          <label class="ilbl">Data nasc.</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('fam-dob',this)">
             <span id="fam-dob-display" style="color:var(--text-sub);">Selecionar</span>
             <span aria-hidden="true" style="display:inline-block;width:22px;height:22px;background:#118596;flex-shrink:0;-webkit-mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;"></span>
@@ -1793,28 +1793,20 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
   </div>
   <div style="padding:16px 16px 32px;">
-    <button class="btn btn-primary" onclick="addFamiliar()">Continuar</button>
+    <button class="btn btn-primary" onclick="startFamiliarMedFlow()">Continuar</button>
   </div>
 </div>
 
 <!-- == FAMILIAR SUCESSO == -->
-<div id="familiar-success" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;gap:24px;text-align:center;">
-    <!-- Familiar avatar preview -->
-    <div onclick="switchProfile('maria')" style="display:flex;align-items:center;gap:14px;background:var(--purple-light);border-radius:20px;padding:14px 20px;cursor:pointer;">
-      <div id="fam-success-initials" style="width:48px;height:48px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;">?</div>
-      <div style="text-align:left;">
-        <div id="fam-success-name" style="font-size:16px;font-weight:700;color:var(--text);">Familiar</div>
-        <div style="font-size:13px;color:var(--purple);font-weight:600;margin-top:2px;">Ver calendário →</div>
-      </div>
-    </div>
-    <h2 style="font-size:22px;font-weight:700;">Familiar adicionado<br/>com sucesso!</h2>
-    <p style="font-size:14px;color:var(--text-sub);line-height:1.6;max-width:280px;">Podes agora gerir a medicação deste familiar diretamente a partir da tua conta.</p>
+<div id="familiar-success" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;z-index:5;"/>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:62px 32px 0;gap:16px;text-align:center;">
+    <img src="assets/icons/Family_added-icon-round.svg" alt="" style="width:64px;height:64px;"/>
+    <h1 style="font-size:24px;font-weight:700;color:var(--text);line-height:1.15;margin:0;">Familiar adicionado com sucesso</h1>
+    <p style="font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin:0;max-width:300px;">Podes agora gerir a medicação deste familiar diretamente a partir da tua conta.</p>
   </div>
-  <div style="padding:0 32px 48px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="go('dashboard','l')">Ir para a Home</button>
-    <button class="btn btn-ghost" onclick="go('familiar','l')" style="color:var(--text-sub);">Editar informação</button>
+  <div style="padding:16px 16px 32px;">
+    <button class="btn btn-primary" onclick="go('dashboard','l')">Ir para o calendário</button>
   </div>
 </div>
 
@@ -2515,8 +2507,53 @@ function addFamiliar() {
   familiarAdded = true;
   refreshArqProfileTabs();
   // Update success screen
-  document.getElementById('fam-success-initials').textContent = initials.charAt(0);
-  document.getElementById('fam-success-name').textContent = name;
+  const sin = document.getElementById('fam-success-initials');
+  if (sin) sin.textContent = initials.charAt(0);
+  const sname = document.getElementById('fam-success-name');
+  if (sname) sname.textContent = name;
+  go('familiar-success', 'r');
+}
+
+/* ===== Add-Familiar med flow =====
+ * After filling familiar info, user proceeds to add the familiar's meds
+ * (same flow as onboarding ob2 → ob-scan → ob-detected → ob-insert → ob-confirm).
+ * `familiarMedFlow` is set so saved meds go to PROFILES.maria.meds and the
+ * final "Continuar" routes to #familiar-success instead of #dashboard.
+ */
+let familiarMedFlow = false;
+let familiarPreviousProfile = null;
+function startFamiliarMedFlow() {
+  const name = document.getElementById('familiar-name').value.trim();
+  if (!name) { document.getElementById('familiar-name').focus(); return; }
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  PROFILES.maria = { ...PROFILES.maria, name, initials, color: '#7B61FF', greeting: name, meds: [] };
+  familiarAdded = true;
+  familiarMedFlow = true;
+  familiarPreviousProfile = activeProfile;
+  // Temporarily route saves to maria
+  activeProfile = 'maria';
+  go('ob2', 'r');
+}
+
+/* Called when finishing the familiar med flow on ob-confirm */
+function finishFamiliarMedFlow() {
+  // Update dropdown entry & success screen
+  const p = PROFILES.maria;
+  const ddAv = document.getElementById('dd-maria-avatar');
+  if (ddAv) ddAv.textContent = (p.initials || '').charAt(0);
+  const ddName = document.getElementById('dd-maria-name');
+  if (ddName) ddName.textContent = p.name || 'Familiar';
+  const ddRow = document.getElementById('dd-maria');
+  if (ddRow) { ddRow.style.display = 'flex'; const sub = ddRow.querySelector('div:nth-child(2) div:last-child'); if (sub) sub.textContent = 'Familiar'; }
+  refreshArqProfileTabs();
+  const sin = document.getElementById('fam-success-initials');
+  if (sin) sin.textContent = (p.initials || '').charAt(0);
+  const sname = document.getElementById('fam-success-name');
+  if (sname) sname.textContent = p.name || 'Familiar';
+  // Switch back to the original profile (the user is still themselves) — they can
+  // switch to the familiar via the avatar dropdown afterwards.
+  if (familiarPreviousProfile) { activeProfile = familiarPreviousProfile; familiarPreviousProfile = null; }
+  familiarMedFlow = false;
   go('familiar-success', 'r');
 }
 
