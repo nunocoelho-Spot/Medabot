@@ -748,7 +748,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           <label class="ilbl">Data nasc.</label>
           <div class="ifield" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="openDatePicker('ob1-dob',this)">
             <span id="ob1-dob-display" style="color:var(--text-sub);">Selecionar</span>
-            <img src="assets/icons/calendar-icon.svg" alt="" style="width:22px;height:22px;flex-shrink:0;"/>
+            <span aria-hidden="true" style="display:inline-block;width:22px;height:22px;background:#118596;flex-shrink:0;-webkit-mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;"></span>
           </div>
           <input type="hidden" id="ob1-dob" value=""/>
         </div>
@@ -1498,66 +1498,61 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == BULA COMPLETA (in-app) == -->
-<div id="bula-screen" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;display:flex;align-items:center;gap:14px;">
-    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="flex:1;">
-      <h2 style="font-size:18px;font-weight:700;">Bula completa</h2>
-      <p style="font-size:12px;color:var(--text-sub);">Fonte: Infarmed</p>
+<div id="bula-screen" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;background:var(--bg);z-index:5;"/>
+  <div class="app-header" style="gap:16px;align-items:flex-start;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="flex:1;min-width:0;">
+      <h1 style="font-size:32px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Bula completa</h1>
+      <p style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:6px;">Fonte: <span class="src-tag" onclick="openSrcDrawer()" style="text-decoration:underline;color:var(--pink);font-weight:700;cursor:pointer;">Infarmed</span></p>
     </div>
-    <span class="chip" style="background:var(--blue-light);color:var(--blue);font-size:11px;">Oficial &#127477;&#127481;</span>
   </div>
-  <div class="scroll" style="padding:18px 24px 32px;display:flex;flex-direction:column;gap:18px;">
-    <div style="background:var(--blue-light);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;">
-      <span style="font-size:24px;">💊</span>
-      <div>
-        <div id="bula-med-name" style="font-size:16px;font-weight:700;">Ben-U-Ron 1000mg</div>
-        <div id="bula-med-sub" style="font-size:13px;color:var(--text-sub);">Paracetamol - Comprimidos</div>
+  <div class="scroll" style="padding:144px 16px 32px;display:flex;flex-direction:column;gap:14px;">
+    <!-- Med summary card -->
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <div id="bula-med-name" style="font-size:24px;font-weight:700;color:var(--text);">Ben-U-Ron 1000mg</div>
+      <div id="bula-med-sub" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Paracetamol · Comprimidos</div>
+    </div>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">1. O que é o Ben-U-Ron e para que é utilizado</h2>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.6;margin:0;">Ben-U-Ron contém paracetamol como substância ativa. É utilizado no tratamento sintomático de dores ligeiras a moderadas e de estados febris. Indicado para dores de cabeça, musculares, dentárias, menstruais e estados gripais.</p>
+    </div>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">2. O que precisa de saber antes de tomar</h2>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.6;margin:0;"><strong style="font-weight:700;">Não tome Ben-U-Ron se:</strong><br/>· tem alergia ao paracetamol ou a qualquer outro componente<br/>· sofre de doença hepática grave<br/>· sofre de hepatite viral</p>
+      <div style="background:#FFF8E1;border-radius:14px;padding:14px 16px;margin-top:14px;display:flex;align-items:flex-start;gap:10px;">
+        <span aria-hidden="true" style="display:block;width:24px;height:24px;background:url('assets/icons/Alert-Icon.svg') -28px -28px/92px 96px no-repeat;flex-shrink:0;"></span>
+        <p style="font-size:14px;line-height:1.5;color:var(--text);margin:0;font-weight:500;"><strong style="font-weight:700;">Advertências e precauções:</strong> fala com o teu médico ou farmacêutico antes de tomar este medicamento se sofreres de insuficiência hepática ou renal, alcoolismo crónico ou desidratação.</p>
       </div>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">1. O que e Ben-U-Ron e para que e utilizado</h3>
-      <p style="font-size:14px;color:var(--text-sub);line-height:1.6;">Ben-U-Ron contem paracetamol como substância ativa. E utilizado no tratamento sintomatico de dores ligeiras a moderadas e de estados febris. Indicado para dores de cabeça, dores musculares, dores dentárias, dores menstruais e estados gripais.</p>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 4px;">3. Como tomar Ben-U-Ron</h2>
+      <div class="md-row"><span class="md-key">Adultos e crianças &gt;15 anos</span><span class="md-val">500 – 1000 mg</span></div>
+      <div class="md-row"><span class="md-key">Intervalo entre tomas</span><span class="md-val">4 – 6 horas</span></div>
+      <div class="md-row md-row-last"><span class="md-key">Dose máxima diária</span><span class="md-val">4000 mg (4 comp.)</span></div>
+      <p style="font-size:13px;color:var(--text-sub);font-weight:500;line-height:1.5;margin:12px 0 0;">Engolir os comprimidos inteiros com um copo de água. Não exceder a dose recomendada. Respeitar os intervalos entre tomas.</p>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">2. O que precisa de saber antes de tomar</h3>
-      <p style="font-size:14px;color:var(--text-sub);line-height:1.6;"><strong style="color:var(--danger);">Não tome Ben-U-Ron:</strong><br/>- Se tem alergia ao paracetamol ou a qualquer outro componente<br/>- Se sofre de doença hepática grave<br/>- Se sofre de hepatite viral</p>
-      <div style="background:var(--warning-light);border-radius:12px;padding:12px;margin-top:10px;">
-        <div style="font-size:12px;font-weight:700;color:var(--warning-text);margin-bottom:4px;">&#9888; Advertencias e precaucoes</div>
-        <p style="font-size:13px;color:var(--text-sub);line-height:1.5;">Fale com o seu médico ou farmacêutico antes de tomar este medicamento se sofrer de insuficiência hepática ou renal, álcoolismo crónico ou desidratação.</p>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">4. Efeitos indesejáveis possíveis</h2>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.6;margin:0 0 12px;">Como todos os medicamentos, este pode causar efeitos indesejáveis, embora não se manifestem em todas as pessoas.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 14px;background:#F8ECC5;border-radius:14px;"><span style="font-size:12px;font-weight:700;color:var(--orange);background:var(--white);border-radius:999px;padding:2px 10px;">Raro</span><span style="font-size:14px;font-weight:500;">Reações alérgicas cutâneas, náuseas</span></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:10px 14px;background:#F4D9D2;border-radius:14px;"><span style="font-size:12px;font-weight:700;color:#D9534F;background:var(--white);border-radius:999px;padding:2px 10px;">Grave</span><span style="font-size:14px;font-weight:500;">Lesão hepática (sobredosagem)</span></div>
       </div>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">3. Como tomar Ben-U-Ron</h3>
-      <div style="background:var(--gray-light);border-radius:14px;padding:4px 16px;">
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Adultos e crianças &gt;15 anos</span><span style="font-size:14px;font-weight:600;">500mg - 1000mg</span></div>
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Intervalo entre tomas</span><span style="font-size:14px;font-weight:600;">4-6 horas</span></div>
-        <div class="irow"><span style="font-size:14px;color:var(--text-sub);">Dose máxima diaria</span><span style="font-size:14px;font-weight:600;">4000mg (4 comp.)</span></div>
-      </div>
-      <p style="font-size:13px;color:var(--text-sub);line-height:1.5;margin-top:10px;">Engolir os comprimidos inteiros com um copo de água. Não exceder a dose recomendada. Respeitar os intervalos entre tomas.</p>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 8px;">5. Como conservar Ben-U-Ron</h2>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.6;margin:0;">Conservar abaixo de 25 °C. Manter fora do alcance das crianças. Não utilizar após o prazo de validade impresso na embalagem.</p>
     </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">4. Efeitos indesejáveis possiveis</h3>
-      <p style="font-size:14px;color:var(--text-sub);line-height:1.6;">Como todos os medicamentos, este medicamento pode causar efeitos indesejáveis, embora estes nao se manifestem em todas as pessoas.</p>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
-        <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--gray-light);border-radius:10px;">
-          <span class="chip" style="font-size:10px;background:var(--warning-light);color:var(--warning-text);">Raro</span>
-          <span style="font-size:13px;">Reações alérgicas cutaneas, náuseas</span>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--gray-light);border-radius:10px;">
-          <span class="chip" style="font-size:10px;background:var(--danger-light);color:var(--danger);">Grave</span>
-          <span style="font-size:13px;">Lesão hepática (sobredosagem)</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h3 style="font-size:15px;font-weight:700;margin-bottom:8px;">5. Como conservar Ben-U-Ron</h3>
-      <p style="font-size:14px;color:var(--text-sub);line-height:1.6;">Conservar abaixo de 25C. Manter fora do alcance das crianças. Não utilize após o prazo de validade impresso na embalagem.</p>
-    </div>
-    <div style="background:var(--gray-light);border-radius:14px;padding:14px;font-size:12px;color:var(--text-sub);line-height:1.5;">
-      <strong style="color:var(--text);">Titular da autorização de introdução no mercado:</strong><br/>Generis Farmacêutica, S.A.<br/>Última revisao: janeiro 2024<br/><br/>
-      <span style="font-size:11px;">Este folheto foi aprovado pelo INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I.P.</span>
+
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);font-size:13px;color:var(--text-sub);font-weight:500;line-height:1.55;">
+      <strong style="color:var(--text);font-weight:700;">Titular da autorização de introdução no mercado:</strong><br/>Generis Farmacêutica, S.A.<br/>Última revisão: janeiro 2024<br/><br/>
+      Este folheto foi aprovado pelo INFARMED — Autoridade Nacional do Medicamento e Produtos de Saúde, I.P.
     </div>
   </div>
 </div>
@@ -1947,28 +1942,26 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 
 <!-- == SOURCE DRAWER == -->
 <div id="src-drawer" class="sheet-overlay" onclick="closeSrcDrawer()">
-  <div class="sheet" onclick="event.stopPropagation()" style="padding-bottom:32px;">
+  <div class="sheet" onclick="event.stopPropagation()" style="padding:14px 16px 32px;background:var(--bg);border-radius:28px 28px 0 0;">
     <div class="sheet-handle"></div>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-      <div style="width:52px;height:52px;background:var(--blue);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <span style="color:white;font-size:11px;font-weight:800;line-height:1.1;text-align:center;">IN<br/>FAR<br/>MED</span>
+    <div style="display:flex;align-items:flex-start;gap:14px;margin:8px 0 16px;">
+      <div style="flex:1;min-width:0;">
+        <h2 style="font-size:24px;font-weight:900;color:var(--text);margin:0;line-height:1.1;">INFARMED</h2>
+        <p style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Fonte oficial de informação</p>
       </div>
-      <div>
-        <div style="font-size:18px;font-weight:700;">INFARMED</div>
-        <div style="font-size:12px;color:var(--text-sub);">Fonte de informação oficial</div>
-      </div>
-      <div style="margin-left:auto;">
-        <span class="chip" style="background:var(--blue-light);color:var(--blue);font-size:11px;">Oficial &#127477;&#127481;</span>
-      </div>
+      <button onclick="closeSrcDrawer()" aria-label="Fechar" style="width:40px;height:40px;border-radius:50%;background:var(--white);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;overflow:hidden;box-shadow:var(--shadow-sm);padding:0;">
+        <img src="assets/icons/close-icon.svg" alt="" style="width:96px;height:96px;flex-shrink:0;"/>
+      </button>
     </div>
-    <p style="font-size:14px;color:var(--text-sub);line-height:1.65;margin-bottom:20px;">
-      O <strong style="color:var(--text);">INFARMED - Autoridade Nacional do Medicamento e Produtos de Saúde, I.P.</strong> e um instituto publico português, tutelado pelo Ministério da Saúde, responsavel pela regulação e supervisão de medicamentos de uso humano e produtos de saúde.<br/><br/>
-      A sua missao e garantir que estes produtos são <strong style="color:var(--text);">seguros, eficazes e de qualidade</strong>.
-    </p>
-    <button onclick="openInfarmedChat()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--pink);color:white;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;">
-      💊 Perguntar ao MedaBot
-    </button>
-    <button onclick="closeSrcDrawer()" style="width:100%;background:var(--gray-light);border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;">Fechar</button>
+    <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:14px;">
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.55;margin:0;">
+        O <strong style="font-weight:700;">INFARMED — Autoridade Nacional do Medicamento e Produtos de Saúde, I.P.</strong> é um instituto público português, tutelado pelo Ministério da Saúde, responsável pela regulação e supervisão de medicamentos de uso humano e produtos de saúde.
+      </p>
+      <p style="font-size:14px;color:var(--text);font-weight:500;line-height:1.55;margin:12px 0 0;">
+        A sua missão é garantir que estes produtos são <strong style="font-weight:700;">seguros, eficazes e de qualidade</strong>.
+      </p>
+    </div>
+    <button class="btn btn-primary" onclick="openInfarmedChat()">Falar com o MedaBot</button>
   </div>
 </div>
 
