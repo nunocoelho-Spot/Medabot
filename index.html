@@ -1488,8 +1488,14 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
 
   <div style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="go('chat','r')">Falar com o MedaBot</button>
-    <button id="med-info-add-btn" class="btn btn-teal" onclick="addMedFromSearch()">Adicionar medicamento</button>
+    <button class="btn btn-primary" onclick="go('chat','r')" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span aria-hidden="true" style="display:inline-block;width:18px;height:18px;background:url('assets/icons/chatbox-icon.svg') center/40px 40px no-repeat;flex-shrink:0;filter:brightness(0) invert(1);"></span>
+      Falar com o MedaBot
+    </button>
+    <button id="med-info-add-btn" class="btn btn-outline" onclick="addMedFromSearch()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/add-icon.svg') center/24px 24px no-repeat;flex-shrink:0;"></span>
+      Adicionar medicamento
+    </button>
   </div>
   <!-- Tooltip overlay -->
   <div id="tooltip" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;" onclick="hideTooltip()">
@@ -2893,9 +2899,9 @@ function getMedUses(medName) {
   const n = (medName || '').toLowerCase();
   if (n.includes('jardiance')) {
     return [
-      { title: 'Diabetes Tipo 2', body: 'Como complemento à dieta e exercício para melhorar o controlo glicémico.' },
-      { title: 'Insuficiência cardíaca', body: 'Para reduzir o risco de morte cardiovascular e hospitalização.' },
-      { title: 'Doença renal', body: 'Para reduzir o risco de mais declínio renal e doença renal em fase terminal.' }
+      { title: 'Diabetes Tipo 2',         body: 'Como adjuvante da dieta e exercício para melhorar o controlo glicémico.' },
+      { title: 'Insuficiência Cardíaca',  body: 'Para reduzir o risco de morte cardiovascular e hospitalização.' },
+      { title: 'Doença Renal',            body: 'Para reduzir o risco de mais declínio renal, doença renal em fase terminal e morte.' }
     ];
   }
   return [{ title: 'Indicação', body: 'Consulta a bula completa para mais informação.' }];
@@ -2906,7 +2912,7 @@ function getMedKeyDetails(medName, dosage) {
   const n = (medName || '').toLowerCase();
   if (n.includes('jardiance')) {
     return [
-      { key: 'Dosagem', val: 'Tipicamente uma vez por dia, de manhã, com ou sem comida. A dose inicial é frequentemente 10 mg, podendo ser aumentada para 25 mg.' }
+      { key: 'Dosagem', val: 'Tipicamente tomado por via oral uma vez por dia, de manhã, com ou sem comida. A dose inicial é frequentemente de 10 mg, podendo ser aumentada para 25 mg.' }
     ];
   }
   return [{ key: 'Dosagem', val: dosage }];
@@ -2918,7 +2924,7 @@ function getMedUsage(medName) {
   if (n.includes('jardiance')) {
     return [
       { key: 'Administração', val: 'Tomar de manhã, com ou sem comida.' },
-      { key: 'Ajuste',        val: 'A dose pode ser aumentada por um profissional de saúde para controlo da diabetes tipo 2, desde que a dose inicial seja tolerada.' },
+      { key: 'Ajuste',        val: 'A dose pode ser aumentada por um profissional de saúde para controlo glicémico adicional na diabetes tipo 2, desde que a dose inicial seja tolerada.' },
       { key: 'Nível máximo',  val: 'Uma vez por dia, de manhã.' }
     ];
   }
@@ -2930,9 +2936,9 @@ function getMedWarnings(medName) {
   const n = (medName || '').toLowerCase();
   if (n.includes('jardiance')) {
     return [
-      { title: 'Infeções',         body: 'Pode causar infeções urinárias e genitais graves.' },
-      { title: 'Hipoglicemia',     body: 'O risco aumenta quando combinado com insulina ou sulfonilureias.' },
-      { title: 'Função renal',     body: 'Não deve ser iniciado em doentes com problemas renais graves.' }
+      { title: 'Infeções',     body: 'Pode causar infeções urinárias e genitais graves.' },
+      { title: 'Hipoglicemia', body: 'O risco aumenta quando tomado com insulina ou sulfonilureias.' },
+      { title: 'Função renal', body: 'Não deve ser iniciado em doentes com problemas renais graves.' }
     ];
   }
   return [{ title: 'Aviso', body: 'Consulta o teu médico ou farmacêutico em caso de dúvidas.' }];
