@@ -1390,6 +1390,17 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
   </div>
   <div class="scroll" style="padding:144px 16px 32px;">
+    <!-- Interactions / Alert card (only when interactions exist) -->
+    <div id="detail-interactions" style="display:none;background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <span aria-hidden="true" style="display:block;width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6v3.5L4.5 14h15L18 11.5V8a6 6 0 0 0-6-6Zm0 20a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Z" fill="#fff"/></svg>
+        </span>
+        <h2 style="font-size:20px;font-weight:700;color:var(--orange);margin:0;">Alerta</h2>
+      </div>
+      <div id="detail-interactions-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
     <!-- Today card -->
     <div style="background:var(--white);border-radius:var(--r-card);padding:24px;box-shadow:var(--shadow-sm);">
       <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 8px;">Hoje</h2>
@@ -1595,7 +1606,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <button id="chat-back-btn" class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div class="app-header-title">MedaBot Chat</div>
     <button id="chat-hist-btn" class="back" aria-label="Abrir histórico" onclick="toggleChatSidebar()" style="background:none;border:none;box-shadow:none;padding:0;position:relative;">
-      <img src="assets/icons/chat-menu-BTN-icon.png" alt="" style="position:absolute;width:97px;height:122px;top:-36.6px;left:-28.5px;display:block;"/>
+      <img src="assets/icons/chat-menu-BTN-icon.svg" alt="" style="position:absolute;width:97px;height:122px;top:-36.6px;left:-40.6px;display:block;"/>
     </button>
   </div>
   <div style="height:118px;flex-shrink:0;"></div>
@@ -3840,9 +3851,45 @@ function openMedDetail(profileId, idx) {
     const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
     detStart.textContent = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
+  // Interactions / Alert card — only shown when interactions exist for this med
+  const interactionsBox = document.getElementById('detail-interactions');
+  const interactionsList = document.getElementById('detail-interactions-list');
+  if (interactionsBox && interactionsList) {
+    const interactions = getMedInteractions(cleanName);
+    if (interactions.length) {
+      interactionsList.innerHTML = interactions.map(it => {
+        // it.tone: 'pink' (red dot, salmon bg) or 'yellow' (orange dot, yellow bg)
+        const bg = it.tone === 'pink' ? '#F4D9D2' : '#F8ECC5';
+        const dot = it.tone === 'pink' ? '#D9534F' : '#F39D58';
+        // Convert {linked} markers in text to underlined teal spans
+        const html = (it.text || '').replace(/\{([^}]+)\}/g, '<span style="text-decoration:underline;color:var(--text);font-weight:700;cursor:pointer;">$1</span>');
+        return '<div style="background:' + bg + ';border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;">' +
+          '<span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:6px;"></span>' +
+          '<p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">' + html + '</p>' +
+        '</div>';
+      }).join('');
+      interactionsBox.style.display = 'block';
+    } else {
+      interactionsBox.style.display = 'none';
+      interactionsList.innerHTML = '';
+    }
+  }
+
   // Refresh the mirrored calendar so it reflects current meds/state
   if (typeof buildCal === 'function') buildCal();
   go('med-detail', 'r');
+}
+
+/* Returns array of {tone, text} interactions for a med (prototype data). */
+function getMedInteractions(medName) {
+  const n = (medName || '').toLowerCase();
+  if (n.includes('jardiance')) {
+    return [
+      { tone: 'pink',   text: 'Este comprimido anula o efeito de contracetivos como o {Clarissa}.' },
+      { tone: 'yellow', text: 'Este comprimido com {Ben-U-Ron} pode causar diarreia.' }
+    ];
+  }
+  return [];
 }
 
 function toggleMedDose(btn, profileId, idx) {
