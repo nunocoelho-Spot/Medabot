@@ -82,15 +82,15 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 .app-dropdown{position:relative;}
 .app-dd-item:hover{background:var(--gray-light);}
 /* Inline-expand variant for dropdowns (gender, dosage, formato) */
-#ob1-genero, #manual-dosage-dd, #manual-formato{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
-#ob1-genero.open, #manual-dosage-dd.open, #manual-formato.open{border:1.5px solid var(--pink);}
-#ob1-genero .app-dd-list, #manual-dosage-dd .app-dd-list, #manual-formato .app-dd-list{
+#ob1-genero, #manual-dosage-dd, #manual-formato, #fam-rel, #fam-gender{flex-wrap:wrap;transition:border-color .15s;align-items:center;}
+#ob1-genero.open, #manual-dosage-dd.open, #manual-formato.open, #fam-rel.open, #fam-gender.open{border:1.5px solid var(--pink);}
+#ob1-genero .app-dd-list, #manual-dosage-dd .app-dd-list, #manual-formato .app-dd-list, #fam-rel .app-dd-list, #fam-gender .app-dd-list{
   position:static !important;top:auto !important;left:auto !important;right:auto !important;
   background:transparent !important;border:none !important;border-radius:0 !important;box-shadow:none !important;
   flex-basis:100%;margin-top:12px;padding:0;overflow:visible;z-index:auto;}
-#ob1-genero .app-dd-item, #manual-dosage-dd .app-dd-item, #manual-formato .app-dd-item{
+#ob1-genero .app-dd-item, #manual-dosage-dd .app-dd-item, #manual-formato .app-dd-item, #fam-rel .app-dd-item, #fam-gender .app-dd-item{
   padding:10px 0 !important;font-size:16px !important;font-weight:500 !important;color:var(--text) !important;}
-#ob1-genero .app-dd-item:hover, #manual-dosage-dd .app-dd-item:hover, #manual-formato .app-dd-item:hover{background:transparent;}
+#ob1-genero .app-dd-item:hover, #manual-dosage-dd .app-dd-item:hover, #manual-formato .app-dd-item:hover, #fam-rel .app-dd-item:hover, #fam-gender .app-dd-item:hover{background:transparent;}
 
 /* -- Scroll -- */
 .scroll{overflow-y:auto;flex:1;scrollbar-width:none;}.scroll::-webkit-scrollbar{display:none;}
@@ -2082,7 +2082,13 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <!-- Month picker (hidden by default) -->
     <div id="picker-month-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;"></div>
     <!-- Year picker (hidden by default) -->
-    <div id="picker-year-grid" style="display:none;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;max-height:260px;overflow-y:auto;scrollbar-width:none;"></div>
+    <div id="picker-year-mode" style="display:none;flex-direction:column;gap:10px;margin-bottom:8px;">
+      <input id="picker-year-input" type="number" inputmode="numeric" placeholder="Ano (ex: 1985)" min="1900" max="2100"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();applyTypedYear();}"
+        onblur="applyTypedYear()"
+        style="width:100%;padding:12px 14px;border:1.5px solid var(--gray-border);border-radius:12px;background:var(--white);font-size:16px;font-weight:600;color:var(--text);font-family:inherit;outline:none;-moz-appearance:textfield;"/>
+      <div id="picker-year-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:220px;overflow-y:auto;scrollbar-width:none;"></div>
+    </div>
     <!-- Day grid -->
     <div class="cal-grid" id="picker-grid"></div>
     <div style="display:flex;gap:10px;margin-top:16px;">
@@ -4855,6 +4861,8 @@ function changePickerMonth(delta) {
 function showPickerMode(mode) {
   const mGrid = document.getElementById('picker-month-grid');
   const yGrid = document.getElementById('picker-year-grid');
+  const yMode = document.getElementById('picker-year-mode');
+  const yInput = document.getElementById('picker-year-input');
   const dGrid = document.getElementById('picker-grid');
   if (mode === 'month') {
     const monthNamesShort = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -4876,7 +4884,7 @@ function showPickerMode(mode) {
       mGrid.innerHTML += '<div ' + onclick + ' style="padding:14px 8px;text-align:center;border-radius:12px;cursor:' + cursor + ';font-size:14px;font-weight:' + (isActive ? '700' : '500') + ';background:' + bg + ';color:' + color + ';opacity:' + opacity + ';">' + m + '</div>';
     });
     mGrid.style.display = 'grid';
-    yGrid.style.display = 'none';
+    if (yMode) yMode.style.display = 'none';
     dGrid.style.display = 'none';
   } else if (mode === 'year') {
     yGrid.innerHTML = '';
@@ -4885,11 +4893,16 @@ function showPickerMode(mode) {
     const minY = (pickerMinDate || new Date()).getFullYear();
     const startYear = pickerMode === 'past' ? (nowY - 100) : minY;
     const endYear = pickerMode === 'past' ? nowY : (nowY + 100);
+    if (yInput) {
+      yInput.value = currentYear;
+      yInput.min = startYear;
+      yInput.max = endYear;
+    }
     for (let y = endYear; y >= startYear; y--) {
       const isActive = y === currentYear;
       yGrid.innerHTML += '<div onclick="pickYear(' + y + ')" style="padding:12px 4px;text-align:center;border-radius:10px;cursor:pointer;font-size:14px;font-weight:' + (isActive ? '700' : '500') + ';background:' + (isActive ? 'var(--pink)' : 'var(--gray-light)') + ';color:' + (isActive ? 'white' : 'var(--text)') + ';">' + y + '</div>';
     }
-    yGrid.style.display = 'grid';
+    if (yMode) yMode.style.display = 'flex';
     mGrid.style.display = 'none';
     dGrid.style.display = 'none';
     // Scroll current year into view
@@ -4899,9 +4912,26 @@ function showPickerMode(mode) {
     }, 20);
   } else {
     mGrid.style.display = 'none';
-    yGrid.style.display = 'none';
+    if (yMode) yMode.style.display = 'none';
     dGrid.style.display = 'grid';
   }
+}
+
+/* Read the typed year, validate against the current picker mode range, and apply it. */
+function applyTypedYear() {
+  const input = document.getElementById('picker-year-input');
+  if (!input) return;
+  const raw = (input.value || '').trim();
+  if (!raw) return;
+  let y = parseInt(raw, 10);
+  if (isNaN(y)) return;
+  const nowY = new Date().getFullYear();
+  const minY = (pickerMinDate || new Date()).getFullYear();
+  const startY = pickerMode === 'past' ? (nowY - 100) : minY;
+  const endY   = pickerMode === 'past' ? nowY : (nowY + 100);
+  if (y < startY) y = startY;
+  if (y > endY) y = endY;
+  pickYear(y);
 }
 function pickMonth(m) {
   pickerDate.setMonth(m);
