@@ -209,7 +209,7 @@ html,body{height:100%;background:var(--shell-bg);display:flex;justify-content:ce
 #arq-filter-regular{background:#C6E7F3;}
 #arq-filter-occasional{background:#E8DFF7;}
 #arq-filter-inactive{background:#EBEBEB;}
-.arq-chip.arq-chip-active{background:var(--white);border-color:var(--orange);color:var(--text);}
+.arq-chip.arq-chip-active{border-color:var(--orange);color:var(--text);}
 
 /* -- Med detail rows -- */
 .md-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--gray-border);}
@@ -1347,10 +1347,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     </div>
     <!-- Filter chips -->
     <div style="display:flex;gap:8px;overflow-x:auto;flex-shrink:0;margin:18px 0 16px;scrollbar-width:none;">
-      <button id="arq-filter-all" class="arq-chip arq-chip-active" onclick="setArqFilter('all',this)">Todos</button>
-      <button id="arq-filter-regular" class="arq-chip" onclick="setArqFilter('regular',this)">Regulares</button>
-      <button id="arq-filter-occasional" class="arq-chip" onclick="setArqFilter('occasional',this)">Ocasionais</button>
-      <button id="arq-filter-inactive" class="arq-chip" onclick="setArqFilter('inactive',this)">Inativos</button>
+      <button id="arq-filter-all" class="arq-chip arq-chip-active" data-tint="white" onclick="setArqFilter('all',this)">Todos</button>
+      <button id="arq-filter-regular" class="arq-chip" data-tint="regular" onclick="setArqFilter('regular',this)">Regulares</button>
+      <button id="arq-filter-occasional" class="arq-chip" data-tint="occasional" onclick="setArqFilter('occasional',this)">Ocasionais</button>
+      <button id="arq-filter-inactive" class="arq-chip" data-tint="inactive" onclick="setArqFilter('inactive',this)">Inativos</button>
     </div>
     <div id="arquivo-list" style="display:flex;flex-direction:column;gap:14px;"></div>
   </div>
@@ -4448,13 +4448,14 @@ function renderArquivoMeds() {
   const regularMeds = activeMeds().map((m, i) => ({ m, i })).filter(({ m }) => m.type !== 'occasional' && !m.oneOff);
   const occasionalMeds = activeMeds().map((m, i) => ({ m, i })).filter(({ m }) => m.type === 'occasional' && !m.oneOff);
 
-  function medCard(m, i, subLine) {
-    const safeName = (m.name || '').replace(/'/g, "\\'");
-    return '<div style="background:var(--white);border-radius:var(--r-card);padding:14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="openMedDetail(\'' + activeProfile + '\',' + i + ')">' +
+  function medRow(m, i, subLine, isLast, dividerColor) {
+    const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name || '';
+    const border = isLast ? '' : 'border-bottom:1px solid ' + dividerColor + ';';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:14px 0;cursor:pointer;' + border + '" onclick="openMedDetail(\'' + activeProfile + '\',' + i + ')">' +
       '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
       '<div style="flex:1;min-width:0;">' +
-        '<div style="font-size:16px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + m.name + ' ' + (m.dosage || '') + '</div>' +
-        '<div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:4px;line-height:1.3;">' + subLine + '</div>' +
+        '<div style="font-size:18px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + cleanName + (m.dosage ? ' ' + m.dosage : '') + '</div>' +
+        '<div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;line-height:1.35;">' + subLine + '</div>' +
       '</div>' +
       '<button onclick="openMedDetail(\'' + activeProfile + '\',' + i + ');event.stopPropagation()" aria-label="Ver" style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
         '<img src="assets/icons/eye-icon.svg" alt="" style="width:32px;height:32px;"/>' +
@@ -4465,26 +4466,31 @@ function renderArquivoMeds() {
     '</div>';
   }
 
-  function regularCard(m, i) {
-    const times = (m.times && m.times.length) ? m.times.join('  |  ') : '08:00';
-    const sub = (m.frequency || 'Todos os dias') + '<br/>' + times;
-    return medCard(m, i, sub);
+  function regularSubLine(m) {
+    const freq = m.frequency || 'Todos os dias';
+    const times = (m.times && m.times.length) ? m.times.join(' | ') : '08:00';
+    return freq + '<br/>' + times;
   }
-  function occasionalCard(m, i) {
-    const logCount = m.logs ? m.logs.length : 0;
-    const lastLog = logCount > 0 ? new Date(m.logs[logCount - 1]).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : null;
-    const sub = 'Conforme necessário<br/>' + (lastLog ? 'Última toma: ' + lastLog : 'Sem tomas registadas');
-    return medCard(m, i, sub);
+  function occasionalSubLine(m) {
+    const logs = m.logs || [];
+    const last = logs.length ? new Date(logs[logs.length - 1]).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : null;
+    return 'Conforme necessário<br/>' + (last ? 'Última toma: ' + last : 'Sem tomas registadas');
+  }
+
+  function section(title, bg, dividerColor, rows) {
+    return '<div style="background:' + bg + ';border-radius:var(--r-card);padding:20px 20px 8px;">' +
+      '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">' + title + '</h2>' +
+      rows +
+    '</div>';
   }
 
   let html = '';
 
   if (arqFilter === 'all' || arqFilter === 'regular') {
     if (regularMeds.length > 0) {
-      html += '<div style="background:#C6E7F3;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
-        '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Regulares</h2>' +
-        regularMeds.map(({ m, i }) => regularCard(m, i)).join('') +
-      '</div>';
+      const dividerColor = 'rgba(28,43,48,.10)';
+      const rows = regularMeds.map(({ m, i }, idx) => medRow(m, i, regularSubLine(m), idx === regularMeds.length - 1, dividerColor)).join('');
+      html += section('Regulares', '#C6E7F3', dividerColor, rows);
     } else if (arqFilter === 'regular') {
       html += '<div style="text-align:center;padding:28px 0;color:var(--gray);font-size:14px;">Nenhum medicamento com horário fixo.</div>';
     }
@@ -4492,17 +4498,16 @@ function renderArquivoMeds() {
 
   if (arqFilter === 'all' || arqFilter === 'occasional') {
     if (occasionalMeds.length > 0) {
-      html += '<div style="background:#E8DFF7;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
-        '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Ocasionais</h2>' +
-        occasionalMeds.map(({ m, i }) => occasionalCard(m, i)).join('') +
-      '</div>';
+      const dividerColor = 'rgba(28,43,48,.10)';
+      const rows = occasionalMeds.map(({ m, i }, idx) => medRow(m, i, occasionalSubLine(m), idx === occasionalMeds.length - 1, dividerColor)).join('');
+      html += '<div style="height:14px;"></div>' + section('Ocasionais', '#E8DFF7', dividerColor, rows);
     } else if (arqFilter === 'occasional') {
       html += '<div style="text-align:center;padding:28px 0;color:var(--gray);font-size:14px;">Nenhum medicamento de uso ocasional.</div>';
     }
   }
 
   if (arqFilter === 'inactive') {
-    html += '<div style="background:#EBEBEB;border:0.6px solid #E4E5E5;border-radius:var(--r-card);padding:20px;display:flex;flex-direction:column;gap:10px;">' +
+    html += '<div style="background:#EBEBEB;border-radius:var(--r-card);padding:20px;">' +
       '<h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0 0 4px;">Inativos</h2>' +
       '<div style="text-align:center;padding:18px 0;color:var(--text-sub);font-size:14px;">Nenhum medicamento inativo.</div>' +
     '</div>';
