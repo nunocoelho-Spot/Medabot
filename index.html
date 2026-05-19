@@ -1496,7 +1496,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
   </div>
 
   <div style="padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn btn-primary" onclick="go('chat','r')" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+    <button class="btn btn-primary" onclick="openMedChatContext()" style="display:flex;align-items:center;justify-content:center;gap:8px;">
       <span aria-hidden="true" style="display:inline-block;width:18px;height:18px;background:url('assets/icons/chatbox-icon.svg') center/40px 40px no-repeat;flex-shrink:0;filter:brightness(0) invert(1);"></span>
       Falar com o MedaBot
     </button>
@@ -2788,6 +2788,20 @@ function openInfarmedChat() {
       setTimeout(() => appendMsg(INFARMED_RESPONSE, 'bot'), 900);
     }, 300);
   }, 200);
+}
+
+/* Open chat from #med-info — auto-send a contextual message about the current med */
+function openMedChatContext() {
+  const nameEl = document.getElementById('med-info-name');
+  const medName = (nameEl && nameEl.textContent ? nameEl.textContent.trim() : '') || '';
+  go('chat', 'r');
+  if (!medName) return;
+  setTimeout(() => {
+    appendMsg('Fala-me mais sobre o ' + medName, 'user');
+    setTimeout(() => {
+      appendMsg(medName + ' é frequentemente usado no controlo de doenças crónicas. Posso ajudar-te com a posologia, interações ou efeitos secundários — diz-me o que queres saber.', 'bot');
+    }, 900);
+  }, 300);
 }
 
 /* ===== Health condition chips ===== */
