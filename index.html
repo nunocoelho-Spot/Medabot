@@ -773,7 +773,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig">
         <label class="ilbl">Condições de saúde</label>
         <div style="position:relative;">
-          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:52px;" onfocus="ob1KeyboardShow()" onblur="ob1KeyboardHide()"/>
+          <input id="ob1-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:52px;" onfocus="ob1KeyboardShow()" onblur="commitHealthChipOnBlur(this);ob1KeyboardHide()"/>
           <button type="button" aria-label="Adicionar condição" onclick="addHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             <img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>
           </button>
@@ -1798,7 +1798,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <div class="ig">
         <label class="ilbl">Condições de saúde</label>
         <div style="position:relative;">
-          <input id="fam-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" style="padding-right:52px;"/>
+          <input id="fam-health-input" class="ifield" type="text" placeholder="Ex: Diabetes, Hipertensão..." onkeydown="handleChipKey(event,this)" onblur="commitHealthChipOnBlur(this)" style="padding-right:52px;"/>
           <button type="button" aria-label="Adicionar condição" onclick="addFamHealthChipFromInput()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;">
             <img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>
           </button>
@@ -2858,6 +2858,12 @@ function addHealthChipFromInput() {
 function addFamHealthChipFromInput() {
   const input = document.getElementById('fam-health-input');
   if (input) addHealthChip(input);
+}
+/* Commit the typed condition as a chip when the input loses focus (user taps the
+ * screen instead of pressing Enter or the + button). Guarded so it only fires
+ * when there is actual text — empty blur is a no-op. */
+function commitHealthChipOnBlur(input) {
+  if (input && input.value && input.value.trim()) addHealthChip(input);
 }
 
 /* ===== Autocomplete ===== */
