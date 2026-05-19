@@ -4216,16 +4216,14 @@ function renderLogDoseList() {
     return '<div style="background:' + cardBg + ';border-radius:var(--r-card);padding:16px 18px;box-shadow:var(--shadow-sm);">' +
       // Top row — pill icon + name
       '<div style="display:flex;align-items:center;gap:12px;">' +
-        '<span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:var(--white);flex-shrink:0;">' +
-          '<img src="assets/Pill-Label.svg" alt="" style="width:30px;height:30px;"/>' +
-        '</span>' +
+        '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
         '<div style="flex:1;min-width:0;font-size:18px;font-weight:700;color:var(--text);">' + cleanName + (m.dosage ? ' ' + m.dosage : '') + '</div>' +
       '</div>' +
       // Bottom row — freq + times on the left, action button on the right
       '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;">' +
         '<div style="min-width:0;">' +
-          '<div style="font-size:14px;font-weight:500;color:var(--text);">' + freqLabel + '</div>' +
-          (times ? '<div style="font-size:16px;font-weight:600;color:var(--text);margin-top:2px;">' + times + '</div>' : '') +
+          '<div style="font-size:14px;font-weight:500;color:var(--text-sub);">' + freqLabel + '</div>' +
+          (times ? '<div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">' + times + '</div>' : '') +
         '</div>' +
         '<button onclick="logDoseNow(' + i + ')" aria-label="Registar toma" ' +
           'style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
