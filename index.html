@@ -1822,7 +1822,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <p style="font-size:16px;font-weight:500;color:var(--text);line-height:1.5;margin:0;max-width:300px;">Podes agora gerir a medicação deste familiar diretamente a partir da tua conta.</p>
   </div>
   <div style="padding:16px 16px 32px;">
-    <button class="btn btn-primary" onclick="go('dashboard','l')">Ir para o calendário</button>
+    <button class="btn btn-primary" onclick="enterFamiliarDashboard()">Ir para o calendário</button>
   </div>
 </div>
 
@@ -2590,11 +2590,53 @@ function finishFamiliarMedFlow() {
   if (sin) sin.textContent = (p.initials || '').charAt(0);
   const sname = document.getElementById('fam-success-name');
   if (sname) sname.textContent = p.name || 'Familiar';
-  // Switch back to the original profile (the user is still themselves) — they can
-  // switch to the familiar via the avatar dropdown afterwards.
-  if (familiarPreviousProfile) { activeProfile = familiarPreviousProfile; familiarPreviousProfile = null; }
+  // Keep the familiar as the active profile so that "Ir para o calendário" lands
+  // on the familiar's dashboard (preserves the user's mental model of the flow they
+  // just completed). They can switch back via the avatar dropdown afterwards.
+  familiarPreviousProfile = null;
   familiarMedFlow = false;
   go('familiar-success', 'r');
+}
+
+/* Profile avatar assets — maria uses a different photo from nuno. */
+const PROFILE_AVATAR_SRC = { nuno: 'assets/User.png', maria: 'assets/User2.png' };
+
+/* Apply the active profile to the dashboard UI without the early-return guard
+ * of switchProfile. Used by the familiar-success flow where activeProfile is
+ * already set to 'maria' but the dashboard still shows the previous profile. */
+function applyDashboardForProfile(id) {
+  const p = PROFILES[id];
+  if (!p) return;
+  const greetEl = document.getElementById('dash-greeting');
+  if (greetEl) greetEl.textContent = p.greeting;
+  const av = document.getElementById('dash-avatar');
+  if (av) {
+    if (av.tagName === 'IMG') av.src = PROFILE_AVATAR_SRC[id] || 'assets/User.png';
+    else { av.textContent = p.initials; av.style.background = p.color; }
+  }
+  const dnuno = document.getElementById('dash-nuno');
+  if (dnuno) dnuno.style.display = id === 'nuno' ? 'flex' : 'none';
+  const dmaria = document.getElementById('dash-maria');
+  if (dmaria) { dmaria.style.display = id === 'maria' ? 'flex' : 'none'; dmaria.style.flexDirection = 'column'; }
+  const ddNuno = document.getElementById('dd-nuno');
+  if (ddNuno) ddNuno.style.background = id === 'nuno' ? 'var(--pink-light)' : 'transparent';
+  const ddNunoCheck = document.getElementById('dd-nuno-check');
+  if (ddNunoCheck) ddNunoCheck.style.display = id === 'nuno' ? 'inline' : 'none';
+  const ddMaria = document.getElementById('dd-maria');
+  if (ddMaria) ddMaria.style.background = id === 'maria' ? 'var(--purple-light)' : 'transparent';
+  const ddMariaCheck = document.getElementById('dd-maria-check');
+  if (ddMariaCheck) ddMariaCheck.style.display = id === 'maria' ? 'inline' : 'none';
+  const chatGreet = document.getElementById('chat-greeting');
+  if (chatGreet) chatGreet.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+}
+
+/* Called from #familiar-success "Ir para o calendário" — lands on the dashboard
+ * already showing the newly added familiar's profile context. */
+function enterFamiliarDashboard() {
+  activeProfile = 'maria';
+  applyDashboardForProfile('maria');
+  go('dashboard', 'l');
 }
 
 /* ===== Switch profile ===== */
@@ -2604,8 +2646,8 @@ function switchProfile(id) {
   const p = PROFILES[id];
   document.getElementById('dash-greeting').textContent = p.greeting;
   const av = document.getElementById('dash-avatar');
-  av.textContent = p.initials;
-  av.style.background = p.color;
+  if (av.tagName === 'IMG') av.src = PROFILE_AVATAR_SRC[id] || 'assets/User.png';
+  else { av.textContent = p.initials; av.style.background = p.color; }
   document.getElementById('dash-nuno').style.display = id === 'nuno' ? 'flex' : 'none';
   const maria = document.getElementById('dash-maria');
   maria.style.display = id === 'maria' ? 'flex' : 'none';
