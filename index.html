@@ -3447,8 +3447,18 @@ function saveObInsert() {
   const cfg = (typeof collectObConfig === 'function') ? collectObConfig() : null;
   const times = (cfg && cfg.times && cfg.times.length) ? cfg.times : (medType !== 'occasional' ? ['08:00'] : []);
   const newMed = { name, dosage, form, frequency: freqLabel, source: obInsertSource === 'detected' ? 'scan' : 'manual', type: medType, times, takenSlots: {} };
-  if (obEditIndex >= 0) {
-    activeMeds()[obEditIndex] = newMed;
+  // Replace if we're editing (either via ob-confirm/detected flow OR from #med-detail).
+  // editingMedDetailIdx acts as a defensive fallback in case obEditIndex was cleared
+  // somewhere along the wizard, which otherwise causes a duplicate entry in #arquivo.
+  const replaceIdx = obEditIndex >= 0 ? obEditIndex : (editingMedDetailIdx >= 0 ? editingMedDetailIdx : -1);
+  if (replaceIdx >= 0) {
+    // Preserve dose history that shouldn't be lost on edit
+    const prev = activeMeds()[replaceIdx];
+    if (prev) {
+      if (prev.logs) newMed.logs = prev.logs;
+      if (prev.takenSlots) newMed.takenSlots = prev.takenSlots;
+    }
+    activeMeds()[replaceIdx] = newMed;
     obEditIndex = -1;
   } else {
     activeMeds().push(newMed);
