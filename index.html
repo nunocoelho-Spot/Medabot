@@ -4988,6 +4988,10 @@ function renderPickerMonth() {
 function selectPickerDate(day) {
   pickerSelectedDate = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), day);
   renderPickerMonth();
+  // DOB pickers (ob1-dob, fam-dob) auto-confirm on day tap — no extra button needed.
+  if (pickerTargetId === 'ob1-dob' || pickerTargetId === 'fam-dob') {
+    confirmDatePicker();
+  }
 }
 /* Open date picker in "future" mode for the end-date of a freq option.
    Min date = the corresponding start date (or today if not set). */
