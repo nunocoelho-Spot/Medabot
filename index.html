@@ -938,7 +938,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         </div>
         <div id="step1-interaction-warning" class="insert-interaction-warning" style="display:none;background:#F8ECC5;border-radius:14px;padding:12px 14px;align-items:flex-start;gap:10px;">
           <span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:#F39D58;flex-shrink:0;margin-top:6px;"></span>
-          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Ben-U-Ron</span> pode causar diarreia.</p>
+          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Jardiance</span> pode causar diarreia.</p>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="ig">
@@ -991,7 +991,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         </div>
         <div id="step2-interaction-warning" class="insert-interaction-warning" style="display:none;background:#F8ECC5;border-radius:14px;padding:12px 14px;align-items:flex-start;gap:10px;">
           <span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:#F39D58;flex-shrink:0;margin-top:6px;"></span>
-          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Ben-U-Ron</span> pode causar diarreia.</p>
+          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Jardiance</span> pode causar diarreia.</p>
         </div>
         <div class="freq-option" data-freq="asneeded" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('asneeded')">
@@ -2003,7 +2003,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       Novo
     </button>
   </div>
-  <div class="scroll" style="padding:152px 16px 32px;">
+  <div class="scroll" style="padding:172px 16px 32px;">
     <div id="log-dose-list" style="display:flex;flex-direction:column;gap:14px;"></div>
   </div>
 </div>
@@ -3500,6 +3500,10 @@ function saveObInsert() {
       renderArquivoMeds();
       showToast('✓ ' + name + ' atualizado');
       openMedDetail(activeProfile, idxBack);
+      // Restore navStack to its state before the edit flow began, so the next
+      // back from #med-detail returns to the screen the user came from
+      // originally (e.g. dashboard / arquivo), not the wizard step.
+      if (preEditNavLen >= 0) { navStack.length = preEditNavLen; preEditNavLen = -1; }
     } else {
       renderArquivoMeds();
       showToast('✓ ' + name + ' guardado');
@@ -3558,9 +3562,12 @@ function updateInsertInteractionWarning() {
 
 /* Open the manual wizard from #med-detail to edit the med — returns to #med-detail on save. */
 let editingMedDetailIdx = -1;
+let preEditNavLen = -1;
 function openMedDetailEdit(idx) {
   const m = activeMeds()[idx];
   if (!m) return;
+  // Snapshot the back-stack so we can return to the pre-edit screen later.
+  preEditNavLen = navStack.length;
   editingMedDetailIdx = idx;
   obEditIndex = idx;
   obInsertSource = 'manual';
