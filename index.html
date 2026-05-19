@@ -2900,10 +2900,15 @@ function doSearch(val) {
     : '<div style="text-align:center;padding:32px 0;color:var(--gray);font-size:14px;">Nenhum medicamento encontrado.<br/>Tenta pesquisar por foto. 📷</div>';
 }
 function medRow(m) {
-  return '<div class="mcard" onclick="openMedInfoFromSearch()" style="margin-bottom:8px;">' +
-    '<div class="micon" style="background:' + (m.bg||'var(--pink-light)') + ';">' + m.icon + '</div>' +
-    '<div class="minfo"><div class="mname">' + m.name + '</div><div class="msub">' + m.sub + '</div></div>' +
-    '<svg style="color:var(--gray);flex-shrink:0;" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8 5L13 10L8 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  const sub = m.sub || (m.dosage ? m.dosage : '') || 'Comprimido';
+  return '<div onclick="openMedInfoByName(\'' + (m.name || '').replace(/\'/g, "\\'") + '\')" style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--white);border-radius:var(--r-card);box-shadow:var(--shadow-sm);cursor:pointer;">' +
+    '<img src="assets/Pill-Label.svg" alt="" style="width:42px;height:42px;flex-shrink:0;"/>' +
+    '<div style="flex:1;min-width:0;">' +
+      '<div style="font-size:16px;font-weight:700;color:var(--text);">' + (m.name || '') + '</div>' +
+      '<div style="font-size:13px;font-weight:500;color:var(--text-sub);">' + sub + '</div>' +
+    '</div>' +
+    '<img src="assets/icons/Arrow-icon.svg" alt="" style="width:40px;height:40px;flex-shrink:0;transform:rotate(-90deg);"/>' +
+  '</div>';
 }
 
 /* === Med-info source tracking === */
