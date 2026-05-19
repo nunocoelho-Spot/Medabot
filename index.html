@@ -1974,17 +1974,17 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 </div>
 
 <!-- == REGISTAR TOMA — pick from catalogue == -->
-<div id="log-dose" class="screen">
-  <div class="sbar"><span class="time">9:41</span><div class="icons">📶🔋</div></div>
-  <div style="padding:8px 24px 0;display:flex;align-items:center;gap:12px;flex-shrink:0;">
-    <button class="back" aria-label="Voltar" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2 style="font-size:18px;font-weight:700;flex:1;">Registar toma</h2>
+<div id="log-dose" class="screen" style="background:var(--bg);">
+  <img src="assets/Status-bar.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:62px;object-fit:cover;background:var(--bg);z-index:5;"/>
+  <div class="app-header" style="gap:16px;align-items:flex-start;padding-top:14px;min-height:auto;height:auto;">
+    <button class="back" aria-label="Voltar" onclick="goBack()" style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 15L7 10L12 5" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div style="flex:1;min-width:0;">
+      <h1 style="font-size:28px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Registar toma</h1>
+      <p id="log-dose-hint" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Escolhe o medicamento que tomaste hoje.</p>
+    </div>
   </div>
-  <div style="padding:8px 24px 12px;">
-    <p id="log-dose-hint" style="font-size:14px;color:var(--text-sub);margin:0;">Escolhe o medicamento que tomaste hoje.</p>
-  </div>
-  <div class="scroll">
-    <div id="log-dose-list" style="padding:4px 24px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+  <div class="scroll" style="padding:144px 16px 32px;">
+    <div id="log-dose-list" style="display:flex;flex-direction:column;gap:14px;"></div>
   </div>
 </div>
 
@@ -4207,21 +4207,24 @@ function renderLogDoseList() {
   hint.textContent = 'Escolhe o medicamento que tomaste hoje.';
   const today = new Date().toDateString();
   list.innerHTML = meds.map((m, i) => {
-    const mForm = m.form || lookupMedForm(m.name);
+    const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name;
     const logsToday = (m.logs || []).filter(ts => new Date(ts).toDateString() === today);
     const lastTs = logsToday.length ? logsToday[logsToday.length - 1] : null;
     const lastLbl = lastTs ? new Date(lastTs).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}) : null;
-    const countBadge = logsToday.length > 0
-      ? '<span style="font-size:11px;padding:3px 8px;border-radius:10px;background:var(--teal-light);color:var(--success);font-weight:700;white-space:nowrap;">' + logsToday.length + 'x hoje</span>'
-      : '';
-    return '<div class="mcard" style="align-items:center;">' +
-      '<div class="micon">' + formIcon(mForm) + '</div>' +
-      '<div class="minfo">' +
-        '<div class="mname">' + m.name + ' ' + m.dosage + '</div>' +
-        '<div class="msub">' + formLabel(mForm) + (lastLbl ? ' · última toma ' + lastLbl : ' · sem toma registada hoje') + '</div>' +
+    const times = (m.times && m.times.length) ? m.times.join(' · ') : '';
+    const freq = m.frequency || (m.type === 'occasional' ? 'Conforme necessário' : 'Diariamente');
+    const subParts = [freq];
+    if (times) subParts.push(times);
+    subParts.push(lastLbl ? 'última toma ' + lastLbl : 'sem toma hoje');
+    return '<div style="background:var(--white);border-radius:var(--r-card);padding:16px 18px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px;">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:17px;font-weight:700;color:var(--text);">' + cleanName + (m.dosage ? ' ' + m.dosage : '') + '</div>' +
+        '<div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:4px;line-height:1.4;">' + subParts.join(' · ') + '</div>' +
       '</div>' +
-      countBadge +
-      '<button onclick="openWizardForExistingMed(' + i + ')" style="padding:8px 14px;background:var(--pink);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">Configurar</button>' +
+      '<button onclick="logDoseNow(' + i + ')" aria-label="Registar toma" ' +
+        'style="width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+        '<img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>' +
+      '</button>' +
     '</div>';
   }).join('');
 }
