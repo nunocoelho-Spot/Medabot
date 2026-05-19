@@ -1398,6 +1398,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h1 id="detail-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Jardiance</h1>
       <p id="detail-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:2px;">25mg | Comprimido</p>
     </div>
+    <button onclick="if(currentMedDetailIdx>=0)openEditMedSheet(currentMedDetailIdx)" class="btn btn-primary" style="width:auto;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;font-size:15px;flex-shrink:0;align-self:flex-start;margin-top:2px;">
+      <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/Edit-Icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
+      Editar
+    </button>
   </div>
   <div class="scroll" style="padding:144px 16px 32px;">
     <!-- Interactions / Alert card (only when interactions exist) -->
@@ -1986,6 +1990,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h1 style="font-size:28px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Registar toma</h1>
       <p id="log-dose-hint" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Escolhe o medicamento que tomaste hoje.</p>
     </div>
+    <button onclick="openAddSheet()" class="btn btn-primary" style="width:auto;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;font-size:15px;flex-shrink:0;align-self:flex-start;margin-top:2px;">
+      <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/add-icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;filter:brightness(0) invert(1);"></span>
+      Novo
+    </button>
   </div>
   <div class="scroll" style="padding:144px 16px 32px;">
     <div id="log-dose-list" style="display:flex;flex-direction:column;gap:14px;"></div>
@@ -2969,54 +2977,38 @@ function populateMedInfoSections(cleanName, dosage) {
   }
 }
 
-/* Prototype copy for "Para que serve" */
+/* Prototype copy for "Para que serve" — same content for every med to populate the screens. */
 function getMedUses(medName) {
-  const n = (medName || '').toLowerCase();
-  if (n.includes('jardiance')) {
-    return [
-      { title: 'Diabetes Tipo 2',         body: 'Como adjuvante da dieta e exercício para melhorar o controlo glicémico.' },
-      { title: 'Insuficiência Cardíaca',  body: 'Para reduzir o risco de morte cardiovascular e hospitalização.' },
-      { title: 'Doença Renal',            body: 'Para reduzir o risco de mais declínio renal, doença renal em fase terminal e morte.' }
-    ];
-  }
-  return [{ title: 'Indicação', body: 'Consulta a bula completa para mais informação.' }];
+  return [
+    { title: 'Diabetes Tipo 2',         body: 'Como adjuvante da dieta e exercício para melhorar o controlo glicémico.' },
+    { title: 'Insuficiência Cardíaca',  body: 'Para reduzir o risco de morte cardiovascular e hospitalização.' },
+    { title: 'Doença Renal',            body: 'Para reduzir o risco de mais declínio renal, doença renal em fase terminal e morte.' }
+  ];
 }
 
-/* Prototype copy for "Detalhes principais" */
+/* Prototype copy for "Detalhes principais" — same content for every med. */
 function getMedKeyDetails(medName, dosage) {
-  const n = (medName || '').toLowerCase();
-  if (n.includes('jardiance')) {
-    return [
-      { key: 'Dosagem', val: 'Tipicamente tomado por via oral uma vez por dia, de manhã, com ou sem comida. A dose inicial é frequentemente de 10 mg, podendo ser aumentada para 25 mg.' }
-    ];
-  }
-  return [{ key: 'Dosagem', val: dosage }];
+  return [
+    { key: 'Dosagem', val: 'Tipicamente tomado por via oral uma vez por dia, de manhã, com ou sem comida. A dose inicial é frequentemente de 10 mg, podendo ser aumentada para 25 mg.' }
+  ];
 }
 
-/* Prototype copy for "Informação de uso" */
+/* Prototype copy for "Informação de uso" — same content for every med. */
 function getMedUsage(medName) {
-  const n = (medName || '').toLowerCase();
-  if (n.includes('jardiance')) {
-    return [
-      { key: 'Administração', val: 'Tomar de manhã, com ou sem comida.' },
-      { key: 'Ajuste',        val: 'A dose pode ser aumentada por um profissional de saúde para controlo glicémico adicional na diabetes tipo 2, desde que a dose inicial seja tolerada.' },
-      { key: 'Nível máximo',  val: 'Uma vez por dia, de manhã.' }
-    ];
-  }
-  return [{ key: 'Administração', val: 'Consulta a bula para mais detalhes.' }];
+  return [
+    { key: 'Administração', val: 'Tomar de manhã, com ou sem comida.' },
+    { key: 'Ajuste',        val: 'A dose pode ser aumentada por um profissional de saúde para controlo glicémico adicional na diabetes tipo 2, desde que a dose inicial seja tolerada.' },
+    { key: 'Nível máximo',  val: 'Uma vez por dia, de manhã.' }
+  ];
 }
 
-/* Prototype copy for "Avisos e Precauções" */
+/* Prototype copy for "Avisos e Precauções" — same content for every med. */
 function getMedWarnings(medName) {
-  const n = (medName || '').toLowerCase();
-  if (n.includes('jardiance')) {
-    return [
-      { title: 'Infeções',     body: 'Pode causar infeções urinárias e genitais graves.' },
-      { title: 'Hipoglicemia', body: 'O risco aumenta quando tomado com insulina ou sulfonilureias.' },
-      { title: 'Função renal', body: 'Não deve ser iniciado em doentes com problemas renais graves.' }
-    ];
-  }
-  return [{ title: 'Aviso', body: 'Consulta o teu médico ou farmacêutico em caso de dúvidas.' }];
+  return [
+    { title: 'Infeções',     body: 'Pode causar infeções urinárias e genitais graves.' },
+    { title: 'Hipoglicemia', body: 'O risco aumenta quando tomado com insulina ou sulfonilureias.' },
+    { title: 'Função renal', body: 'Não deve ser iniciado em doentes com problemas renais graves.' }
+  ];
 }
 function openMedInfoFromSearch() {
   medInfoFromDetail = false;
@@ -4051,14 +4043,11 @@ function openMedDetail(profileId, idx) {
 
 /* Returns array of {tone, text} interactions for a med (prototype data). */
 function getMedInteractions(medName) {
-  const n = (medName || '').toLowerCase();
-  if (n.includes('jardiance')) {
-    return [
-      { tone: 'pink',   text: 'Este comprimido anula o efeito de contracetivos como o {Clarissa}.' },
-      { tone: 'yellow', text: 'Este comprimido com {Ben-U-Ron} pode causar diarreia.' }
-    ];
-  }
-  return [];
+  // Prototype: every med shows the Jardiance interaction set so the screens feel populated.
+  return [
+    { tone: 'pink',   text: 'Este comprimido anula o efeito de contracetivos como o {Clarissa}.' },
+    { tone: 'yellow', text: 'Este comprimido com {Ben-U-Ron} pode causar diarreia.' }
+  ];
 }
 
 function toggleMedDose(btn, profileId, idx) {
