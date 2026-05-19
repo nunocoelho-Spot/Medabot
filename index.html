@@ -933,8 +933,12 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         </div>
         <div class="ig" style="position:relative;">
           <label class="ilbl">Nome do medicamento</label>
-          <input id="manual-med-name" class="ifield" type="text" placeholder="Ex: Ben-U-Ron" oninput="showAutocomplete(this,'ac-manual');updateStep1NextBtn();renderObSummary();" onfocus="showAutocomplete(this,'ac-manual')" autocomplete="off"/>
+          <input id="manual-med-name" class="ifield" type="text" placeholder="Ex: Ben-U-Ron" oninput="showAutocomplete(this,'ac-manual');updateStep1NextBtn();renderObSummary();updateInsertInteractionWarning();" onfocus="showAutocomplete(this,'ac-manual')" autocomplete="off"/>
           <div class="ac-dropdown" id="ac-manual"></div>
+        </div>
+        <div id="step1-interaction-warning" class="insert-interaction-warning" style="display:none;background:#F8ECC5;border-radius:14px;padding:12px 14px;align-items:flex-start;gap:10px;">
+          <span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:#F39D58;flex-shrink:0;margin-top:6px;"></span>
+          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Ben-U-Ron</span> pode causar diarreia.</p>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="ig">
@@ -984,6 +988,10 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
         <div>
           <h2 style="font-size:24px;font-weight:700;color:var(--text);margin:0;">Como vais tomar?</h2>
           <p id="ob-step2-intro" style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:4px;">Escolhe uma frequência abaixo.</p>
+        </div>
+        <div id="step2-interaction-warning" class="insert-interaction-warning" style="display:none;background:#F8ECC5;border-radius:14px;padding:12px 14px;align-items:flex-start;gap:10px;">
+          <span aria-hidden="true" style="display:block;width:8px;height:8px;border-radius:50%;background:#F39D58;flex-shrink:0;margin-top:6px;"></span>
+          <p style="font-size:14px;line-height:1.45;color:var(--text);margin:0;font-weight:500;">Este comprimido com <span style="text-decoration:underline;font-weight:700;">Ben-U-Ron</span> pode causar diarreia.</p>
         </div>
         <div class="freq-option" data-freq="asneeded" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('asneeded')">
@@ -1398,7 +1406,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       <h1 id="detail-name" style="font-size:32px;font-weight:900;color:var(--text);line-height:1.05;margin:0;">Jardiance</h1>
       <p id="detail-sub" style="font-size:16px;font-weight:500;color:var(--text-sub);margin-top:2px;">25mg | Comprimido</p>
     </div>
-    <button onclick="if(currentMedDetailIdx>=0)openEditMedSheet(currentMedDetailIdx)" class="btn btn-primary" style="width:auto;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;font-size:15px;flex-shrink:0;align-self:flex-start;margin-top:2px;">
+    <button onclick="if(currentMedDetailIdx>=0)openMedDetailEdit(currentMedDetailIdx)" class="btn btn-primary" style="width:auto;padding:10px 18px;display:inline-flex;align-items:center;gap:6px;font-size:15px;flex-shrink:0;align-self:flex-start;margin-top:2px;">
       <span aria-hidden="true" style="display:inline-block;width:16px;height:16px;background:url('assets/icons/Edit-Icon.svg') -8px -8px/32px 32px no-repeat;flex-shrink:0;"></span>
       Editar
     </button>
@@ -1995,7 +2003,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       Novo
     </button>
   </div>
-  <div class="scroll" style="padding:144px 16px 32px;">
+  <div class="scroll" style="padding:152px 16px 32px;">
     <div id="log-dose-list" style="display:flex;flex-direction:column;gap:14px;"></div>
   </div>
 </div>
@@ -2650,7 +2658,7 @@ function openAddSheet() {
   // Dashboard "Registar toma" = logging a dose (default). Arquivo/onboarding = adding to catalog.
   logDoseMode = cur === 'dashboard';
   const logOpt = document.getElementById('add-sheet-log-opt');
-  if (logOpt) logOpt.style.display = cur === 'arquivo' ? 'none' : 'flex';
+  if (logOpt) logOpt.style.display = (cur === 'arquivo' || cur === 'log-dose') ? 'none' : 'flex';
   const titleEl = document.querySelector('#add-sheet .sheet-title');
   if (titleEl) titleEl.textContent = cur === 'arquivo' ? 'Adicionar medicamento' : 'Registar medicamento';
   document.getElementById('add-sheet').classList.add('open');
@@ -3066,6 +3074,7 @@ function showObStep(step) {
   const titleEl = document.getElementById('ob-ins-title');
   if (titleEl) titleEl.textContent = step === 1 ? 'Medicamento' : 'Como vais tomar?';
   if (step === 1) updateStep1NextBtn();
+  if (typeof updateInsertInteractionWarning === 'function') updateInsertInteractionWarning();
   if (step === 2) {
     // Fresh entry: clear any prior selection, prefill as-needed limit, refresh summary
     const nameVal = (document.getElementById('manual-med-name') || {}).value || '';
@@ -3480,6 +3489,12 @@ function saveObInsert() {
   } else {
     if (obOnboarding) {
       go('ob-confirm', 'r');
+    } else if (editingMedDetailIdx >= 0) {
+      const idxBack = editingMedDetailIdx;
+      editingMedDetailIdx = -1;
+      renderArquivoMeds();
+      showToast('✓ ' + name + ' atualizado');
+      openMedDetail(activeProfile, idxBack);
     } else {
       renderArquivoMeds();
       showToast('✓ ' + name + ' guardado');
@@ -3521,6 +3536,58 @@ function editMedByIndex(i) {
 }
 
 /* Open wizard from existing med in log-dose list — pre-fill, then on save log the dose */
+/* Insert-flow interaction warning: shown when the user types "Ben-U-Ron" as the med
+ * name AND Jardiance is already in the active profile's meds. The warning lives in
+ * both step 1 (name) and step 2 (schedule) of #ob-insert. */
+function updateInsertInteractionWarning() {
+  const nameVal = ((document.getElementById('manual-med-name') || {}).value || '').toLowerCase().replace(/\s+/g, '');
+  const isBenUron = /ben-?u-?ron|benuron/.test(nameVal);
+  const meds = (PROFILES[activeProfile] && PROFILES[activeProfile].meds) || [];
+  const hasJardiance = meds.some(m => (m.name || '').toLowerCase().includes('jardiance'));
+  const show = isBenUron && hasJardiance;
+  ['step1-interaction-warning','step2-interaction-warning'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? 'flex' : 'none';
+  });
+}
+
+/* Open the manual wizard from #med-detail to edit the med — returns to #med-detail on save. */
+let editingMedDetailIdx = -1;
+function openMedDetailEdit(idx) {
+  const m = activeMeds()[idx];
+  if (!m) return;
+  editingMedDetailIdx = idx;
+  obEditIndex = idx;
+  obInsertSource = 'manual';
+  obInsertDetIdx = -1;
+  obOnboarding = false;
+  logDoseMode = false;
+  backTarget = 'med-detail';
+  // Pre-fill name + dosage
+  const nameEl = document.getElementById('manual-med-name');
+  if (nameEl) nameEl.value = m.name || '';
+  const dosageDd = document.getElementById('manual-dosage-dd');
+  if (dosageDd && m.dosage) {
+    dosageDd.dataset.value = m.dosage;
+    const span = dosageDd.querySelector('span');
+    if (span) span.textContent = m.dosage.replace('mg', ' mg');
+  }
+  // Pre-fill frequency
+  resetFreqRadios();
+  const freqKey = m.type === 'occasional' ? 'asneeded' :
+    (Object.entries(obFreqLabels).find(([k, v]) => v === m.frequency) || ['daily'])[0];
+  if (freqKey === 'asneeded') {
+    const firstRadio = document.querySelector('#freq-radio-list > .freq-radio');
+    if (firstRadio) selectFreqRadio(firstRadio, 'asneeded');
+  } else {
+    selectScheduledSubtype(freqKey);
+    const schedRadio = document.getElementById('freq-scheduled-radio');
+    if (schedRadio) selectFreqRadio(schedRadio, 'scheduled');
+  }
+  go('ob-insert', 'r');
+  showObStep(1);
+}
+
 function openWizardForExistingMed(idx) {
   const m = activeMeds()[idx];
   if (!m) return;
