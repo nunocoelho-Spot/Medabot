@@ -1225,47 +1225,50 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
       </div>
     </div>
     <!-- Profile dropdown (Figma: Home-Add-family-member) -->
-    <div id="profile-dropdown" style="display:none;position:absolute;top:138px;left:16px;width:248px;background:var(--white);border-radius:28px;box-shadow:0 4px 40px 0 rgba(28,43,48,.10);z-index:100;padding:8px;overflow:hidden;">
-      <!-- Current profile: avatar + name/role in horizontal auto-layout -->
-      <div id="dd-nuno" onclick="switchProfile('nuno');closeProfileDropdown()" style="display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;">
-        <img src="assets/User.png" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
-        <div style="display:flex;flex-direction:column;gap:2px;min-width:0;">
-          <div id="dd-nuno-name" style="font-size:20px;font-weight:700;color:var(--text);line-height:1.1;">Utilizador</div>
-          <div style="font-size:14px;font-weight:500;color:var(--text-sub);line-height:1.1;">Perfil principal</div>
-        </div>
-      </div>
-      <!-- Familiar profile (hidden until added) -->
-      <div id="dd-maria" onclick="switchProfile('maria');closeProfileDropdown()" style="display:none;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;">
-        <img src="assets/User2.png" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+    <div id="profile-dropdown" style="display:none;position:absolute;top:138px;left:16px;width:288px;background:var(--white);border-radius:28px;box-shadow:0 4px 40px 0 rgba(28,43,48,.10);z-index:100;padding:8px;overflow:hidden;">
+      <!-- Main profile row -->
+      <div id="dd-nuno" onclick="switchProfile('nuno');closeProfileDropdown()" style="display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;border-radius:14px;">
+        <img src="assets/User.png" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
         <div style="flex:1;min-width:0;">
-          <div id="dd-maria-name" style="font-size:16px;font-weight:700;color:var(--text);">Familiar</div>
-          <div style="font-size:13px;color:var(--text-sub);font-weight:500;">Familiar</div>
+          <div id="dd-nuno-name" style="font-size:18px;font-weight:700;color:var(--text);line-height:1.15;">Utilizador</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text-sub);line-height:1.2;margin-top:2px;">Perfil principal</div>
+          <span id="dd-nuno-selected" style="display:none;width:36px;height:3px;background:var(--pink);border-radius:2px;margin-top:6px;"></span>
         </div>
-        <span id="dd-maria-check" style="color:var(--pink);font-size:16px;display:none;">&#10003;</span>
-        <span id="dd-maria-del" onclick="event.stopPropagation();removeFamiliar();" style="color:var(--danger);font-size:18px;padding:4px 8px;cursor:pointer;">&#128465;</span>
-        <span id="dd-maria-avatar" style="display:none;">?</span>
       </div>
-      <!-- Hidden legacy spans (JS still references these IDs) -->
+      <!-- Familiar profile row (hidden until added) -->
+      <div id="dd-maria" onclick="switchProfile('maria');closeProfileDropdown()" style="display:none;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;border-radius:14px;">
+        <img src="assets/User2.png" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;"/>
+        <div style="flex:1;min-width:0;">
+          <div id="dd-maria-name" style="font-size:18px;font-weight:700;color:var(--text);line-height:1.15;">Familiar</div>
+          <div id="dd-maria-role" style="font-size:14px;font-weight:500;color:var(--text-sub);line-height:1.2;margin-top:2px;">Familiar</div>
+          <span id="dd-maria-selected" style="display:none;width:36px;height:3px;background:var(--pink);border-radius:2px;margin-top:6px;"></span>
+        </div>
+        <button id="dd-maria-del" onclick="event.stopPropagation();removeFamiliar();" aria-label="Remover familiar" style="width:40px;height:40px;border-radius:50%;background:var(--orange);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">
+          <span aria-hidden="true" style="display:inline-block;width:20px;height:20px;background:url('assets/icons/Delete-Icon.svg') -50px -46px/120px 120px no-repeat;"></span>
+        </button>
+      </div>
+      <!-- Hidden legacy nodes (JS still references these IDs) -->
       <span id="dd-nuno-avatar" style="display:none;">?</span>
       <span id="dd-nuno-check" style="display:none;">&#10003;</span>
-      <!-- Divider -->
-      <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
+      <span id="dd-maria-avatar" style="display:none;">?</span>
+      <span id="dd-maria-check" style="display:none;">&#10003;</span>
+      <div style="height:1px;background:#EDEDED;margin:4px 6px;"></div>
       <!-- Add family member -->
-      <div onclick="closeProfileDropdown();go('familiar','r')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
-        <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/add-circle-icon.svg') -24px -36px/88px 104px no-repeat;flex-shrink:0;"></span>
+      <div onclick="closeProfileDropdown();go('familiar','r')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;">
+        <span aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <img src="assets/icons/add-icon.svg" alt="" style="width:24px;height:24px;filter:brightness(0) invert(1);"/>
+        </span>
         <span style="font-size:16px;font-weight:700;color:var(--pink);">Adicionar familiar</span>
       </div>
-      <!-- Divider -->
-      <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
+      <div style="height:1px;background:#EDEDED;margin:4px 6px;"></div>
       <!-- Settings -->
-      <div onclick="closeProfileDropdown();go('settings','r')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+      <div onclick="closeProfileDropdown();go('settings','r')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;">
         <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/setting-icon.svg') -8px -8px/40px 40px no-repeat;flex-shrink:0;"></span>
         <span style="font-size:16px;font-weight:700;color:var(--text);">Definições</span>
       </div>
-      <!-- Divider -->
-      <div style="height:1px;background:var(--gray-border);margin:6px 4px;"></div>
+      <div style="height:1px;background:#EDEDED;margin:4px 6px;"></div>
       <!-- Logout -->
-      <div onclick="closeProfileDropdown();go('s1','l')" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;">
+      <div onclick="closeProfileDropdown();go('s1','l')" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;">
         <span aria-hidden="true" style="display:inline-block;width:24px;height:24px;background:url('assets/icons/Logout-Icon.svg') -8px -8px/40px 40px no-repeat;flex-shrink:0;"></span>
         <span style="font-size:16px;font-weight:700;color:var(--orange);">Terminar sessão</span>
       </div>
@@ -2618,14 +2621,10 @@ function applyDashboardForProfile(id) {
   if (dnuno) dnuno.style.display = id === 'nuno' ? 'flex' : 'none';
   const dmaria = document.getElementById('dash-maria');
   if (dmaria) { dmaria.style.display = id === 'maria' ? 'flex' : 'none'; dmaria.style.flexDirection = 'column'; }
-  const ddNuno = document.getElementById('dd-nuno');
-  if (ddNuno) ddNuno.style.background = id === 'nuno' ? 'var(--pink-light)' : 'transparent';
-  const ddNunoCheck = document.getElementById('dd-nuno-check');
-  if (ddNunoCheck) ddNunoCheck.style.display = id === 'nuno' ? 'inline' : 'none';
-  const ddMaria = document.getElementById('dd-maria');
-  if (ddMaria) ddMaria.style.background = id === 'maria' ? 'var(--purple-light)' : 'transparent';
-  const ddMariaCheck = document.getElementById('dd-maria-check');
-  if (ddMariaCheck) ddMariaCheck.style.display = id === 'maria' ? 'inline' : 'none';
+  const ddNunoSel = document.getElementById('dd-nuno-selected');
+  if (ddNunoSel) ddNunoSel.style.display = id === 'nuno' ? 'block' : 'none';
+  const ddMariaSel = document.getElementById('dd-maria-selected');
+  if (ddMariaSel) ddMariaSel.style.display = id === 'maria' ? 'block' : 'none';
   const chatGreet = document.getElementById('chat-greeting');
   if (chatGreet) chatGreet.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
   if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
@@ -2643,24 +2642,7 @@ function enterFamiliarDashboard() {
 function switchProfile(id) {
   if (id === activeProfile) return;
   activeProfile = id;
-  const p = PROFILES[id];
-  document.getElementById('dash-greeting').textContent = p.greeting;
-  const av = document.getElementById('dash-avatar');
-  if (av.tagName === 'IMG') av.src = PROFILE_AVATAR_SRC[id] || 'assets/User.png';
-  else { av.textContent = p.initials; av.style.background = p.color; }
-  document.getElementById('dash-nuno').style.display = id === 'nuno' ? 'flex' : 'none';
-  const maria = document.getElementById('dash-maria');
-  maria.style.display = id === 'maria' ? 'flex' : 'none';
-  maria.style.flexDirection = 'column';
-  // Update dropdown highlights
-  document.getElementById('dd-nuno').style.background = id === 'nuno' ? 'var(--pink-light)' : 'transparent';
-  document.getElementById('dd-nuno-check').style.display = id === 'nuno' ? 'inline' : 'none';
-  document.getElementById('dd-maria').style.background = id === 'maria' ? 'var(--purple-light)' : 'transparent';
-  document.getElementById('dd-maria-check').style.display = id === 'maria' ? 'inline' : 'none';
-  // Update chat greeting
-  const greetEl = document.getElementById('chat-greeting');
-  if (greetEl) greetEl.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
-  renderDashboardMeds();
+  applyDashboardForProfile(id);
   closeProfileDropdown();
   if (cur !== 'dashboard') go('dashboard', 'r');
 }
@@ -2680,20 +2662,7 @@ function removeFamiliar() {
   // Switch back to main user if familiar was active
   if (activeProfile === 'maria') {
     activeProfile = 'nuno';
-    const p = PROFILES.nuno;
-    document.getElementById('dash-greeting').textContent = p.greeting;
-    const av = document.getElementById('dash-avatar');
-    av.textContent = p.initials;
-    av.style.background = p.color;
-    document.getElementById('dash-nuno').style.display = 'flex';
-    document.getElementById('dash-maria').style.display = 'none';
-    document.getElementById('dd-nuno').style.background = 'var(--pink-light)';
-    document.getElementById('dd-nuno-check').style.display = 'inline';
-    document.getElementById('dd-maria').style.background = 'transparent';
-    document.getElementById('dd-maria-check').style.display = 'none';
-    const greetEl = document.getElementById('chat-greeting');
-    if (greetEl) greetEl.textContent = 'Olá ' + p.greeting + ', em que posso ajudar?';
-    renderDashboardMeds();
+    applyDashboardForProfile('nuno');
   }
   familiarAdded = false;
   refreshArqProfileTabs();
@@ -5626,6 +5595,7 @@ function setReminderTime(btn, val) {
 /* ===== Init ===== */
 renderDashboardMeds();
 renderAlerts();
+if (typeof applyDashboardForProfile === 'function') applyDashboardForProfile(activeProfile);
 
 /* Rebind every back button to the shared history stack.
    Exclude: chat-hist-btn (hamburger → sidebar) and chat-back-btn (guest → s3, else → dashboard). */
