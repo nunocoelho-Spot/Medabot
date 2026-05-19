@@ -4205,26 +4205,33 @@ function renderLogDoseList() {
     return;
   }
   hint.textContent = 'Escolhe o medicamento que tomaste hoje.';
-  const today = new Date().toDateString();
   list.innerHTML = meds.map((m, i) => {
     const cleanName = (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name;
-    const logsToday = (m.logs || []).filter(ts => new Date(ts).toDateString() === today);
-    const lastTs = logsToday.length ? logsToday[logsToday.length - 1] : null;
-    const lastLbl = lastTs ? new Date(lastTs).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}) : null;
-    const times = (m.times && m.times.length) ? m.times.join(' · ') : '';
-    const freq = m.frequency || (m.type === 'occasional' ? 'Conforme necessário' : 'Diariamente');
-    const subParts = [freq];
-    if (times) subParts.push(times);
-    subParts.push(lastLbl ? 'última toma ' + lastLbl : 'sem toma hoje');
-    return '<div style="background:var(--white);border-radius:var(--r-card);padding:16px 18px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px;">' +
-      '<div style="flex:1;min-width:0;">' +
-        '<div style="font-size:17px;font-weight:700;color:var(--text);">' + cleanName + (m.dosage ? ' ' + m.dosage : '') + '</div>' +
-        '<div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-top:4px;line-height:1.4;">' + subParts.join(' · ') + '</div>' +
+    const isOccasional = m.type === 'occasional';
+    const cardBg = isOccasional ? '#E8DFF7' : '#C6E7F3';
+    const freqLabel = isOccasional
+      ? 'Conforme necessário'
+      : (m.frequency && /todos|diari|every/i.test(m.frequency) ? 'Diariamente' : (m.frequency || 'Diariamente'));
+    const times = (m.times && m.times.length) ? m.times.join(' | ') : (isOccasional ? '' : '08:00');
+    return '<div style="background:' + cardBg + ';border-radius:var(--r-card);padding:16px 18px;box-shadow:var(--shadow-sm);">' +
+      // Top row — pill icon + name
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:var(--white);flex-shrink:0;">' +
+          '<img src="assets/Pill-Label.svg" alt="" style="width:30px;height:30px;"/>' +
+        '</span>' +
+        '<div style="flex:1;min-width:0;font-size:18px;font-weight:700;color:var(--text);">' + cleanName + (m.dosage ? ' ' + m.dosage : '') + '</div>' +
       '</div>' +
-      '<button onclick="logDoseNow(' + i + ')" aria-label="Registar toma" ' +
-        'style="width:40px;height:40px;background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-        '<img src="assets/icons/add-square-icon.svg" alt="" style="width:40px;height:40px;"/>' +
-      '</button>' +
+      // Bottom row — freq + times on the left, action button on the right
+      '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;">' +
+        '<div style="min-width:0;">' +
+          '<div style="font-size:14px;font-weight:500;color:var(--text);">' + freqLabel + '</div>' +
+          (times ? '<div style="font-size:16px;font-weight:600;color:var(--text);margin-top:2px;">' + times + '</div>' : '') +
+        '</div>' +
+        '<button onclick="logDoseNow(' + i + ')" aria-label="Registar toma" ' +
+          'style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
+          '<img src="assets/icons/add-icon.svg" alt="" style="width:32px;height:32px;filter:brightness(0) invert(1);"/>' +
+        '</button>' +
+      '</div>' +
     '</div>';
   }).join('');
 }
