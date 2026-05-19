@@ -460,6 +460,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
 .fob-period-row .fob-period-label{font-size:16px;font-weight:500;color:var(--text);min-width:50px;}
 .fob-date{padding:10px 16px;background:var(--white);border-radius:12px;font-size:16px;font-weight:500;color:var(--text);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:8px;cursor:pointer;justify-content:space-between;flex:1;min-width:0;}
 .fob-date img{width:18px;height:18px;}
+.fob-cal-icon{display:inline-block;width:18px;height:18px;background:#118596;flex-shrink:0;-webkit-mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;mask:url('assets/icons/calendar-icon.svg') no-repeat center/contain;}
 .freq-option-body{display:none;padding:0 16px 16px;flex-direction:column;gap:14px;border-top:1px solid rgba(233,30,140,.18);margin-top:-2px;padding-top:14px;}
 .freq-option.active .freq-option-body{display:flex;}
 
@@ -1027,7 +1028,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <span class="fob-period-label">Início</span>
                 <div class="fob-date" onclick="openDatePicker('manual-start',this)">
                   <span id="manual-start-display">Hoje</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="manual-start"/>
               </div>
@@ -1036,7 +1037,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <button type="button" class="fob-add" data-end-add="daily" onclick="openEndPicker('daily')" aria-label="Adicionar data de fim"></button>
                 <div class="fob-date" id="daily-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('daily')">
                   <span id="daily-end-display">Selecionar</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="daily-end"/>
               </div>
@@ -1084,7 +1085,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <span class="fob-period-label">Início</span>
                 <div class="fob-date" onclick="openDatePicker('interval-start',this)">
                   <span>Hoje</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="interval-start"/>
               </div>
@@ -1093,7 +1094,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <button type="button" class="fob-add" data-end-add="interval" onclick="openEndPicker('interval')" aria-label="Adicionar data de fim"></button>
                 <div class="fob-date" id="interval-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('interval')">
                   <span id="interval-end-display">Selecionar</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="interval-end"/>
               </div>
@@ -1149,7 +1150,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <span class="fob-period-label">Início</span>
                 <div class="fob-date" onclick="openDatePicker('cycle-start',this)">
                   <span>Hoje</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="cycle-start"/>
               </div>
@@ -1158,7 +1159,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
                 <button type="button" class="fob-add" data-end-add="cycle" onclick="openEndPicker('cycle')" aria-label="Adicionar data de fim"></button>
                 <div class="fob-date" id="cycle-end-row-display" style="display:none;flex:1;" onclick="openEndPicker('cycle')">
                   <span id="cycle-end-display">Selecionar</span>
-                  <img src="assets/icons/calendar-icon.svg" alt=""/>
+                  <span aria-hidden="true" class="fob-cal-icon"></span>
                 </div>
                 <input type="hidden" id="cycle-end"/>
               </div>
@@ -3121,6 +3122,18 @@ function obInsertSkip() {
 }
 
 function selectFreqOption(freq) {
+  // If the user clicks the already-active option, deselect it (and collapse its body).
+  const currentActive = document.querySelector('#ob-step2 .freq-option.active');
+  const isToggleOff = currentActive && currentActive.dataset.freq === freq;
+  if (isToggleOff) {
+    currentActive.classList.remove('active');
+    currentActive.setAttribute('aria-checked', 'false');
+    obSelectedFreq = '';
+    const durSection = document.getElementById('dur-section');
+    if (durSection) durSection.style.display = 'none';
+    renderObSummary();
+    return;
+  }
   obSelectedFreq = FREQ_TO_KEY[freq] || 'asneeded';
   document.querySelectorAll('#ob-step2 .freq-option').forEach(opt => {
     const isActive = opt.dataset.freq === freq;
