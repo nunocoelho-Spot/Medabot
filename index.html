@@ -1000,7 +1000,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Todos os dias</div>
               <div class="freq-option-sub">Exemplo: de manhã e antes de deitar.</div>
-            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
+            </div>
+            <div class="freq-option-check"></div>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -1048,7 +1049,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">A cada X dias</div>
               <div class="freq-option-sub">Exemplo: de dois em dois dias.</div>
-            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
+            </div>
+            <div class="freq-option-check"></div>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -1104,7 +1106,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             <div style="flex:1;min-width:0;">
               <div class="freq-option-title">Em ciclo</div>
               <div class="freq-option-sub">Exemplo: 21 dias e 7 de pausa.</div>
-            </div>            <span class="freq-option-chevron" aria-hidden="true"></span>
+            </div>
+            <div class="freq-option-check"></div>
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
@@ -4225,7 +4228,7 @@ function renderLogDoseList() {
           '<div style="font-size:14px;font-weight:500;color:var(--text-sub);">' + freqLabel + '</div>' +
           (times ? '<div style="font-size:14px;font-weight:500;color:var(--text-sub);margin-top:2px;">' + times + '</div>' : '') +
         '</div>' +
-        '<button onclick="logDoseNow(' + i + ')" aria-label="Registar toma" ' +
+        '<button onclick="openLogDoseTimePicker(' + i + ')" aria-label="Registar toma" ' +
           'style="width:40px;height:40px;border-radius:50%;background:var(--pink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;">' +
           '<img src="assets/icons/add-icon.svg" alt="" style="width:32px;height:32px;filter:brightness(0) invert(1);"/>' +
         '</button>' +
@@ -4904,8 +4907,16 @@ function renderTimeWheels() {
     if (selM) selM.scrollIntoView({ block: 'center', behavior: 'auto' });
   }, 50);
 }
+let timePickerOnConfirm = null;
 function confirmTimePicker() {
   const timeStr = String(tpHour).padStart(2,'0') + ':' + String(tpMin).padStart(2,'0');
+  if (timePickerOnConfirm) {
+    const cb = timePickerOnConfirm;
+    timePickerOnConfirm = null;
+    closeTimePicker();
+    cb(timeStr);
+    return;
+  }
   if (timePickerTarget) {
     const span = timePickerTarget.querySelector('span');
     if (span) span.textContent = timeStr;
@@ -4913,6 +4924,42 @@ function confirmTimePicker() {
   }
   closeTimePicker();
   if (typeof renderObSummary === 'function') renderObSummary();
+}
+
+/* Open the time picker from #log-dose: pick a time, then log a dose at it. */
+function openLogDoseTimePicker(idx) {
+  timePickerTarget = null;
+  const now = new Date();
+  tpHour = now.getHours();
+  tpMin = now.getMinutes();
+  timePickerOnConfirm = function(timeStr) {
+    logDoseAtTime(idx, timeStr);
+  };
+  if (typeof renderTimeWheels === 'function') renderTimeWheels();
+  document.getElementById('time-picker').classList.add('open');
+}
+
+/* Log a dose at the chosen time string (HH:MM) using the med's saved settings. */
+function logDoseAtTime(idx, timeStr) {
+  const med = activeMeds()[idx];
+  if (!med) return;
+  if (!med.logs) med.logs = [];
+  const [hh, mm] = timeStr.split(':').map(Number);
+  const ts = new Date();
+  ts.setHours(hh, mm, 0, 0);
+  med.logs.push(ts.toISOString());
+  // Also mark the slot as taken if it matches a configured time
+  const todayKey = new Date().toDateString();
+  if (!med.takenSlots) med.takenSlots = {};
+  if (!med.takenSlots[todayKey]) med.takenSlots[todayKey] = [];
+  if ((med.times || []).includes(timeStr) && !med.takenSlots[todayKey].includes(timeStr)) {
+    med.takenSlots[todayKey].push(timeStr);
+  }
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+  if (typeof renderArquivoMeds === 'function') renderArquivoMeds();
+  if (typeof buildCal === 'function') buildCal();
+  showToast('✓ ' + med.name + ' registado às ' + timeStr);
+  go('dashboard', 'l');
 }
 
 /* ===== Simulated Keyboard ===== */
