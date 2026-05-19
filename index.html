@@ -3090,7 +3090,10 @@ function showObStep(step) {
     // Fresh entry: clear any prior selection, prefill as-needed limit, refresh summary
     const nameVal = (document.getElementById('manual-med-name') || {}).value || '';
     prefillAsNeededLimit(nameVal);
-    if (obInsertSource !== 'detected' || obEditIndex < 0) {
+    // Only clear active state when this is a NEW entry. In every edit flow
+    // (detected re-config, ob-confirm edit, med-detail edit, arquivo edit) keep
+    // the option the user picked the first time pre-selected.
+    if (obEditIndex < 0 && (typeof editingMedDetailIdx === 'undefined' || editingMedDetailIdx < 0)) {
       document.querySelectorAll('#ob-step2 .freq-option').forEach(opt => {
         opt.classList.remove('active');
         opt.setAttribute('aria-checked', 'false');
@@ -3576,6 +3579,43 @@ function updateInsertInteractionWarning() {
   });
 }
 
+/* Pre-select the freq-option card (and pre-fill its body) based on a saved med, so
+ * editing flows arrive at step 2 with the user's previous choice already active. */
+function preselectFreqFromMed(m) {
+  if (!m) return;
+  const KEY_TO_DATAFREQ = { asneeded:'asneeded', daily:'daily', interval:'interval', periodic:'cycle', specific:'daily', weekly:'daily' };
+  let dataFreq;
+  if (m.type === 'occasional') {
+    dataFreq = 'asneeded';
+  } else {
+    const entry = (typeof obFreqLabels === 'object') ? Object.entries(obFreqLabels).find(([, v]) => v === m.frequency) : null;
+    const key = entry ? entry[0] : 'daily';
+    dataFreq = KEY_TO_DATAFREQ[key] || 'daily';
+  }
+  if (typeof selectFreqOption === 'function') selectFreqOption(dataFreq);
+  // Pre-fill the time-list for scheduled options
+  if (dataFreq !== 'asneeded' && m.times && m.times.length) {
+    const listId = dataFreq + '-time-list';
+    const list = document.getElementById(listId);
+    if (list) {
+      list.innerHTML = '';
+      m.times.forEach((t, i) => {
+        if (i === 0) {
+          list.innerHTML = '<div class="ifield" style="cursor:pointer;" onclick="openTimePicker(this)"><span>' + t + '</span></div>';
+        } else {
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'display:flex;gap:8px;align-items:center;';
+          wrap.innerHTML =
+            '<div class="ifield" style="cursor:pointer;display:inline-flex;width:120px;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);justify-content:center;align-items:center;text-align:center;" onclick="openTimePicker(this)"><span>' + t + '</span></div>' +
+            '<button type="button" class="fob-remove" onclick="this.parentElement.remove();renderObSummary();" aria-label="Remover hora"></button>';
+          list.appendChild(wrap);
+        }
+      });
+    }
+  }
+  if (typeof renderObSummary === 'function') renderObSummary();
+}
+
 /* Open the manual wizard from #med-detail to edit the med — returns to #med-detail on save. */
 let editingMedDetailIdx = -1;
 let preEditNavLen = -1;
@@ -3600,20 +3640,11 @@ function openMedDetailEdit(idx) {
     const span = dosageDd.querySelector('span');
     if (span) span.textContent = m.dosage.replace('mg', ' mg');
   }
-  // Pre-fill frequency
-  resetFreqRadios();
-  const freqKey = m.type === 'occasional' ? 'asneeded' :
-    (Object.entries(obFreqLabels).find(([k, v]) => v === m.frequency) || ['daily'])[0];
-  if (freqKey === 'asneeded') {
-    const firstRadio = document.querySelector('#freq-radio-list > .freq-radio');
-    if (firstRadio) selectFreqRadio(firstRadio, 'asneeded');
-  } else {
-    selectScheduledSubtype(freqKey);
-    const schedRadio = document.getElementById('freq-scheduled-radio');
-    if (schedRadio) selectFreqRadio(schedRadio, 'scheduled');
-  }
   go('ob-insert', 'r');
   showObStep(1);
+  // Pre-select the freq option (and fill its time-list) so step 2 lands with
+  // the previously chosen frequency already active.
+  preselectFreqFromMed(m);
 }
 
 function openWizardForExistingMed(idx) {
@@ -3633,20 +3664,9 @@ function openWizardForExistingMed(idx) {
     const span = dosageDd.querySelector('span');
     if (span) span.textContent = m.dosage.replace('mg', ' mg');
   }
-  // Pre-fill frequency
-  const freqKey = m.type === 'occasional' ? 'asneeded' :
-    (Object.entries(obFreqLabels).find(([k, v]) => v === m.frequency) || ['daily'])[0];
-  resetFreqRadios();
-  if (freqKey === 'asneeded') {
-    const firstRadio = document.querySelector('#freq-radio-list > .freq-radio');
-    if (firstRadio) selectFreqRadio(firstRadio, 'asneeded');
-  } else {
-    selectScheduledSubtype(freqKey);
-    const schedRadio = document.getElementById('freq-scheduled-radio');
-    if (schedRadio) selectFreqRadio(schedRadio, 'scheduled');
-  }
   go('ob-insert', 'r');
   showObStep(1);
+  preselectFreqFromMed(m);
 }
 
 /* Open wizard from manual entry — always start at step 1 */
@@ -3688,9 +3708,9 @@ function openDetCardWizard(idx) {
   const KEY_TO_FREQ = { asneeded:'asneeded', daily:'daily', periodic:'cycle', interval:'interval', specific:'specific' };
   if (savedIdx >= 0 && activeMeds()[savedIdx]) {
     const saved = activeMeds()[savedIdx];
-    const freqKey = freqLabelToKey(saved.frequency);
-    selectFreqOption(KEY_TO_FREQ[freqKey] || 'daily');
     obEditIndex = savedIdx;
+    // Activate the previously chosen freq AND pre-fill its time-list.
+    preselectFreqFromMed(saved);
   } else {
     obEditIndex = -1;
   }
@@ -4032,6 +4052,7 @@ function editObConfirmMed(idx) {
   }
   go('ob-insert', 'r');
   if (typeof showObStep === 'function') showObStep(1);
+  preselectFreqFromMed(m);
 }
 
 function renderConfirmList() {
