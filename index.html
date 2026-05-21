@@ -3465,10 +3465,10 @@ function saveObInsert() {
         return;
       }
     }
-    // Default: new one-off or catalog entry — use the actual freq selection
+    // Default: new entry — use the actual freq selection. Meds added through the
+    // "Registar toma" flow are always kept in the app catalog (#arquivo): an
+    // asneeded med lands in "Ocasionais", a scheduled one in "Regulares".
     if (!document.querySelector('#ob-step2 .freq-option.active')) return;
-    const swEl = document.getElementById('ob-save-catalog-switch');
-    const saveToCatalog = swEl ? swEl.classList.contains('on') : false;
     const freqLabelLog = obFreqLabels[obSelectedFreq] || 'Conforme necessário';
     const medTypeLog = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
     const cfgLog = (typeof collectObConfig === 'function') ? collectObConfig() : null;
@@ -3482,7 +3482,7 @@ function saveObInsert() {
       type: medTypeLog,
       times: timesLog,
       takenSlots: {},
-      oneOff: !saveToCatalog,
+      oneOff: false,
       logs: [ts],
     };
     // For regular meds, also mark the first dose as taken today
