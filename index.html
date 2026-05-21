@@ -1002,6 +1002,13 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
             </div>
             <div class="freq-option-check"></div>
           </div>
+          <!-- Log-dose only: "A que horas?" with an "Agora" pill -->
+          <div class="freq-option-body" id="asneeded-logdose-body" style="display:none;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <h4 style="font-size:18px;font-weight:700;color:var(--text);margin:0;">A que horas?</h4>
+              <div class="ifield" id="asneeded-time" style="cursor:pointer;display:inline-flex;width:120px;padding:10px 16px;font-size:16px;font-weight:500;border-radius:12px;background:var(--white);box-shadow:var(--shadow-sm);justify-content:center;align-items:center;text-align:center;" onclick="openTimePicker(this)"><span>Agora</span></div>
+            </div>
+          </div>
         </div>
         <div class="freq-option" data-freq="daily" tabindex="0" role="radio" aria-checked="false">
           <div class="freq-option-header" onclick="selectFreqOption('daily')">
@@ -3128,6 +3135,10 @@ function showObStep(step) {
     if (sw) sw.classList.remove('on');
     if (saveBtn) saveBtn.textContent = logDoseMode ? 'Registar toma' : 'Guardar medicamento';
     if (intro) intro.textContent = 'Escolhe como vais tomar este medicamento.';
+    // Reset the "Agora" pill and reveal/hide the as-needed log-dose body.
+    const asnTime = document.querySelector('#asneeded-time span');
+    if (asnTime) asnTime.textContent = 'Agora';
+    updateAsNeededLogBody();
     renderObSummary();
   }
 }
@@ -3188,7 +3199,29 @@ function selectFreqOption(freq) {
   });
   const durSection = document.getElementById('dur-section');
   if (durSection) durSection.style.display = freq === 'asneeded' ? 'none' : 'block';
+  updateAsNeededLogBody();
   renderObSummary();
+}
+
+/* The "Conforme necessário" card shows an "A que horas?" / "Agora" picker, but
+ * only when reached via "Registar toma" (logDoseMode) AND the card is active. */
+function updateAsNeededLogBody() {
+  const body = document.getElementById('asneeded-logdose-body');
+  if (!body) return;
+  const asneededActive = !!document.querySelector('#ob-step2 .freq-option[data-freq="asneeded"].active');
+  body.style.display = (logDoseMode && asneededActive) ? 'flex' : 'none';
+}
+
+/* Returns the ISO timestamp for an as-needed log dose: "Agora" → now;
+ * a HH:MM value from the pill → today at that time. */
+function asNeededLogTimestamp() {
+  const span = document.querySelector('#asneeded-time span');
+  const txt = (span && span.textContent ? span.textContent.trim() : 'Agora');
+  const m = txt.match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return new Date().toISOString();
+  const d = new Date();
+  d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
+  return d.toISOString();
 }
 
 function toggleEndDate(sw) {
@@ -3413,7 +3446,7 @@ function saveObInsert() {
         med.type = medType;
         med.times = newTimes;
         if (!med.logs) med.logs = [];
-        const ts2 = new Date().toISOString();
+        const ts2 = (medType === 'occasional') ? asNeededLogTimestamp() : new Date().toISOString();
         const timeStr2 = new Date(ts2).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
         med.logs.push(ts2);
         if (medType === 'regular' && newTimes.length) {
@@ -3440,7 +3473,7 @@ function saveObInsert() {
     const medTypeLog = obSelectedFreq === 'asneeded' ? 'occasional' : 'regular';
     const cfgLog = (typeof collectObConfig === 'function') ? collectObConfig() : null;
     const timesLog = (cfgLog && cfgLog.times && cfgLog.times.length) ? cfgLog.times : (medTypeLog !== 'occasional' ? ['08:00'] : []);
-    const ts = new Date().toISOString();
+    const ts = (medTypeLog === 'occasional') ? asNeededLogTimestamp() : new Date().toISOString();
     const timeStr = new Date(ts).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
     const entry = {
       name, dosage, form,
