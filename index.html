@@ -2373,6 +2373,7 @@ function go(id, dir, isBack) {
   }
   if (id === 'arquivo') renderArquivoMeds();
   if (id === 'log-dose') renderLogDoseList();
+  if (id === 'search') renderSearchRecent();
   if (id === 'ob-confirm') renderConfirmList();
   if (id === 'chat') {
     // Apply / remove guest mode chrome
@@ -2918,12 +2919,27 @@ document.addEventListener('click', function(e) {
 });
 
 /* ===== Search ===== */
+/* Render the "Recente" list from the ACTIVE profile's own meds. */
+function renderSearchRecent() {
+  const list = document.getElementById('search-list');
+  if (!list) return;
+  const hdr = list.previousElementSibling;
+  if (hdr) hdr.textContent = 'Recente';
+  const meds = (PROFILES[activeProfile] && PROFILES[activeProfile].meds) || [];
+  if (meds.length) {
+    list.innerHTML = meds.map(m => medRow({
+      name: (m.name || '').replace(/\s+\d+\s*mg.*/i, '').trim() || m.name,
+      sub: (m.dosage ? m.dosage + ' · ' : '') + (m.form ? formLabel(m.form) : 'Comprimido')
+    })).join('');
+  } else {
+    list.innerHTML = ALL_MEDS.slice(0, 3).map(m => medRow(m)).join('');
+  }
+}
 function doSearch(val) {
   const list = document.getElementById('search-list');
   const hdr  = list.previousElementSibling;
   if (!val.trim()) {
-    hdr.textContent = 'Pesquisas recentes';
-    list.innerHTML = ALL_MEDS.slice(0,3).map(m => medRow(m)).join('');
+    renderSearchRecent();
     return;
   }
   const res = ALL_MEDS.filter(m => m.name.toLowerCase().includes(val.toLowerCase()));
@@ -5219,9 +5235,13 @@ function showKeyboard() {
   const kbH = kb.offsetHeight;
   if (kbH > 0) document.getElementById('phone').style.setProperty('--kb-h', kbH + 'px');
   document.getElementById('phone').classList.add('kb-active');
-  // Hide search bottom nav while keyboard is active
+  // Hide the bottom nav while the keyboard is active (search + chat)
   if (cur === 'search') {
     const nav = document.querySelector('#search .bnav');
+    if (nav) nav.style.display = 'none';
+  }
+  if (cur === 'chat') {
+    const nav = document.getElementById('chat-bnav');
     if (nav) nav.style.display = 'none';
   }
   setTimeout(() => {
@@ -5235,6 +5255,9 @@ function hideKeyboard() {
   // Restore search bottom nav
   const nav = document.querySelector('#search .bnav');
   if (nav) nav.style.display = '';
+  // Restore chat bottom nav (kept hidden in guest mode)
+  const chatNav = document.getElementById('chat-bnav');
+  if (chatNav) chatNav.style.display = guestMode ? 'none' : '';
   kbFocusedInput = null;
 }
 function kbType(ch) {
