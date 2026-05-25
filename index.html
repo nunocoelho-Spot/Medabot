@@ -4167,9 +4167,13 @@ function showToast(msg, duration) {
 
 /* ===== Med-detail: open with real data ===== */
 let currentMedDetailIdx = -1;
+let currentMedDetailProfileId = null;
+let medDetailDate = null; // the day currently shown in the detail "Hoje" frame; null = today
 
 function openMedDetail(profileId, idx) {
   currentMedDetailIdx = idx;
+  currentMedDetailProfileId = profileId;
+  medDetailDate = new Date(); // reset to today when first opening
   const m = (PROFILES[profileId] && PROFILES[profileId].meds) ? PROFILES[profileId].meds[idx] : null;
   if (!m) { go('med-detail', 'r'); return; }
 
@@ -4182,53 +4186,8 @@ function openMedDetail(profileId, idx) {
   if (subEl)  subEl.textContent  = (m.dosage || '') + ' | ' + (m.form ? formLabel(m.form) : 'Comprimido');
 
   // Today's dose rows — different layout for occasional vs regular meds
-  const todayKey = new Date().toDateString();
   const times = (m.times && m.times.length) ? m.times : ['08:00'];
-  const container = document.getElementById('detail-today-rows');
-  if (container) {
-    if (m.type === 'occasional') {
-      const todayLogs = (m.logs || [])
-        .map((ts, logIdx) => ({ ts, logIdx }))
-        .filter(({ ts }) => new Date(ts).toDateString() === todayKey);
-      if (!todayLogs.length) {
-        // No takes today — show a big "Tomar" button
-        container.innerHTML =
-          '<div style="display:flex;justify-content:center;padding:8px 0 4px;">' +
-            '<button onclick="occasionalTakeNow(\'' + profileId + '\',' + idx + ')" ' +
-              'style="background:var(--pink);border:none;border-radius:24px;padding:14px 36px;font-size:16px;font-weight:700;color:var(--bg);cursor:pointer;font-family:inherit;">Tomar</button>' +
-          '</div>';
-      } else {
-        // One row per take today — clickable time opens the time picker for editing
-        container.innerHTML = todayLogs.map(({ ts, logIdx }, i) => {
-          const time = new Date(ts).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
-          const isLast = i === todayLogs.length - 1;
-          const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
-          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
-            '<div onclick="editOccasionalLog(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
-              'style="display:flex;align-items:center;gap:8px;cursor:pointer;">' +
-              '<span style="font-size:16px;font-weight:500;color:var(--text);">Tomada às <span style="font-weight:700;">' + time + '</span></span>' +
-              '<img src="assets/icons/Edit-Icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>' +
-            '</div>' +
-            '<button data-taken="1" data-logidx="' + logIdx + '" onclick="occasionalUndoTake(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
-              'style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>' +
-          '</div>';
-        }).join('');
-      }
-    } else {
-      // Regular meds — Taken (filled teal) vs Take (outline teal) per scheduled time
-      const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
-      container.innerHTML = times.map((t, i) => {
-        const isTaken = takenSet.has(t);
-        const isLast = i === times.length - 1;
-        const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
-        const btn = isTaken
-          ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>'
-          : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;">Tomar</button>';
-        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
-          '<span style="font-size:16px;font-weight:500;color:var(--text);">' + t + '</span>' + btn + '</div>';
-      }).join('');
-    }
-  }
+  renderDetailTodayRows();
 
   // Details card — dosage, frequency, start/end
   const detDosage = document.getElementById('detail-dosage');
@@ -4270,13 +4229,114 @@ function openMedDetail(profileId, idx) {
   go('med-detail', 'r');
 }
 
+/* ===== Med-detail "Hoje" frame — re-renders for the currently selected day ===== */
+function renderDetailTodayRows() {
+  const m = (PROFILES[currentMedDetailProfileId] && PROFILES[currentMedDetailProfileId].meds)
+    ? PROFILES[currentMedDetailProfileId].meds[currentMedDetailIdx] : null;
+  const container = document.getElementById('detail-today-rows');
+  if (!m || !container) return;
+  const dateRef = medDetailDate || new Date();
+  const dateKey = dateRef.toDateString();
+  const todayKey = new Date().toDateString();
+  const isToday = dateKey === todayKey;
+  const profileId = currentMedDetailProfileId;
+  const idx = currentMedDetailIdx;
+
+  // Update the section heading: "Hoje" today, otherwise the date
+  const hdrEl = document.querySelector('#med-detail h2');
+  if (hdrEl) {
+    if (isToday) hdrEl.textContent = 'Hoje';
+    else hdrEl.textContent = dateRef.getDate() + ' ' + CAL_MONTH_NAMES[dateRef.getMonth()];
+  }
+
+  if (m.type === 'occasional') {
+    const dayLogs = (m.logs || [])
+      .map((ts, logIdx) => ({ ts, logIdx }))
+      .filter(({ ts }) => new Date(ts).toDateString() === dateKey);
+    let html = '';
+    // Existing takes for the selected day
+    dayLogs.forEach(({ ts, logIdx }, i) => {
+      const time = new Date(ts).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      const isLast = i === dayLogs.length - 1 && !isToday;
+      const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;' + border + '">' +
+        '<div onclick="editOccasionalLog(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
+          'style="display:inline-flex;align-items:center;cursor:pointer;padding:10px 18px;background:var(--white);border-radius:14px;box-shadow:var(--shadow-sm);min-width:120px;justify-content:center;">' +
+          '<span style="font-size:16px;font-weight:600;color:var(--text);">' + time + '</span>' +
+        '</div>' +
+        '<button data-taken="1" data-logidx="' + logIdx + '" onclick="occasionalUndoTake(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
+          'style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>' +
+      '</div>';
+    });
+    // Today-only: an outlined "Tomar" button below to register an additional take
+    if (isToday) {
+      html += '<div style="display:flex;justify-content:center;padding:' + (dayLogs.length ? '12px' : '8px') + ' 0 4px;">' +
+        '<button onclick="occasionalTakeNow(\'' + profileId + '\',' + idx + ')" ' +
+          'style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 36px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;font-family:inherit;">Tomar</button>' +
+      '</div>';
+    } else if (!dayLogs.length) {
+      html = '<div style="text-align:center;padding:16px 0;font-size:14px;color:var(--text-sub);">Sem tomas neste dia.</div>';
+    }
+    container.innerHTML = html;
+  } else {
+    // Regular meds — Taken vs Take per scheduled time, for the selected day
+    const takenSet = new Set((m.takenSlots && m.takenSlots[dateKey]) || []);
+    const times = (m.times && m.times.length) ? m.times : ['08:00'];
+    container.innerHTML = times.map((t, i) => {
+      const isTaken = takenSet.has(t);
+      const isLast = i === times.length - 1;
+      const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
+      const btn = isTaken
+        ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDoseForDate(this,\'' + profileId + '\',' + idx + ',\'' + dateKey + '\')" style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>'
+        : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDoseForDate(this,\'' + profileId + '\',' + idx + ',\'' + dateKey + '\')" style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;">Tomar</button>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
+        '<span style="font-size:16px;font-weight:500;color:var(--text);">' + t + '</span>' + btn + '</div>';
+    }).join('');
+  }
+}
+
+/* Toggle a scheduled-med slot taken/not for an arbitrary date (used by #med-detail when
+ * the user selects a day other than today in the calendar). */
+function toggleMedDoseForDate(btn, profileId, idx, dateKey) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
+  if (!m) return;
+  if (!m.takenSlots) m.takenSlots = {};
+  if (!m.takenSlots[dateKey]) m.takenSlots[dateKey] = [];
+  const t = btn.dataset.time;
+  if (btn.dataset.taken === '1') {
+    m.takenSlots[dateKey] = m.takenSlots[dateKey].filter(x => x !== t);
+  } else {
+    if (!m.takenSlots[dateKey].includes(t)) m.takenSlots[dateKey].push(t);
+  }
+  renderDetailTodayRows();
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+}
+
+/* Called when a cell in the #med-detail calendar is tapped. */
+function selectMedDetailDay(iso) {
+  const [y, mo, d] = iso.split('-').map(Number);
+  medDetailDate = new Date(y, mo - 1, d);
+  // Update header label of the calendar widget
+  const detail = document.getElementById('detail-cal-hdr');
+  if (detail) {
+    const today = new Date();
+    const isToday = medDetailDate.toDateString() === today.toDateString();
+    detail.textContent = (isToday ? 'Hoje, ' : '') + medDetailDate.getDate() + ' ' + CAL_MONTH_NAMES[medDetailDate.getMonth()];
+  }
+  // Highlight the selected cell
+  document.querySelectorAll('#cal-row-detail .cal-day').forEach(c => c.classList.remove('sel'));
+  const cell = document.querySelector('#cal-row-detail .cal-day[data-iso="' + iso + '"]');
+  if (cell) cell.classList.add('sel');
+  renderDetailTodayRows();
+}
+
 /* ===== Occasional-med helpers (used by #med-detail "Hoje") ===== */
 function occasionalTakeNow(profileId, idx) {
   const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
   if (!m) return;
   if (!m.logs) m.logs = [];
   m.logs.push(new Date().toISOString());
-  openMedDetail(profileId, idx);
+  renderDetailTodayRows();
   if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
   if (typeof renderArquivoMeds === 'function') renderArquivoMeds();
   if (typeof buildCal === 'function') buildCal();
@@ -4287,7 +4347,7 @@ function occasionalUndoTake(profileId, idx, logIdx) {
   const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
   if (!m || !m.logs || !m.logs[logIdx]) return;
   m.logs.splice(logIdx, 1);
-  openMedDetail(profileId, idx);
+  renderDetailTodayRows();
   if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
 }
 
@@ -4295,8 +4355,6 @@ function editOccasionalLog(profileId, idx, logIdx) {
   const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
   if (!m || !m.logs || !m.logs[logIdx]) return;
   const cur = new Date(m.logs[logIdx]);
-  // Open the time-picker pre-set to the current log time. On confirm, rewrite
-  // the log with the chosen time (today date preserved).
   timePickerTarget = null;
   tpHour = cur.getHours();
   tpMin = cur.getMinutes();
@@ -4305,7 +4363,7 @@ function editOccasionalLog(profileId, idx, logIdx) {
     const d = new Date(m.logs[logIdx]);
     d.setHours(hh, mm, 0, 0);
     m.logs[logIdx] = d.toISOString();
-    openMedDetail(profileId, idx);
+    renderDetailTodayRows();
     if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
   };
   if (typeof renderTimeWheels === 'function') renderTimeWheels();
@@ -4907,13 +4965,17 @@ function buildCal() {
     };
     row.appendChild(div);
   }
-  // Mirror cells into the med-detail calendar (visual-only clone)
+  // Mirror cells into the med-detail calendar — clicking a cell switches the
+  // selected day for the detail view.
   const detRow = document.getElementById('cal-row-detail');
   if (detRow) {
     detRow.innerHTML = row.innerHTML;
-    // Inherit the same scroll layout
     detRow.style.cssText = row.style.cssText;
-    // Center today in the detail row too
+    detRow.querySelectorAll('.cal-day').forEach(cell => {
+      cell.onclick = () => {
+        if (typeof selectMedDetailDay === 'function' && cell.dataset.iso) selectMedDetailDay(cell.dataset.iso);
+      };
+    });
     const todayInDet = detRow.querySelector('.cal-day.today');
     if (todayInDet) {
       requestAnimationFrame(() => {
