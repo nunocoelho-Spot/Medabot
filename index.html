@@ -2096,9 +2096,8 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
     <div id="picker-month-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;"></div>
     <!-- Year picker (hidden by default) -->
     <div id="picker-year-mode" style="display:none;flex-direction:column;gap:10px;margin-bottom:8px;">
-      <input id="picker-year-input" type="number" inputmode="numeric" placeholder="Ano (ex: 1985)" min="1900" max="2100"
+      <input id="picker-year-input" type="number" inputmode="numeric" placeholder="Escrever ano (ex: 1985)" min="1900" max="2100"
         onkeydown="if(event.key==='Enter'){event.preventDefault();applyTypedYear();}"
-        onblur="applyTypedYear()"
         style="width:100%;padding:12px 14px;border:1.5px solid var(--gray-border);border-radius:12px;background:var(--white);font-size:16px;font-weight:600;color:var(--text);font-family:inherit;outline:none;-moz-appearance:textfield;"/>
       <div id="picker-year-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:220px;overflow-y:auto;scrollbar-width:none;"></div>
     </div>
