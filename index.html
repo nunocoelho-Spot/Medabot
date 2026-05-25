@@ -4183,6 +4183,7 @@ function openMedDetail(profileId, idx) {
 
   // Today's dose rows — different layout for occasional vs regular meds
   const todayKey = new Date().toDateString();
+  const times = (m.times && m.times.length) ? m.times : ['08:00'];
   const container = document.getElementById('detail-today-rows');
   if (container) {
     if (m.type === 'occasional') {
@@ -4216,7 +4217,6 @@ function openMedDetail(profileId, idx) {
     } else {
       // Regular meds — Taken (filled teal) vs Take (outline teal) per scheduled time
       const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
-      const times = (m.times && m.times.length) ? m.times : ['08:00'];
       container.innerHTML = times.map((t, i) => {
         const isTaken = takenSet.has(t);
         const isLast = i === times.length - 1;
