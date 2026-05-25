@@ -1021,7 +1021,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
-              <span class="stepper-label">Quantos comprimidos?</span>
+              <span class="stepper-label">Quantos comprimidos? (Por toma)</span>
               <div class="stepper" data-input-id="daily-qty">
                 <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
                 <span class="stepper-value">1</span>
@@ -1070,7 +1070,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
-              <span class="stepper-label">Quantos comprimidos?</span>
+              <span class="stepper-label">Quantos comprimidos? (Por toma)</span>
               <div class="stepper" data-input-id="interval-qty">
                 <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
                 <span class="stepper-value">1</span>
@@ -1127,7 +1127,7 @@ button:focus-visible,.back:focus-visible,.ni:focus-visible,
           </div>
           <div class="freq-option-body">
             <div class="stepper-row">
-              <span class="stepper-label">Quantos comprimidos?</span>
+              <span class="stepper-label">Quantos comprimidos? (Por toma)</span>
               <div class="stepper" data-input-id="cycle-qty">
                 <button type="button" onclick="stepperDec(this)" aria-label="Menos">−</button>
                 <span class="stepper-value">1</span>
@@ -4181,22 +4181,53 @@ function openMedDetail(profileId, idx) {
   if (nameEl) nameEl.textContent = cleanName;
   if (subEl)  subEl.textContent  = (m.dosage || '') + ' | ' + (m.form ? formLabel(m.form) : 'Comprimido');
 
-  // Today's dose rows — Taken (filled teal) vs Take (outline teal)
+  // Today's dose rows — different layout for occasional vs regular meds
   const todayKey = new Date().toDateString();
-  const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
-  const times = (m.times && m.times.length) ? m.times : ['08:00'];
   const container = document.getElementById('detail-today-rows');
   if (container) {
-    container.innerHTML = times.map((t, i) => {
-      const isTaken = takenSet.has(t);
-      const isLast = i === times.length - 1;
-      const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
-      const btn = isTaken
-        ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>'
-        : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;">Tomar</button>';
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
-        '<span style="font-size:16px;font-weight:500;color:var(--text);">' + t + '</span>' + btn + '</div>';
-    }).join('');
+    if (m.type === 'occasional') {
+      const todayLogs = (m.logs || [])
+        .map((ts, logIdx) => ({ ts, logIdx }))
+        .filter(({ ts }) => new Date(ts).toDateString() === todayKey);
+      if (!todayLogs.length) {
+        // No takes today — show a big "Tomar" button
+        container.innerHTML =
+          '<div style="display:flex;justify-content:center;padding:8px 0 4px;">' +
+            '<button onclick="occasionalTakeNow(\'' + profileId + '\',' + idx + ')" ' +
+              'style="background:var(--pink);border:none;border-radius:24px;padding:14px 36px;font-size:16px;font-weight:700;color:var(--bg);cursor:pointer;font-family:inherit;">Tomar</button>' +
+          '</div>';
+      } else {
+        // One row per take today — clickable time opens the time picker for editing
+        container.innerHTML = todayLogs.map(({ ts, logIdx }, i) => {
+          const time = new Date(ts).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+          const isLast = i === todayLogs.length - 1;
+          const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
+            '<div onclick="editOccasionalLog(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
+              'style="display:flex;align-items:center;gap:8px;cursor:pointer;">' +
+              '<span style="font-size:16px;font-weight:500;color:var(--text);">Tomada às <span style="font-weight:700;">' + time + '</span></span>' +
+              '<img src="assets/icons/Edit-Icon.svg" alt="" style="width:20px;height:20px;flex-shrink:0;"/>' +
+            '</div>' +
+            '<button data-taken="1" data-logidx="' + logIdx + '" onclick="occasionalUndoTake(\'' + profileId + '\',' + idx + ',' + logIdx + ')" ' +
+              'style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>' +
+          '</div>';
+        }).join('');
+      }
+    } else {
+      // Regular meds — Taken (filled teal) vs Take (outline teal) per scheduled time
+      const takenSet = new Set((m.takenSlots && m.takenSlots[todayKey]) || []);
+      const times = (m.times && m.times.length) ? m.times : ['08:00'];
+      container.innerHTML = times.map((t, i) => {
+        const isTaken = takenSet.has(t);
+        const isLast = i === times.length - 1;
+        const border = isLast ? '' : 'border-bottom:1px solid var(--gray-border);';
+        const btn = isTaken
+          ? '<button data-taken="1" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--pink);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--bg);cursor:pointer;">Tomada</button>'
+          : '<button data-taken="0" data-time="' + t + '" onclick="toggleMedDose(this,\'' + profileId + '\',' + idx + ')" style="background:var(--white);border:1.5px solid var(--pink);border-radius:24px;padding:10px 26px;font-size:14px;font-weight:700;color:var(--pink);cursor:pointer;">Tomar</button>';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + border + '">' +
+          '<span style="font-size:16px;font-weight:500;color:var(--text);">' + t + '</span>' + btn + '</div>';
+      }).join('');
+    }
   }
 
   // Details card — dosage, frequency, start/end
@@ -4237,6 +4268,48 @@ function openMedDetail(profileId, idx) {
   // Refresh the mirrored calendar so it reflects current meds/state
   if (typeof buildCal === 'function') buildCal();
   go('med-detail', 'r');
+}
+
+/* ===== Occasional-med helpers (used by #med-detail "Hoje") ===== */
+function occasionalTakeNow(profileId, idx) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
+  if (!m) return;
+  if (!m.logs) m.logs = [];
+  m.logs.push(new Date().toISOString());
+  openMedDetail(profileId, idx);
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+  if (typeof renderArquivoMeds === 'function') renderArquivoMeds();
+  if (typeof buildCal === 'function') buildCal();
+  if (typeof showToast === 'function') showToast('✓ Toma registada');
+}
+
+function occasionalUndoTake(profileId, idx, logIdx) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
+  if (!m || !m.logs || !m.logs[logIdx]) return;
+  m.logs.splice(logIdx, 1);
+  openMedDetail(profileId, idx);
+  if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+}
+
+function editOccasionalLog(profileId, idx, logIdx) {
+  const m = PROFILES[profileId] && PROFILES[profileId].meds && PROFILES[profileId].meds[idx];
+  if (!m || !m.logs || !m.logs[logIdx]) return;
+  const cur = new Date(m.logs[logIdx]);
+  // Open the time-picker pre-set to the current log time. On confirm, rewrite
+  // the log with the chosen time (today date preserved).
+  timePickerTarget = null;
+  tpHour = cur.getHours();
+  tpMin = cur.getMinutes();
+  timePickerOnConfirm = function(timeStr) {
+    const [hh, mm] = timeStr.split(':').map(Number);
+    const d = new Date(m.logs[logIdx]);
+    d.setHours(hh, mm, 0, 0);
+    m.logs[logIdx] = d.toISOString();
+    openMedDetail(profileId, idx);
+    if (typeof renderDashboardMeds === 'function') renderDashboardMeds();
+  };
+  if (typeof renderTimeWheels === 'function') renderTimeWheels();
+  document.getElementById('time-picker').classList.add('open');
 }
 
 /* Returns array of {tone, text} interactions for a med (prototype data). */
@@ -4396,8 +4469,10 @@ function renderLogDoseList() {
   const hint = document.getElementById('log-dose-hint');
   if (!list) return;
   const meds = activeMeds();
+  if (hint) hint.textContent = meds.length
+    ? 'Escolhe o medicamento que tomaste hoje.'
+    : 'Ainda não tens medicamentos guardados.';
   if (!meds.length) {
-    hint.textContent = 'Ainda não tens medicamentos guardados.';
     list.innerHTML =
       '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:40px 0;text-align:center;">' +
         '<span style="font-size:42px;">💊</span>' +
@@ -4407,7 +4482,6 @@ function renderLogDoseList() {
       '</div>';
     return;
   }
-  hint.textContent = 'Escolhe o medicamento que tomaste hoje.';
 
   const regularMeds = meds.map((m, i) => ({ m, i })).filter(({ m }) => m.type !== 'occasional');
   const occasionalMeds = meds.map((m, i) => ({ m, i })).filter(({ m }) => m.type === 'occasional');
